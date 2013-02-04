@@ -1,0 +1,49 @@
+#filesystembrowser {
+    background: #FFFFFF;
+    border: #CCCCCC 2px inset;
+    float: left;
+    width: 192px;
+    height: 640px;
+    overflow: scroll;
+}
+
+ul.ctnaiFileSystem {
+    color: #000000;
+    font-size: 12px;
+    line-height: 18px;
+    font-family: "Verdana", "Sans-Serif", "Calibri", "Arial";
+    margin: 0px;
+    padding: 0px;
+}
+
+ul.ctnaiFileSystem li {
+    list-style: none;
+    padding: 0px;
+    padding-left: 20px;
+    margin: 0px;
+    white-space: nowrap;
+}
+
+ul.ctnaiFileSystem a {
+    color: #000033;
+    text-decoration: none;
+    display: block;
+    padding: 0px 2px;
+}
+
+ul.ctnaiFileSystem a:hover {
+    background: #CCFFFF;
+}
+
+/* Core Styles */
+ul.ctnaiFileSystem li.file {
+    background: url(../Graphics/FileIcons/file.png) left top no-repeat;
+}
+ul.ctnaiFileSystem li.folder {
+    background: url(../Graphics/FileIcons/folder.png) left top no-repeat;
+}
+ul.ctnaiFileSystem li.open_folder {
+    background: url(../Graphics/FileIcons/folder_open.png) left top no-repeat;
+}
+
+/* File Extensions*/

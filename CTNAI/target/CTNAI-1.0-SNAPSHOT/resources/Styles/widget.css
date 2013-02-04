@@ -1,0 +1,78 @@
+#widget {
+    background: #EEEEEE;
+    border: #CCCCCC 2px inset;
+    margin-left: 196px;
+    height: 640px;
+}
+
+#widget p {
+    color: #000000;
+    font-size: 12px;
+    line-height: 18px;
+    font-family: "Verdana", "Sans-Serif", "Calibri", "Arial";
+    margin: 0px;
+    padding: 0px;
+}
+
+#widget p {
+    margin-left: 8px;
+    margin-right: 8px;
+}
+
+#widget h7 {
+    color: #006666;
+    line-height: 2em;
+    font-size: 1.2em;
+    font-family: "Verdana", "Sans-Serif", "Calibri", "Arial";
+    padding: 32px;
+    margin: 32px;
+}
+
+#widget #frontpage p {
+    color: #000000;
+    font-size: 14px;
+    line-height: 20px;
+    font-family: "Verdana", "Sans-Serif", "Calibri", "Arial";
+    margin: 8px;
+    padding: 8px;
+}
+
+#widget input {
+    font-family: "Verdana", "Sans-Serif", "Calibri", "Arial";
+    margin: 16px 8px 8px 16px;
+}
+
+#widget #viewpoint {
+    overflow: scroll;
+    margin: 8px 8px 8px 8px;
+}
+
+#widget table {
+    border-collapse: collapse;
+}
+
+#widget table tr th,td {
+    border: 1px solid;
+    font-family: "Verdana", "Sans-Serif", "Calibri", "Arial";
+    white-space: nowrap;
+}
+
+#widget table tr th {
+    border-color: #000000;
+    background: #009999;
+    color: #99FFFF;
+    font-size: 12px;
+}
+
+#widget table tr td {
+    border-color: #009999;
+    color: #000000;
+    font-size: 10px;
+}
+
+textarea {
+    width: 96%;
+    height: 86%;
+    margin: 8px 8px 8px 8px;
+    resize: none;
+}

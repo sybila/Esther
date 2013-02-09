@@ -35,6 +35,22 @@ ul.ctnaiFileSystem a:hover {
     background: #CCFFFF;
 }
 
+div.fileMenu {
+    position: absolute;
+    z-index: 1024;
+    color: #000000;
+    font-size: 12px;
+    line-height: 18px;
+    font-family: "Verdana", "Sans-Serif", "Calibri", "Arial";
+    background: #CCCCCC;
+    border: 1px solid #009999;
+    padding: 2px;
+}
+
+div.fileMenu a {
+    margin: 4px;
+}
+
 /* Core Styles */
 ul.ctnaiFileSystem li.file {
     background: url(../Graphics/FileIcons/file.png) left top no-repeat;

@@ -8,7 +8,7 @@ if(jQuery) (function($)
             
             context.empty();
             
-            $.get('ReadFile',
+            $.get('File/Read',
                 { file: file }, function(data)
                     {
                         context.append('<textarea spellcheck=false id="contents">' +
@@ -20,7 +20,7 @@ if(jQuery) (function($)
 
                         context.find('#savebutton').click(function()
                             {
-                                $.post('WriteFile',
+                                $.post('File/Write',
                                 { file: context.find('#savebutton').attr('file_id'),
                                     data: context.find('#contents').val() });
                             });

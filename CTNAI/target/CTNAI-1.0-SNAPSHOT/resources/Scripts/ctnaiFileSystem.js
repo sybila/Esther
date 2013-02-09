@@ -9,7 +9,7 @@ if(jQuery) (function($)
                 function showFiles(c, f, p)
                 {
                     $(".ctnaiFileSystem.start").remove();
-                    $.get('Subfiles', { file: f, privacy: p }, function(data)
+                    $.get('Files/Sub', { file: f, privacy: p }, function(data)
                         {
                             $(c).find('.start').html('');
                             $(c).append(data);
@@ -21,7 +21,8 @@ if(jQuery) (function($)
                 }
 
                 function bindFiles(f) {
-                    $(f).find('LI A').click(function()
+                    var links = $(f).find('LI A');
+                    links.click(function()
                         {
                             if ($(this).parent().hasClass('expanded'))
                             {
@@ -49,7 +50,7 @@ if(jQuery) (function($)
                                     $(".ctnaiFileSystem.start").remove();
                                     if ($(this).parent().hasClass('private'))
                                     {
-                                        $.get('MyFiles', function(data)
+                                        $.get('Files/My', function(data)
                                             {
                                                 context.find('.start').html('');
                                                 context.append(data);
@@ -61,7 +62,7 @@ if(jQuery) (function($)
                                     }
                                     else if ($(this).parent().hasClass('public'))
                                     {
-                                        $.get('PublicFiles', function(data)
+                                        $.get('Files/Public', function(data)
                                             {
                                                 context.find('.start').html('');
                                                 context.append(data);
@@ -88,11 +89,49 @@ if(jQuery) (function($)
                             }
                             return false;
                         });
+                    links.bind('contextmenu', function(e)
+                        {
+                            e.preventDefault();
+                            if ($(this).parent().hasClass('file'))
+                            {
+                                $(document).find('BODY').append('<div class="fileMenu" style=" top: ' +
+                                    e.pageY + 'px; left: ' + e.pageX + 'px">' +
+                                    '<a class="delete" href="#">Delete</a><br/>' +
+                                    '<a class="rename" href="#">Rename</a></div>');
+                                
+                                var context = $(this);
+                                $(document).find('BODY DIV.fileMenu A.delete').click(function()
+                                    {
+                                        if (confirm('After deleting the file and all of it\'s subfiles will become unavailable. Are you sure you want to continue?'))
+                                        {
+                                            $.post('File/Delete', { file: context.attr('file_id') });
+                                        }
+                                    });
+                                    
+                                $(document).find('BODY DIV.fileMenu A.rename').click(function()
+                                    {
+                                        var name;
+                                        if (((name = prompt("Enter new name: ", "")) != null) && (name != ''))
+                                        {
+                                            $.post('File/Rename', { file: context.attr('file_id'), name: name });
+                                        }
+                                    });
+                            }
+                            return false;
+                        });
                 }
+                
+                $(document).bind('mousedown', function(e)
+                    {
+                        if (!$(e.target).parent().hasClass('fileMenu'))
+                        {
+                            $("div.fileMenu").hide();
+                        }
+                    });
 
                 var context = $(this);
 
-                $.get('FileSystemRoot', function(data)
+                $.get('Files/Root', function(data)
                     {
                         context.append(data);
                         bindFiles(context);

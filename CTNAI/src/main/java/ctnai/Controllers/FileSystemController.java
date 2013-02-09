@@ -56,13 +56,13 @@ public class FileSystemController
         userManager.setLogger(fs);
     }
     
-    @RequestMapping(value = "/FileSystemRoot", method = RequestMethod.GET)
+    @RequestMapping(value = "/Files/Root", method = RequestMethod.GET)
     public String fileSystemRoot()
     {
         return "fileSystemRoot";
     }
     
-    @RequestMapping(value = "/MyFiles", method = RequestMethod.GET)
+    @RequestMapping(value = "/Files/My", method = RequestMethod.GET)
     public String myFiles(ModelMap model)
     {
         List<CTNAIFile> files = new ArrayList<>();
@@ -81,7 +81,7 @@ public class FileSystemController
         return "fileList";
     }
     
-    @RequestMapping(value = "/PublicFiles", method = RequestMethod.GET)
+    @RequestMapping(value = "/Files/Public", method = RequestMethod.GET)
     public String publicFiles(ModelMap model)
     {
         List<CTNAIFile> files = fileSystemManager.getPublicRootFiles();
@@ -92,7 +92,7 @@ public class FileSystemController
         return "fileList";
     }
     
-    @RequestMapping(value = "/Subfiles", method = RequestMethod.GET)
+    @RequestMapping(value = "/Files/Sub", method = RequestMethod.GET)
     public String subfiles(ModelMap model, @RequestParam("file") Long parentId,
         @RequestParam("privacy") String privacy)
     {
@@ -123,7 +123,7 @@ public class FileSystemController
         return "fileList";
     }
     
-    @RequestMapping(value = "/CreateFile", method = RequestMethod.POST)
+    @RequestMapping(value = "/File/Create", method = RequestMethod.POST)
     @ResponseBody
     public Long createFile(@RequestParam("name") String name, @RequestParam("type") String type,
             @RequestParam(value="parent", required = false) Long parent)
@@ -145,7 +145,42 @@ public class FileSystemController
         return fileSystemManager.createFile(file);
     }
     
-    @RequestMapping(value = "/ReadFile", method = RequestMethod.GET)
+    @RequestMapping(value = "/File/Delete", method = RequestMethod.POST)
+    @ResponseBody
+    public void deleteFile(@RequestParam("file") Long id)
+    {
+        if (id == null)
+        {
+            return;
+        }
+        
+        CTNAIFile file = fileSystemManager.getFileById(id);
+        
+        fileSystemManager.deleteFile(file);
+    }
+    
+    @RequestMapping(value = "/File/Rename", method = RequestMethod.POST)
+    @ResponseBody
+    public void renameFile(@RequestParam("file") Long id, @RequestParam("name") String name)
+    {
+        if (id == null)
+        {
+            return;
+        }
+        
+        if ((name == null) || name.isEmpty())
+        {
+            return;
+        }
+        
+        CTNAIFile file = fileSystemManager.getFileById(id);
+        
+        file.setName(name);
+        
+        fileSystemManager.updateFile(file);
+    }
+    
+    @RequestMapping(value = "/File/Read", method = RequestMethod.GET)
     @ResponseBody
     public String readFile(@RequestParam("file") Long id)
     {
@@ -202,7 +237,7 @@ public class FileSystemController
         return data;
     }
     
-    @RequestMapping(value = "/WriteFile", method = RequestMethod.POST)
+    @RequestMapping(value = "/File/Write", method = RequestMethod.POST)
     @ResponseBody
     public void writeFile(@RequestParam("file") Long id, @RequestParam("data") String data)
     {

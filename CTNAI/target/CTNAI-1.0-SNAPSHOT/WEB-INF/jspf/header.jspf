@@ -5,7 +5,7 @@
     <h1>Online Thomas Network Analyzer</h1>
     <p style="float: right;">
         <sec:authorize access="isAuthenticated()">
-            Logged in as <a herf=""><sec:authentication property="principal.username" /></a>
+            Logged in as <a href=""><sec:authentication property="principal.username" /></a>
             , <a href="<c:url value="j_spring_security_logout"/>">log out</a>
         </sec:authorize>
         <sec:authorize access="isAnonymous()">

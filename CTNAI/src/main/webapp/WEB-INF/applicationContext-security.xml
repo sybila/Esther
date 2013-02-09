@@ -17,13 +17,8 @@
         <intercept-url pattern="/LoginFailure" access="permitAll" />
         <intercept-url pattern="/Logout" access="permitAll" />
         <intercept-url pattern="/Analysis" access="isAuthenticated()" />
-        <intercept-url pattern="/FileSystemRoot" access="isAuthenticated()" />
-        <intercept-url pattern="/MyFiles" access="isAuthenticated()" />
-        <intercept-url pattern="/PublicFiles" access="isAuthenticated()" />
-        <intercept-url pattern="/Subfiles" access="isAuthenticated()" />
-        <intercept-url pattern="/CreateFile" access="isAuthenticated()" />
-        <intercept-url pattern="/ReadFile" access="isAuthenticated()" />
-        <intercept-url pattern="/WriteFile" access="isAuthenticated()" />
+        <intercept-url pattern="/Files/*" access="isAuthenticated()" />
+        <intercept-url pattern="/File/*" access="isAuthenticated()" />
         <intercept-url pattern="/Parsybone" access="isAuthenticated()" />
         <intercept-url pattern="/ListParameters" access="isAuthenticated()" />
         <intercept-url pattern="/" access="permitAll" />

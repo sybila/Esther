@@ -15,7 +15,7 @@ function newModel()
 
     if (((name = prompt("Enter model name: ", "")) != null) && (name != ''))
     {
-        $.post('CreateFile', { name: name, type: 'dbm' });
+        $.post('File/Create', { name: name, type: 'dbm' });
     }
 }
 

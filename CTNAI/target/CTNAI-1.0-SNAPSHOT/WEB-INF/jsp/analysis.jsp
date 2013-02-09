@@ -8,6 +8,7 @@
         <link rel="stylesheet" href="<c:url value="/resources/Styles/ctnaiFileSystem.css"/>" type="text/css">
         
         <script type="text/javascript" src="<c:url value="/resources/Scripts/jquery.js"/>"></script>
+        <script type="text/javascript" src="<c:url value="/resources/Scripts/jquery.tablesorter.js"/>"></script>
         <script type="text/javascript" src="<c:url value="/resources/Scripts/interactionGraphWidget.js"/>"></script>
         <script type="text/javascript" src="<c:url value="/resources/Scripts/parameterViewWidget.js"/>"></script>
         <script type="text/javascript" src="<c:url value="/resources/Scripts/ctnaiWidgetManager.js"/>"></script>

@@ -43,6 +43,7 @@
 }
 
 #widget #viewpoint {
+    height: 80%;
     overflow: scroll;
     margin: 8px 8px 8px 8px;
 }
@@ -62,6 +63,19 @@
     background: #009999;
     color: #99FFFF;
     font-size: 12px;
+    background-repeat: no-repeat;
+    background-position: center right;
+    cursor: pointer;
+    padding-left: 4px;
+    padding-right: 16px;
+}
+
+#widget table tr th.headerSortUp {
+    background-image: url(../Graphics/TableSorter/ascending.gif);
+}
+
+#widget table tr th.headerSortDown {
+    background-image: url(../Graphics/TableSorter/descending.gif);
 }
 
 #widget table tr td {

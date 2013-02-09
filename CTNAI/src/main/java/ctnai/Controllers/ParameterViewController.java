@@ -81,7 +81,7 @@ public class ParameterViewController
 
                 for (int i = 1; i <= tableData.getColumnCount(); i++)
                 {
-                    cells.put(tableData.getColumnName(i), resultSet.getObject(i));
+                    cells.put(transformColumnName(tableData.getColumnName(i), connection), resultSet.getObject(i));
                 }
 
                 rows.add(cells);
@@ -117,5 +117,57 @@ public class ParameterViewController
         model.addAttribute("rows", rows);
         
         return "parameterList";
+    }
+    
+    private String transformColumnName(String columnName, Connection connection) throws SQLException
+    {
+        String[] contextData = columnName.split("_");
+        if (!contextData[0].equals("K"))
+        {
+            return columnName;
+        }
+        
+        StringBuilder nameBuilder = new StringBuilder();
+        
+        nameBuilder.append(contextData[1]);
+        nameBuilder.append('{');
+        
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        
+        try
+        {
+            statement = connection.prepareStatement("SELECT * FROM regulations WHERE target=?");
+            
+            statement.setString(1, contextData[1]);
+            
+            resultSet = statement.executeQuery();
+            
+            int i = 0;
+            while (resultSet.next())
+            {
+                nameBuilder.append(resultSet.getString("Regulator"));
+                nameBuilder.append(':');
+                nameBuilder.append(contextData[2].charAt(i));
+                nameBuilder.append(',');
+                
+                i++;
+            }
+        }
+        finally
+        {
+            if (resultSet != null)
+            {
+                resultSet.close();
+            }
+            if (statement != null)
+            {
+                statement.close();
+            }
+        }
+        
+        nameBuilder.append('}');
+        
+        return nameBuilder.toString();
     }
 }

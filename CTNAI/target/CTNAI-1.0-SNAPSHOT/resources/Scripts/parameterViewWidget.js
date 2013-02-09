@@ -11,6 +11,8 @@ if(jQuery) (function($)
             $.get('ListParameters', { file: file }, function(data)
                 {
                     context.append(data);
+                    
+                    context.find('#parameter_list').tablesorter();
                 });
         }
     });

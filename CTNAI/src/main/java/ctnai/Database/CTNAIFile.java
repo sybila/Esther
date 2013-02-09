@@ -5,7 +5,6 @@ import java.util.Objects;
 public class CTNAIFile
 {
     private Long id;
-    private Long parent;
     
     private String name;
     private String type;
@@ -22,16 +21,6 @@ public class CTNAIFile
     public void setId(Long id)
     {
         this.id = id;
-    }
-
-    public Long getParent()
-    {
-        return parent;
-    }
-
-    public void setParent(Long parent)
-    {
-        this.parent = parent;
     }
 
     public String getName()
@@ -74,11 +63,10 @@ public class CTNAIFile
         this.published = published;
     }
     
-    public static CTNAIFile newFile(Long parentId, String name, String type, Long ownerId, Boolean published)
+    public static CTNAIFile newFile(String name, String type, Long ownerId, Boolean published)
     {
         CTNAIFile file = new CTNAIFile();
         
-        file.setParent(parentId);
         file.setName(name);
         file.setType(type);
         file.setOwner(ownerId);

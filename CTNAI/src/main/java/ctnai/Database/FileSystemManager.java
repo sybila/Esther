@@ -78,17 +78,6 @@ public class FileSystemManager
             
             new File(dataLocation, (id.toString() + '.' + file.getType())).createNewFile();
             
-            if (file.getParent() != null)
-            {
-                specifyStatement = connection
-                    .prepareStatement("INSERT INTO SPECIFICATIONS (parent, child) VALUES (?, ?)");
-
-                specifyStatement.setLong(1, file.getParent());
-                specifyStatement.setLong(2, id);
-                
-                specifyStatement.executeUpdate();
-            }
-            
             logger.log(Level.INFO, ("Succesfully created: " + file));
             
             return id;
@@ -471,7 +460,100 @@ public class FileSystemManager
         file.setType(resultSet.getString("type"));
         file.setOwner(resultSet.getLong("owner"));
         file.setPublished(resultSet.getBoolean("public"));
-
+        
         return file;
+    }
+    
+    public CTNAIFile getFileParent(CTNAIFile file)
+    {
+        if (file == null)
+        {
+            throw new NullPointerException("File");
+        }
+        
+        if (file.getId() == null)
+        {
+            throw new IllegalArgumentException("Cannot access parent of file with NULL ID.");
+        }
+        
+        Connection connection = null;
+        PreparedStatement statement = null;
+        
+        try
+        {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement("SELECT * FROM SPECIFICATIONS where child=?");
+            
+            statement.setLong(1, file.getId());
+            
+            ResultSet resultSet = statement.executeQuery();
+            
+            if (resultSet.next())
+            {
+                Long parentId = resultSet.getLong("parent");
+                
+                if (resultSet.next())
+                {
+                    logger.log(Level.WARNING, ("Multiple parents specified for file ID: " + file.getId()));
+                }
+                
+                return getFileById(parentId);
+            }
+        }
+        catch (SQLException e)
+        {
+            logger.log(Level.SEVERE, ("Error reading parent of file ID: " + file.getId()), e);
+        }
+        finally
+        {
+            DBUtils.closeQuietly(connection, statement);
+        }
+        
+        return null;
+    }
+    
+    public void setParent(CTNAIFile file, CTNAIFile parent)
+    {
+        if (file == null)
+        {
+            throw new NullPointerException("File");
+        }
+        
+        if (file.getId() == null)
+        {
+            throw new IllegalArgumentException("Cannot set parent of file with NULL ID.");
+        }
+        
+        if (parent == null)
+        {
+            throw new NullPointerException("Parent");
+        }
+        
+        if (parent.getId() == null)
+        {
+            throw new IllegalArgumentException("Cannot set file with NULL ID as parent.");
+        }
+        
+        Connection connection = null;
+        PreparedStatement statement = null;
+        
+        try
+        {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement("INSERT INTO SPECIFICATIONS (parent, child) VALUES (?, ?)");
+            
+            statement.setLong(1, parent.getId());
+            statement.setLong(2, file.getId());
+            
+            statement.executeUpdate();
+        }
+        catch (SQLException e)
+        {
+            logger.log(Level.SEVERE, ("Error setting file ID: " + parent.getId() + " as parent of file ID: " + file.getId()), e);
+        }
+        finally
+        {
+            DBUtils.closeQuietly(connection, statement);
+        }
     }
 }

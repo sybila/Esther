@@ -95,26 +95,59 @@ if(jQuery) (function($)
                             if ($(this).parent().hasClass('file'))
                             {
                                 $(document).find('BODY').append('<div class="fileMenu" style=" top: ' +
-                                    e.pageY + 'px; left: ' + e.pageX + 'px">' +
-                                    '<a class="delete" href="#">Delete</a><br/>' +
-                                    '<a class="rename" href="#">Rename</a></div>');
+                                    e.pageY + 'px; left: ' + e.pageX + 'px">');
                                 
-                                var context = $(this);
-                                $(document).find('BODY DIV.fileMenu A.delete').click(function()
+                                var file_id = $(this).attr('file_id');
+                                $.get('File/Menu', { file: file_id }, function(data)
                                     {
-                                        if (confirm('After deleting the file and all of it\'s subfiles will become unavailable. Are you sure you want to continue?'))
-                                        {
-                                            $.post('File/Delete', { file: context.attr('file_id') });
-                                        }
-                                    });
-                                    
-                                $(document).find('BODY DIV.fileMenu A.rename').click(function()
-                                    {
-                                        var name;
-                                        if (((name = prompt("Enter new name: ", "")) != null) && (name != ''))
-                                        {
-                                            $.post('File/Rename', { file: context.attr('file_id'), name: name });
-                                        }
+                                        $(document).find('BODY DIV.fileMenu').append(data);
+                                        
+                                        $(document).find('BODY DIV.fileMenu A').click(function ()
+                                            {
+                                                var func = $(this).attr('func');
+                                                
+                                                switch(func)
+                                                {
+                                                    case 'copy':
+                                                        {
+                                                            var copyname;
+                                                            if (((copyname = prompt("Enter new file name: ", "")) != null) && (copyname != ''))
+                                                            {
+                                                                $.post('File/Copy', { file: file_id, name: copyname });
+                                                            }
+                                                            break;
+                                                        }
+                                                    case 'delete':
+                                                        {
+                                                            if (confirm('After deleting the file and all of it\'s subfiles will become unavailable. Are you sure you want to proceed?'))
+                                                            {
+                                                                $.post('File/Delete', { file: file_id });
+                                                            }
+                                                            break;
+                                                        }
+                                                    case 'privatize':
+                                                        {
+                                                            $.post('File/Privatize', { file: file_id });
+                                                            break;
+                                                        }
+                                                    case 'publish':
+                                                        {
+                                                            $.post('File/Publish', { file: file_id });
+                                                            break;
+                                                        }
+                                                    case 'rename':
+                                                        {
+                                                            var newname;
+                                                            if (((newname = prompt("Enter new name: ", "")) != null) && (newname != ''))
+                                                            {
+                                                                $.post('File/Rename', { file: file_id, name: newname });
+                                                            }
+                                                            break;
+                                                        }
+                                                    default:
+                                                        break;
+                                                }
+                                            })
                                     });
                             }
                             return false;
@@ -125,7 +158,7 @@ if(jQuery) (function($)
                     {
                         if (!$(e.target).parent().hasClass('fileMenu'))
                         {
-                            $("div.fileMenu").hide();
+                            $("div.fileMenu").remove();
                         }
                     });
 

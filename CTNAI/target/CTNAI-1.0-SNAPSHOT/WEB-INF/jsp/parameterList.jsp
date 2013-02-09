@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
-<div id="viewpoint">
+<div class="viewpoint">
     <table id="parameter_list">
         <thead>
             <tr>
@@ -20,3 +20,7 @@
         </tbody>
     </table>
 </div>
+
+<p style="text-align: right; padding-right: 64px;" >
+    <a id="filter" class="expandable" href="#">Filter ▲</a>
+</p>

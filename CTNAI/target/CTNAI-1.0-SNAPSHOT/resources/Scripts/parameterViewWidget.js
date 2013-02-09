@@ -13,6 +13,8 @@ if(jQuery) (function($)
                     context.append(data);
                     
                     context.find('#parameter_list').tablesorter();
+                    
+                    //TODO - slide up filter controls
                 });
         }
     });

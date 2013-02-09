@@ -7,12 +7,16 @@ import ctnai.Database.UserManager;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
@@ -123,10 +127,56 @@ public class FileSystemController
         return "fileList";
     }
     
+    @RequestMapping(value = "/File/Menu", method = RequestMethod.GET)
+    public String getFileMenu(ModelMap model, @RequestParam("file") Long id)
+    {
+        if (id == null)
+        {
+            return null;
+        }
+        
+        CTNAIFile file = fileSystemManager.getFileById(id);
+        
+        if (file == null)
+        {
+            return null;
+        }
+        
+        Map<String, String> links = new HashMap<>();
+        
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!authentication.isAuthenticated())
+        {
+            return null;
+        }
+        String username = authentication.getName();
+        
+        if (getUserId(username).equals(file.getOwner()))
+        {
+            links.put("delete", "Delete");
+            links.put("rename", "Rename");
+            
+            if (file.getPublished())
+            {
+                links.put("privatize", "Make Private");
+            }
+            else
+            {
+                links.put("publish", "Make Public");
+            }
+        }
+        
+        links.put("copy", "Copy");
+        
+        model.addAttribute("links", links);
+        
+        return "fileMenu";
+    }
+    
     @RequestMapping(value = "/File/Create", method = RequestMethod.POST)
     @ResponseBody
     public Long createFile(@RequestParam("name") String name, @RequestParam("type") String type,
-            @RequestParam(value="parent", required = false) Long parent)
+        @RequestParam(value="parent", required = false) Long parent)
     {
         if ((name == null) || (type == null) || name.isEmpty() || type.isEmpty())
         {
@@ -140,9 +190,17 @@ public class FileSystemController
         }
         String username = authentication.getName();
         
-        CTNAIFile file = CTNAIFile.newFile(parent, name, type, getUserId(username), false);
+        CTNAIFile file = CTNAIFile.newFile(name, type, getUserId(username), false);
         
-        return fileSystemManager.createFile(file);
+        Long id = fileSystemManager.createFile(file);
+        
+        if (parent != null)
+        {
+            fileSystemManager.setParent(fileSystemManager.getFileById(id),
+                    fileSystemManager.getFileById(parent));
+        }
+        
+        return id;
     }
     
     @RequestMapping(value = "/File/Delete", method = RequestMethod.POST)
@@ -178,6 +236,95 @@ public class FileSystemController
         file.setName(name);
         
         fileSystemManager.updateFile(file);
+    }
+    
+    @RequestMapping(value = "/File/Publish", method = RequestMethod.POST)
+    @ResponseBody
+    public void publishFile(@RequestParam("file") Long id)
+    {
+        if (id == null)
+        {
+            return;
+        }
+        
+        CTNAIFile file = fileSystemManager.getFileById(id);
+        
+        file.setPublished(true);
+        
+        fileSystemManager.updateFile(file);
+    }
+    
+    @RequestMapping(value = "/File/Privatize", method = RequestMethod.POST)
+    @ResponseBody
+    public void privatizeFile(@RequestParam("file") Long id)
+    {
+        if (id == null)
+        {
+            return;
+        }
+        
+        CTNAIFile file = fileSystemManager.getFileById(id);
+        
+        file.setPublished(false);
+        
+        fileSystemManager.updateFile(file);
+    }
+    
+    @RequestMapping(value = "/File/Copy", method = RequestMethod.POST)
+    @ResponseBody
+    public String copyFile(@RequestParam("file") Long id, @RequestParam("name") String name)
+    {
+        if (id == null)
+        {
+            return null;
+        }
+        
+        if ((name == null) || name.isEmpty())
+        {
+            return null;
+        }
+        
+        CTNAIFile file = fileSystemManager.getFileById(id);
+        CTNAIFile parent = fileSystemManager.getFileParent(file);
+        
+        Long newId = createFile(name, file.getType(), ((parent == null) ? null : parent.getId()));
+        
+        File sourceFile = fileSystemManager.getSystemFileById(file.getId());
+        File destinationFile = fileSystemManager.getSystemFileById(newId);
+        
+        FileChannel source = null;
+        FileChannel destination = null;
+
+        try
+        {
+            source = new FileInputStream(sourceFile).getChannel();
+            destination = new FileOutputStream(destinationFile).getChannel();
+            destination.transferFrom(source, 0, source.size());
+        }
+        catch (IOException e)
+        {
+            logger.log(Level.SEVERE, "Error copying file ID: " + id, e);
+        }
+        finally
+        {
+            try
+            {
+                if(source != null)
+                {
+                    source.close();
+                }
+                if(destination != null)
+                {
+                    destination.close();
+                }
+            }
+            catch (IOException e)
+            {
+                logger.log(Level.SEVERE, "Error copying file ID: " + id, e);
+            }
+        }
+        
+        return newId.toString();
     }
     
     @RequestMapping(value = "/File/Read", method = RequestMethod.GET)

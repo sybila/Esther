@@ -110,12 +110,15 @@ public class FileSystemController
             {
                 case "private":
                     {
-                        files = fileSystemManager.getSubfilesOwnedBy(parentId, getUserId(username));
+                        files = fileSystemManager
+                            .getSubfilesOwnedBy(fileSystemManager.getFileById(parentId),
+                                getUserId(username));
                         break;
                     }
                 case "public":
                     {
-                        files = fileSystemManager.getPublicSubfiles(parentId);
+                        files = fileSystemManager
+                            .getPublicSubfiles(fileSystemManager.getFileById(parentId));
                         break;
                     }
             }
@@ -176,7 +179,7 @@ public class FileSystemController
     @RequestMapping(value = "/File/Create", method = RequestMethod.POST)
     @ResponseBody
     public Long createFile(@RequestParam("name") String name, @RequestParam("type") String type,
-        @RequestParam(value="parent", required = false) Long parent)
+        @RequestParam(value="parent", required = false) List<Long> parents)
     {
         if ((name == null) || (type == null) || name.isEmpty() || type.isEmpty())
         {
@@ -190,14 +193,17 @@ public class FileSystemController
         }
         String username = authentication.getName();
         
-        CTNAIFile file = CTNAIFile.newFile(name, type, getUserId(username), false);
+        CTNAIFile file = CTNAIFile.newFile(name, type, getUserId(username), false, new Long(0));
         
         Long id = fileSystemManager.createFile(file);
         
-        if (parent != null)
+        if (parents != null)
         {
-            fileSystemManager.setParent(fileSystemManager.getFileById(id),
+            for (Long parent : parents)
+            {
+                fileSystemManager.setParent(fileSystemManager.getFileById(id),
                     fileSystemManager.getFileById(parent));
+            }
         }
         
         return id;
@@ -285,12 +291,24 @@ public class FileSystemController
         }
         
         CTNAIFile file = fileSystemManager.getFileById(id);
-        CTNAIFile parent = fileSystemManager.getFileParent(file);
+        List<CTNAIFile> parents = fileSystemManager.getFileParents(file);
         
-        Long newId = createFile(name, file.getType(), ((parent == null) ? null : parent.getId()));
+        List<Long> parentIds = new ArrayList<>();
+        for (CTNAIFile parent : parents)
+        {
+            parentIds.add(parent.getId());
+        }
+        
+        Long newId = createFile(name, file.getType(), parentIds);
+        
+        CTNAIFile newFile = fileSystemManager.getFileById(newId);
+        newFile.setSize(file.getSize());
+        fileSystemManager.updateFile(newFile);
+        
+        fileSystemManager.createEquivalence(file, newFile);
         
         File sourceFile = fileSystemManager.getSystemFileById(file.getId());
-        File destinationFile = fileSystemManager.getSystemFileById(newId);
+        File destinationFile = fileSystemManager.getSystemFileById(newFile.getId());
         
         FileChannel source = null;
         FileChannel destination = null;
@@ -426,6 +444,12 @@ public class FileSystemController
                 }
             }
         }
+        
+        CTNAIFile ctnaiFile = fileSystemManager.getFileById(id);
+        ctnaiFile.setSize(file.getTotalSpace());
+        fileSystemManager.updateFile(ctnaiFile);
+        
+        fileSystemManager.breakEquivalences(ctnaiFile);
     }
     
     private Long getUserId(String username)

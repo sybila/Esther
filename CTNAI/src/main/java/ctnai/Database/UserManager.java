@@ -188,4 +188,47 @@ public class UserManager
 
         return user;
     }
+    
+    public void setUserRole(User user, String role)
+    {
+        if (user == null)
+        {
+            throw new NullArgumentException("User");
+        }
+        
+        if (user.getId() == null)
+        {
+            throw new IllegalArgumentException("Cannot set user rolu for user with NULL ID.");
+        }
+        
+        if (role == null)
+        {
+            throw new NullArgumentException("Role");
+        }
+        
+        Connection connection = null;
+        PreparedStatement statement = null;
+        
+        try
+        {
+            connection = dataSource.getConnection();
+            statement = connection
+                .prepareStatement("INSERT INTO AUHTORITIES (user, authority) VALUES (?, ?)");
+            
+            statement.setLong(1, user.getId());
+            statement.setString(2, role);
+            
+            statement.executeUpdate();
+            
+            logger.log(Level.INFO, ("Succesfully set user role for: " + user));
+        }
+        catch (SQLException e)
+        {
+            logger.log(Level.SEVERE, ("Error setting rol for " + user), e);
+        }
+        finally
+        {
+            DBUtils.closeQuietly(connection, statement);
+        }
+    }
 }

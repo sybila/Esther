@@ -13,6 +13,8 @@ public class CTNAIFile
 
     private Boolean published;
     
+    private Long size;
+    
     public Long getId()
     {
         return id;
@@ -62,8 +64,18 @@ public class CTNAIFile
     {
         this.published = published;
     }
+
+    public Long getSize()
+    {
+        return size;
+    }
+
+    public void setSize(Long size)
+    {
+        this.size = size;
+    }
     
-    public static CTNAIFile newFile(String name, String type, Long ownerId, Boolean published)
+    public static CTNAIFile newFile(String name, String type, Long ownerId, Boolean published, Long size)
     {
         CTNAIFile file = new CTNAIFile();
         
@@ -71,6 +83,7 @@ public class CTNAIFile
         file.setType(type);
         file.setOwner(ownerId);
         file.setPublished(published);
+        file.setSize(size);
         
         return file;
     }
@@ -79,7 +92,7 @@ public class CTNAIFile
     public String toString()
     {
        return ((published ? "Public" : "Private") + " file of owner ID: " + owner +
-               ", named: " + name + '.' + type + " (ID: " + id + ')');
+               ", named: " + name + '.' + type + " (ID: " + id + "), (Size: " + size + " bytes)");
     }
 
     @Override

@@ -83,6 +83,8 @@ public class RegistrationController
             Long id;
             if ((id = userManager.registerUser(newUser)) != null)
             {
+                userManager.setUserRole(newUser, "user");
+                
                 try
                 {
                     CTNAIEmailer.sendMail(newUser.getEmail(), ("<h2>Welcome " +

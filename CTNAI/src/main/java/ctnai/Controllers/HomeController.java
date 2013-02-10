@@ -11,7 +11,7 @@ public class HomeController
     @RequestMapping(value = "/Home", method = RequestMethod.GET)
     public String getHomepage(ModelMap model)
     {
-        model.addAttribute("Page", "home");
+        model.addAttribute("page", "home");
         return "frontpage";
     }
     
@@ -24,7 +24,7 @@ public class HomeController
     @RequestMapping(value = "/Analysis", method = RequestMethod.GET)
     public String getAnalysisPage(ModelMap model)
     {
-        model.addAttribute("Page", "analysis");
+        model.addAttribute("page", "analysis");
         return "frontpage";
     }
 }

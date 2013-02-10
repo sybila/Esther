@@ -22,5 +22,7 @@
 </div>
 
 <p style="text-align: right; padding-right: 64px;" >
-    <a id="filter" class="expandable" href="#">Filter ▲</a>
+    <a id="filter" class="expandable closed" href="#">Filter ▲</a>
 </p>
+
+<div id="filter_controls" style="display: none;" />

@@ -14,7 +14,27 @@ if(jQuery) (function($)
                     
                     context.find('#parameter_list').tablesorter();
                     
-                    //TODO - slide up filter controls
+                    context.find('#filter').click(function(e)
+                        {
+                            e.preventDefault();
+                            
+                            if ($(this).hasClass('open'))
+                            {
+                                $(this).text('Filter \u25b2');
+                                $(this).removeClass('open');
+                                $(this).addClass('closed');
+                                
+                                $('#filter_controls').hide('slide', { direction: 'down' }, 640);
+                            }
+                            else if ($(this).hasClass('closed'))
+                            {
+                                $(this).text('Filter \u25bc');
+                                $(this).removeClass('closed');
+                                $(this).addClass('open');
+                                
+                                $('#filter_controls').show('slide', { direction: 'down' }, 640);
+                            }
+                        });
                 });
         }
     });

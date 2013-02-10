@@ -56,24 +56,23 @@ public class FileSystemManager
         }
         
         Connection connection = null;
-        PreparedStatement crateStatement = null;
-        PreparedStatement specifyStatement = null;
+        PreparedStatement statement = null;
         
         try
         {
             connection = dataSource.getConnection();
-            crateStatement = connection
+            statement = connection
                 .prepareStatement("INSERT INTO FILES (name, type, owner, public) VALUES (?, ?, ?, ?)",
                     Statement.RETURN_GENERATED_KEYS);
             
-            crateStatement.setString(1, file.getName());
-            crateStatement.setString(2, file.getType());
-            crateStatement.setLong(3, file.getOwner());
-            crateStatement.setBoolean(4, file.getPublished());
+            statement.setString(1, file.getName());
+            statement.setString(2, file.getType());
+            statement.setLong(3, file.getOwner());
+            statement.setBoolean(4, file.getPublished());
             
-            crateStatement.executeUpdate();
+            statement.executeUpdate();
             
-            Long id = DBUtils.getID(crateStatement.getGeneratedKeys());
+            Long id = DBUtils.getID(statement.getGeneratedKeys());
             file.setId(id);
             
             new File(dataLocation, (id.toString() + '.' + file.getType())).createNewFile();
@@ -85,11 +84,10 @@ public class FileSystemManager
         catch(IOException | SQLException e)
         {
             logger.log(Level.SEVERE, ("Error creating " + file), e);
-            logger.log(Level.SEVERE, ("File location: " + new File(dataLocation, "id").getAbsolutePath()));
         }
         finally
         {
-            DBUtils.closeQuietly(connection, crateStatement, specifyStatement);
+            DBUtils.closeQuietly(connection, statement);
         }
         
         return null;

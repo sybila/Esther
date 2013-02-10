@@ -7,6 +7,7 @@ public class User
     private Long id;
     private String username;
     private String password;
+    private String email;
     private Boolean enabled;
     
     public User() { }
@@ -41,6 +42,16 @@ public class User
         this.password = password;
     }
 
+    public String getEmail()
+    {
+        return email;
+    }
+
+    public void setEmail(String email)
+    {
+        this.email = email;
+    }
+
     public Boolean getEnabled()
     {
         return enabled;
@@ -53,7 +64,7 @@ public class User
 
     @Override
     public String toString() {
-        return ((enabled ? "Enabled" : "Disabled") + " user " + username + " ID: " + id);
+        return ((enabled ? "Enabled" : "Disabled") + " user " + username + " ID: " + id + ", E-Mail: " + email);
     }
 
     @Override

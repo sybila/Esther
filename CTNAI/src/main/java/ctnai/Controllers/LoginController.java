@@ -11,23 +11,23 @@ public class LoginController
     @RequestMapping(value = "/Login", method = RequestMethod.GET)
     public String getLoginPage(ModelMap model)
     {
-        model.addAttribute("Page", "login");
+        model.addAttribute("page", "login");
         return "frontpage";
     }
     
     @RequestMapping(value = "/LoginFailure", method = RequestMethod.GET)
     public String loginError(ModelMap model)
     {
-        model.addAttribute("Error", "true");
+        model.addAttribute("error", "true");
         
-        model.addAttribute("Page", "login");
+        model.addAttribute("page", "login");
         return "frontpage";
     }
     
     @RequestMapping(value="/Logout", method = RequestMethod.GET)
     public String logout(ModelMap model)
     {
-        model.addAttribute("Page", "logout");
+        model.addAttribute("page", "logout");
         return "frontpage";
     }
 }

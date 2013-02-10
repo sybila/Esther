@@ -9,7 +9,7 @@
     <body onload="document.form.j_username.focus();">
         <h2>Log in</h2>
 
-        <c:if test="${not empty Error}">
+        <c:if test="${not empty error}">
             <div id="error">
                 Unsuccessful login attempt.<br/>
                 ${sessionScope["SPRING_SECURITY_LAST_EXCEPTION"].message}
@@ -36,6 +36,9 @@
         </p>
         <p>
             Forgot your password? Proceed with <a href="">password recovery</a>.
+        </p>
+        <p>
+            Can't remember your username? Try the <a href="">username recovery</a>.
         </p>
     </body>
 </html>

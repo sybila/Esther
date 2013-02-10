@@ -11,7 +11,7 @@
         <%@include file="/WEB-INF/jspf/header.jspf"%>
         
         <div id="page">
-            <jsp:include page="/WEB-INF/jsp/${requestScope.Page}.jsp" flush="true" />
+            <jsp:include page="/WEB-INF/jsp/${requestScope.page}.jsp" flush="true" />
         </div>
         
         <%@include file="/WEB-INF/jspf/footer.jspf"%>

@@ -1,4 +1,5 @@
 #widget {
+    position: relative;
     background: #EEEEEE;
     border: #CCCCCC 2px inset;
     margin-left: 196px;
@@ -43,7 +44,8 @@
 }
 
 #widget div.viewpoint {
-    height: 80%;
+    height: 564px;
+    width: 712px;
     overflow: scroll;
     margin: 8px 8px 8px 8px;
 }
@@ -92,9 +94,21 @@
     font-size: 10px;
 }
 
-textarea {
-    width: 96%;
-    height: 86%;
+#widget textarea {
+    height: 542px;
+    width: 706px;
     margin: 8px 8px 8px 8px;
     resize: none;
+}
+
+#widget #filter_controls {
+    position: absolute;
+    z-index: 1000;
+    width: 640px;
+    height: 320px;
+    right: 8px;
+    bottom: 68px;
+    background: #EEEEEE;
+    border: 1px solid #999999;
+    border-bottom: 0px;
 }

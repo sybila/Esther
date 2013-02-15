@@ -112,11 +112,6 @@ public class FileSystemManager
         
         try
         {
-            for (CTNAIFile child : getAllSubfiles(file.getId()))
-            {
-                deleteFile(child);
-            }
-            
             connection = dataSource.getConnection();
             statement = connection
                 .prepareStatement("DELETE FROM FILES WHERE id=?;");

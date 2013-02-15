@@ -12,6 +12,8 @@ import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
+import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.DefaultExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -70,35 +72,27 @@ public class ParsyboneController
         
         try
         {
-            String[] cmdArray = new String[]
-            {
-                parsyboneLocation,
-                ("\"" + fileSystemManager.getSystemFileById(file.getId()).getAbsolutePath() + "\""),
-                "-rW",
-                ("--data \"" + fileSystemManager.getSystemFileById(target_id).getAbsolutePath() + "\"")
-            };
+            StringBuilder commandBuilder = new StringBuilder();
             
-            Runtime runtime = Runtime.getRuntime();
-            Process proc = runtime.exec(cmdArray);
-
-            int i;
-            while ((i = proc.getInputStream().read()) >= 0)
-            {
-                outputBuilder.append((char)i);
-            }
+            commandBuilder.append('"');
+            commandBuilder.append(parsyboneLocation);
+            commandBuilder.append("\" ");
+            commandBuilder.append("-rW ");
+            commandBuilder.append('"');
+            commandBuilder.append(fileSystemManager.getSystemFileById(file.getId()).getAbsolutePath());
+            commandBuilder.append('"');
+            commandBuilder.append(" --data \"");
+            commandBuilder.append(fileSystemManager.getSystemFileById(target_id).getAbsolutePath());
+            commandBuilder.append('"');
             
-            while ((i = proc.getErrorStream().read()) >= 0)
-            {
-                outputBuilder.append((char)i);
-            }
+            CommandLine cmdLine = CommandLine.parse(commandBuilder.toString());
+            DefaultExecutor executor = new DefaultExecutor();
             
-            int exitValue = proc.waitFor();
-            
-            proc.destroy();
+            int exitValue = executor.execute(cmdLine);
             
             logger.log(Level.INFO, ("Parsybone exited with value: " + exitValue));
         }
-        catch (InterruptedException | IOException e)
+        catch (IOException e)
         {
             logger.log(Level.SEVERE, "Error executing Parsybone binary.", e);
         }

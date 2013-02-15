@@ -5,6 +5,7 @@ import Forms.UserForm;
 import ctnai.Database.User;
 import ctnai.Database.UserManager;
 import java.io.FileOutputStream;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class RegistrationController
 {
+    private static final Random rnd = new Random();
+    
     private UserManager userManager = new UserManager();
     public static final Logger logger = Logger.getLogger(FileSystemController.class.getName());
     
@@ -85,17 +88,20 @@ public class RegistrationController
             {
                 userManager.setUserRole(newUser, "user");
                 
+                String token = generateToken();
+                userManager.setActivationToken(newUser, token);
+                
                 try
                 {
                     CTNAIEmailer.sendMail(newUser.getEmail(), ("<h2>Welcome " +
                         newUser.getUsername() + "!</h2><p>Click the link below to complete the registration.</p>" +
-                        "<p>localhost:8084/CNTAI/ConfirmEmailuser=" + id + "</p>"));
+                        "<p>http://localhost:8084/CNTAI/Activate?user=" + id + "&token=" + token + "</p>"));
                     
-                    logger.log(Level.INFO, ("Succesfuly sent e-mail to: " + newUser.getEmail()));
+                    logger.log(Level.INFO, ("Succesfuly sent activation e-mail to: " + newUser.getEmail()));
                 }
                 catch (MessagingException e)
                 {
-                    logger.log(Level.SEVERE, ("Failed sending confirmation e-mail to: " + newUser.getEmail()), e);
+                    logger.log(Level.SEVERE, ("Failed sending activation e-mail to: " + newUser.getEmail()), e);
                 }
                 
                 model.addAttribute("email", newUser.getEmail());
@@ -110,5 +116,40 @@ public class RegistrationController
         }
         
         return "frontpage";
+    }
+    
+    @RequestMapping(value = "/Activate", method = RequestMethod.GET)
+    public String activateUser(ModelMap model, @RequestParam("user") Long id, @RequestParam("token") String token)
+    {
+        User user = userManager.getUserById(id);
+        
+        if (token.equals(userManager.getActivationToken(user)))
+        {
+            user.setEnabled(true);
+            
+            userManager.updateUser(user);
+            
+            userManager.deactivateTokenForUser(user);
+            
+            model.addAttribute("page", "activationSuccess");
+        }
+        else
+        {
+            model.addAttribute("page", "activationFailure");
+        }
+        
+        return "frontpage";
+    }
+    
+    private String generateToken()
+    {
+        StringBuilder tokenBuilder = new StringBuilder();
+        
+        for (int i = 0; i < 8; i++)
+        {
+            tokenBuilder.append(Integer.toHexString(rnd.nextInt()));
+        }
+        
+        return tokenBuilder.toString();
     }
 }

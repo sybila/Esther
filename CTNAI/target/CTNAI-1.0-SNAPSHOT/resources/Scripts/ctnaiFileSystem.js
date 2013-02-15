@@ -119,7 +119,7 @@ if(jQuery) (function($)
                                                         }
                                                     case 'delete':
                                                         {
-                                                            if (confirm('After deleting the file and all of it\'s subfiles will become unavailable. Are you sure you want to proceed?'))
+                                                            if (confirm('The file cannot be restored after deleting. Are you sure you want to proceed?'))
                                                             {
                                                                 $.post('File/Delete', { file: file_id });
                                                             }

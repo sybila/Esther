@@ -24,6 +24,7 @@ import java.util.logging.StreamHandler;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -274,6 +275,25 @@ public class FileSystemController
         file.setPublished(false);
         
         fileSystemManager.updateFile(file);
+    }
+    
+    @RequestMapping(value = "/File/Download", method = RequestMethod.POST)
+    @ResponseBody
+    public FileSystemResource downloadFile(@RequestParam("file") Long id)
+    {
+        if (id == null)
+        {
+            return null;
+        }
+        
+        File file = fileSystemManager.getSystemFileById(id);
+        
+        if (file == null)
+        {
+            return null;
+        }
+        
+        return new FileSystemResource(file);
     }
     
     @RequestMapping(value = "/File/Copy", method = RequestMethod.POST)

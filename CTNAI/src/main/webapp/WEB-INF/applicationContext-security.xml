@@ -13,6 +13,7 @@
         <intercept-url pattern="/Home" access="permitAll" />
         <intercept-url pattern="/Registration" access="permitAll" />
         <intercept-url pattern="/Register" access="permitAll" />
+        <intercept-url pattern="/Activate" access="permitAll" />
         <intercept-url pattern="/About" access="permitAll" />
         <intercept-url pattern="/Login" access="permitAll" />
         <intercept-url pattern="/LoginFailure" access="permitAll" />

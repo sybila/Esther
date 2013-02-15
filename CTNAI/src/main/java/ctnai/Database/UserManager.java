@@ -82,6 +82,100 @@ public class UserManager
         return null;
     }
     
+    public void updateUser(User user)
+    {
+        if (user == null)
+        {
+            throw new NullArgumentException("User");
+        }
+        
+        if (user.getId() == null)
+        {
+            throw new IllegalArgumentException("User ID is NULL.");
+        }
+        
+        if ((user.getUsername() == null) || (user.getPassword() == null) ||
+                (user.getEmail() == null) || (user.getEnabled() == null))
+        {
+            throw new IllegalArgumentException("User misses required attributes.");
+        }
+        
+        Connection connection = null;
+        PreparedStatement statement = null;
+        
+        try
+        {
+            connection = dataSource.getConnection();
+            statement = connection
+                .prepareStatement("UPDATE USERS SET username=?, email=?, enabled=? WHERE id=?",
+                    Statement.RETURN_GENERATED_KEYS);
+            
+            statement.setString(1, user.getUsername());
+            statement.setString(2, user.getEmail());
+            statement.setBoolean(3, user.getEnabled());
+            statement.setLong(4, user.getId());
+            
+            statement.executeUpdate();
+            
+            logger.log(Level.INFO, ("Succesfully updated: " + user));
+        }
+        catch (SQLException e)
+        {
+            logger.log(Level.SEVERE, ("Error updating " + user), e);
+        }
+        finally
+        {
+            DBUtils.closeQuietly(connection, statement);
+        }
+    }
+    
+    public User getUserById(Long id)
+    {
+        if (id == null)
+        {
+            throw new NullArgumentException("ID");
+        }
+        
+        Connection connection = null;
+        PreparedStatement statement = null;
+        
+        try
+        {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement("SELECT * FROM USERS WHERE id=?");
+            
+            statement.setLong(1, id);
+            
+            ResultSet resultSet = statement.executeQuery();
+            
+            if (resultSet.next())
+            {
+                User result = getUserFromResultSet(resultSet);
+                
+                if (resultSet.next())
+                {
+                    return null; //TODO
+                }
+                
+                return result;
+            }
+            else
+            {
+                return null;
+            }
+        }
+        catch (SQLException e)
+        {
+            logger.log(Level.SEVERE, "Error selecting user ID: " + id + " from database.", e);
+        }
+        finally
+        {
+            DBUtils.closeQuietly(connection, statement);
+        }
+        
+        return null;
+    }
+    
     public User getUserByUsername(String username)
     {
         if (username == null)
@@ -176,6 +270,182 @@ public class UserManager
         return null;
     }
     
+    public void setActivationToken(User user, String token)
+    {
+        if (user == null)
+        {
+            throw new NullArgumentException("User");
+        }
+        
+        if (user.getId() == null)
+        {
+            throw new IllegalArgumentException("Cannot set activation token for User without ID.");
+        }
+        
+        if (token == null)
+        {
+            throw new NullArgumentException("Token");
+        }
+        
+        Connection connection = null;
+        PreparedStatement statement = null;
+        
+        try
+        {
+            connection = dataSource.getConnection();
+            statement = connection
+                .prepareStatement("INSERT INTO TOKENS (user, token) VALUES (?, ?)");
+            
+            statement.setLong(1, user.getId());
+            statement.setString(2, token);
+            
+            statement.executeUpdate();
+            
+            logger.log(Level.INFO, ("Succesfully set activation token for " + user));
+        }
+        catch (SQLException e)
+        {
+            logger.log(Level.SEVERE, ("Error setting activation token for " + user), e);
+        }
+        finally
+        {
+            DBUtils.closeQuietly(connection, statement);
+        }
+    }
+    
+    public void setReactivationToken(User user, String token)
+    {
+        if (user == null)
+        {
+            throw new NullArgumentException("User");
+        }
+        
+        if (user.getId() == null)
+        {
+            throw new IllegalArgumentException("Cannot set activation token for User without ID.");
+        }
+        
+        if (token == null)
+        {
+            throw new NullArgumentException("Token");
+        }
+        
+        Connection connection = null;
+        PreparedStatement statement = null;
+        
+        try
+        {
+            connection = dataSource.getConnection();
+            statement = connection
+                .prepareStatement("UPDATE TOKENS SET token=? WHERE user=?");
+            
+            statement.setString(1, token);
+            statement.setLong(2, user.getId());
+            
+            statement.executeUpdate();
+            
+            logger.log(Level.INFO, ("Succesfully set reactivation token for " + user));
+        }
+        catch (SQLException e)
+        {
+            logger.log(Level.SEVERE, ("Error setting reactivation token for " + user), e);
+        }
+        finally
+        {
+            DBUtils.closeQuietly(connection, statement);
+        }
+    }
+    
+    public void deactivateTokenForUser(User user)
+    {
+        if (user == null)
+        {
+            throw new NullArgumentException("User");
+        }
+        
+        if (user.getId() == null)
+        {
+            throw new IllegalArgumentException("Cannot deactivation token for User without ID.");
+        }
+        
+        Connection connection = null;
+        PreparedStatement statement = null;
+        
+        try
+        {
+            connection = dataSource.getConnection();
+            statement = connection
+                .prepareStatement("UPDATE TOKENS SET token=NULL WHERE user=?");
+            
+            statement.setLong(1, user.getId());
+            
+            statement.executeUpdate();
+            
+            logger.log(Level.INFO, ("Succesfully deactivated token for " + user));
+        }
+        catch (SQLException e)
+        {
+            logger.log(Level.SEVERE, ("Error deactivating token for " + user), e);
+        }
+        finally
+        {
+            DBUtils.closeQuietly(connection, statement);
+        }
+    }
+    
+    public String getActivationToken(User user)
+    {
+        if (user == null)
+        {
+            throw new NullArgumentException("User");
+        }
+        
+        if (user.getId() == null)
+        {
+            throw new IllegalArgumentException("Cannot deactivation token for User without ID.");
+        }
+        
+        Connection connection = null;
+        PreparedStatement statement = null;
+        
+        try
+        {
+            connection = dataSource.getConnection();
+            statement = connection
+                .prepareStatement("SELECT * FROM TOKENS WHERE user=? AND token IS NOT NULL");
+            
+            statement.setLong(1, user.getId());
+            
+            ResultSet resultSet = statement.executeQuery();
+            
+            String token = null;
+            
+            if (resultSet.next())
+            {
+                token = resultSet.getString("token");
+                
+                if (resultSet.next())
+                {
+                    logger.log(Level.WARNING, (user + "has multiple activation tokens specified."));
+                }
+            }
+            
+            logger.log(Level.INFO, ("Succesfully retrieved activation token for " + user));
+                
+            return token;
+        }
+        catch (SQLException e)
+        {
+            logger.log(Level.SEVERE, ("Error getting activation token for " + user), e);
+        }
+        finally
+        {
+            DBUtils.closeQuietly(connection, statement);
+        }
+        
+        return null;
+    }
+    
     private User getUserFromResultSet(ResultSet resultSet) throws SQLException
     {
         User user = new User();
@@ -213,7 +483,7 @@ public class UserManager
         {
             connection = dataSource.getConnection();
             statement = connection
-                .prepareStatement("INSERT INTO AUHTORITIES (user, authority) VALUES (?, ?)");
+                .prepareStatement("INSERT INTO AUTHORITIES (user, authority) VALUES (?, ?)");
             
             statement.setLong(1, user.getId());
             statement.setString(2, role);

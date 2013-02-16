@@ -325,7 +325,10 @@ public class FileSystemController
         newFile.setSize(file.getSize());
         fileSystemManager.updateFile(newFile);
         
-        fileSystemManager.createEquivalence(file, newFile);
+        for (CTNAIFile child : fileSystemManager.getAllSubfiles(file))
+        {
+            fileSystemManager.setParent(child, newFile);
+        }
         
         File sourceFile = fileSystemManager.getSystemFileById(file.getId());
         File destinationFile = fileSystemManager.getSystemFileById(newFile.getId());
@@ -468,8 +471,6 @@ public class FileSystemController
         CTNAIFile ctnaiFile = fileSystemManager.getFileById(id);
         ctnaiFile.setSize(file.getTotalSpace());
         fileSystemManager.updateFile(ctnaiFile);
-        
-        fileSystemManager.breakEquivalences(ctnaiFile);
     }
     
     private Long getUserId(String username)

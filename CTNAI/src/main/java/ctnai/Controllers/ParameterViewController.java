@@ -146,10 +146,14 @@ public class ParameterViewController
             int i = 0;
             while (resultSet.next())
             {
+                if (i > 0)
+                {
+                    nameBuilder.append(',');
+                }
+                
                 nameBuilder.append(resultSet.getString("Regulator"));
                 nameBuilder.append(':');
                 nameBuilder.append(contextData[2].charAt(i));
-                nameBuilder.append(',');
                 
                 i++;
             }

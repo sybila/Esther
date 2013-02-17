@@ -27,7 +27,7 @@ function openWidget(fileRef)
     {
         var cls = clss[i];
         
-        if ((cls == 'public') || (cls == 'private') || (cls == 'expanded') || (cls == 'file'))
+        if ((cls == 'public') || (cls == 'private') || (cls == 'expanded') || (cls == 'file') || (cls == 'open'))
             continue;
         
         switch (cls)
@@ -42,7 +42,17 @@ function openWidget(fileRef)
                 $('#widget').openParameterView(fileRef.attr('file_id'));
                 break;
             }
-            default:{
+            case "filter":
+            {
+                var source;
+                
+                source = fileRef.parent().parent().parent().find('A').attr('file_id');
+                
+                $('#widget').openParameterView(source, fileRef.attr('file_id'));
+                break;
+            }
+            default:
+            {
                 alert('No widget found for file of type: ' + cls);
                 break;
             }

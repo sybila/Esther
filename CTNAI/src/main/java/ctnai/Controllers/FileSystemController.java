@@ -179,8 +179,8 @@ public class FileSystemController
     
     @RequestMapping(value = "/File/Create", method = RequestMethod.POST)
     @ResponseBody
-    public Long createFile(@RequestParam("name") String name, @RequestParam("type") String type,
-        @RequestParam(value="parent", required = false) List<Long> parents)
+    public String createFile(@RequestParam("name") String name, @RequestParam("type") String type,
+        @RequestParam(value="parents[]", required = false) Long[] parents)
     {
         if ((name == null) || (type == null) || name.isEmpty() || type.isEmpty())
         {
@@ -207,7 +207,7 @@ public class FileSystemController
             }
         }
         
-        return id;
+        return id.toString();
     }
     
     @RequestMapping(value = "/File/Delete", method = RequestMethod.POST)
@@ -313,13 +313,13 @@ public class FileSystemController
         CTNAIFile file = fileSystemManager.getFileById(id);
         List<CTNAIFile> parents = fileSystemManager.getFileParents(file);
         
-        List<Long> parentIds = new ArrayList<>();
-        for (CTNAIFile parent : parents)
+        Long[] parentIds = new Long[parents.size()];
+        for (int i = 0; i < parents.size(); i++)
         {
-            parentIds.add(parent.getId());
+            parentIds[i] = parents.get(i).getId();
         }
         
-        Long newId = createFile(name, file.getType(), parentIds);
+        Long newId = Long.parseLong(createFile(name, file.getType(), parentIds));
         
         CTNAIFile newFile = fileSystemManager.getFileById(newId);
         newFile.setSize(file.getSize());

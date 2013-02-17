@@ -28,17 +28,17 @@
                 </tr>
             </table>
             <p>
-                <input id="button" type="Submit" value="Sign In" name="submit"/>
+                <input class="button" type="Submit" value="Sign In" name="submit"/>
             </p>
         </form>
         <p>
             Don't have an account? <a href="Registration">Register now!</a>
         </p>
         <p>
-            Forgot your password? Proceed with <a href="">password recovery</a>.
+            Forgot your password? Proceed with <a href="Recover/Password">password recovery</a>.
         </p>
         <p>
-            Can't remember your username? Try the <a href="">username recovery</a>.
+            Can't remember your username? Try the <a href="Recover/Username">username recovery</a>.
         </p>
     </body>
 </html>

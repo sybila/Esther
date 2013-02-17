@@ -195,7 +195,7 @@ input {
     text-align: left;
 }
 
-input#button {
+input.button {
     color: #000033;
     font-family: "Corbel", "Dotum", "Calibri", "Arial";
     text-align: center;

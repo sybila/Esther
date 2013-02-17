@@ -5,7 +5,6 @@ import ctnai.Database.FileSystemManager;
 import ctnai.Database.UserManager;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
@@ -66,7 +65,7 @@ public class ParsyboneController
             return null;
         }
         
-        Long target_id = fileSystemController.createFile(file.getName(), "sqlite", Arrays.asList(file.getId()));
+        Long target_id = Long.parseLong(fileSystemController.createFile(file.getName(), "sqlite", new Long[] { file.getId() }));
         
         StringBuilder outputBuilder = new StringBuilder();
         

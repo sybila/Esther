@@ -36,7 +36,7 @@
                 </tr>
             </table>
             <p>
-                <input id="button" type="Submit" value="Register" name="submit"/>
+                <input class="button" type="Submit" value="Register" name="submit"/>
             </p>
         </form>
         <p>
@@ -44,12 +44,12 @@
         </p>
         <c:if test="${not empty passRecPrompt}">
             <p>
-                Forgot your password? Proceed with <a href="">password recovery</a>.
+                Forgot your password? Proceed with <a href="Recover/Password">password recovery</a>.
             </p>
         </c:if>
         <c:if test="${not empty nameRecPrompt}">
             <p>
-                Can't remember your username? Try the <a href="">username recovery</a>.
+                Can't remember your username? Try the <a href="Recover/Username">username recovery</a>.
             </p>
         </c:if>
     </body>

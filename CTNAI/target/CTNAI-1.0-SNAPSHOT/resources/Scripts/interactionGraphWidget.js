@@ -13,9 +13,9 @@ if(jQuery) (function($)
                     {
                         context.append('<textarea spellcheck=false id="contents">' +
                             data + '</textarea>');
-                        context.append('<input id="savebutton" file_id="' +
+                        context.append('<input class="button" id="savebutton" file_id="' +
                             file + '" type="Submit" value="Save" />');
-                        context.append('<input id="parsybone" file_id="' +
+                        context.append('<input class="button" id="parsybone" file_id="' +
                             file + '" type="Submit" value="Parsybone" />');
 
                         context.find('#savebutton').click(function()

@@ -15,7 +15,7 @@ public class UserForm
         username = "";
         password = "";
         cPassword = "";
-        email = "@";
+        email = "";
     }
     
     public UserForm(String username, String password, String cPassword, String email)

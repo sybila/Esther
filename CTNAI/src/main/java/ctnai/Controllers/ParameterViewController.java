@@ -1,8 +1,11 @@
 package ctnai.Controllers;
 
 import ctnai.Database.FileSystemManager;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -10,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,14 +54,200 @@ public class ParameterViewController
         fileSystemManager.setLogger(fs);
     }
     
-    @RequestMapping(value = "/ListParameters", method = RequestMethod.GET)
-    public String getParameterView(ModelMap model, @RequestParam("file") Long id)
+    @RequestMapping(value = "/Parameters/List", method = RequestMethod.GET)
+    public String getParameterView(ModelMap model, @RequestParam("file") Long id,
+        @RequestParam(value = "filter", required = false) Long filterId)
     {
         if (id == null)
         {
             return null;
         }
         
+        model.addAttribute("file", id);
+        
+        Map<String, String> contextMasks = new HashMap<>();
+        
+        String[] filter = null;
+        
+        Map<Integer, Object[]> filterProperties = new HashMap<>();
+        
+        if (filterId != null)
+        {
+            model.addAttribute("filter", filterId);
+            
+            filter = readFilter(filterId);
+        }
+        
+        List<Map<String, Object>> rows = generateRows(id, filter, contextMasks);
+
+        if (filterId != null)
+        {
+            for (int i = 1; i <= filter.length; i++)
+            {
+                String[] constraintProperties = filter[(i - 1)].split(";");
+                Object[] filterProp = new Object[6];
+                
+                filterProp[0] = constraintProperties[0];
+                
+                if (constraintProperties[0].startsWith("K_"))
+                {
+                    filterProp[1] = contextMasks.get(constraintProperties[0]);
+                }
+                else
+                {
+                    filterProp[1] = constraintProperties[0].substring(0, 1).toUpperCase().concat(constraintProperties[0].substring(1));
+                }
+                filterProp[2] = constraintProperties[1];
+                filterProp[3] = translateFilterType(constraintProperties[1]);
+                filterProp[4] = constraintProperties[2];
+                filterProp[5] = ((constraintProperties[0].equals("robustness") ? "%." : "."));
+                
+                filterProperties.put(i, filterProp);
+            }
+            
+            model.addAttribute("filter_properties", filterProperties);
+        }
+        
+        model.addAttribute("context_masks", contextMasks);
+        model.addAttribute("rows", rows);
+        
+        return "parameterView";
+    }
+    
+    @RequestMapping(value = "/Parameters/Filter", method = RequestMethod.GET)
+    public String filterParameterView(ModelMap model, @RequestParam("source") Long id, @RequestParam("filter") String filter)
+    {
+        if (id == null)
+        {
+            return null;
+        }
+        
+        List<Map<String, Object>> rows = generateRows(id, (filter.isEmpty() ? null : filter.split("\n")));
+        
+        model.addAttribute("rows", rows);
+        
+        return "parameterList";
+    }
+    
+    private String[] readFilter(Long id)
+    {
+        File file = fileSystemManager.getSystemFileById(id);
+        
+        List<String> filter = new ArrayList<>();
+        
+        BufferedReader br = null;
+        
+        try
+        {
+            br = new BufferedReader(new FileReader(file));
+
+            String line;
+            while ((line = br.readLine()) != null)
+            {
+                filter.add(line);
+            }
+        }
+        catch (IOException e)
+        {
+            logger.log(Level.SEVERE, ("Error reading filter ID: " + id), e);
+        }
+        finally
+        {
+            if (br != null)
+            {
+                try
+                {
+                    br.close();
+                }
+                catch (IOException e)
+                {
+                    logger.log(Level.SEVERE, ("Error closing filter ID: " + id), e);
+                }
+            }
+        }
+        
+        return filter.toArray(new String[] { });
+    }
+    
+    private Character translateFilterType(String type)
+    {
+        switch (type)
+        {
+            case "eq": return '=';
+            case "gt": return '>';
+            case "lt": return '<';
+            default: return null;
+        }
+    }
+    
+    private PreparedStatement constructSQLQuery(String[] filter, Connection connection) throws SQLException
+    {
+        StringBuilder queryBuilder = new StringBuilder();
+        List<Object> constraintValues = new ArrayList<>();
+        List<Integer> doubleValuePositions = new ArrayList<>();
+        
+        queryBuilder.append("SELECT * FROM PARAMETRIZATIONS");
+        
+        if ((filter != null) && (filter.length > 0))
+        {
+            queryBuilder.append(" WHERE");
+        
+            for (int i = 0; i < filter.length; i++)
+            {
+                if (i > 0)
+                {
+                    queryBuilder.append(" AND");
+                }
+                
+                String[] constraintProperties = filter[i].split(";");
+
+                queryBuilder.append(' ');
+                queryBuilder.append(constraintProperties[0]);
+                
+                queryBuilder.append(translateFilterType(constraintProperties[1]));
+                
+                queryBuilder.append('?');
+                
+                Integer value = Integer.parseInt(constraintProperties[2]);
+                
+                if (constraintProperties[0].equals("robustness"))
+                {
+                    constraintValues.add(new Double(value / 100.0));
+                    doubleValuePositions.add(i);
+                }
+                else
+                {
+                    constraintValues.add(value);
+                }
+            }
+        }
+        
+        queryBuilder.append(" LIMIT 128");
+        
+        PreparedStatement statement = connection.prepareStatement(queryBuilder.toString());
+        
+        for (int i = 0; i < constraintValues.size(); i++)
+        {
+            if (doubleValuePositions.contains(i))
+            {
+                statement.setDouble((i + 1), (Double)constraintValues.get(i));
+            }
+            else
+            {
+                statement.setInt((i + 1), (Integer)constraintValues.get(i));
+            }
+        }
+        
+        return statement;
+    }
+    
+    private List<Map<String, Object>> generateRows(Long id, String[] filter)
+    {
+        return generateRows(id, filter, null);
+    }
+    
+    private List<Map<String, Object>> generateRows(Long id, String[] filter, Map<String, String> contextMasks)
+    {
         File file = fileSystemManager.getSystemFileById(id);
         
         List<Map<String, Object>> rows = new ArrayList<>();
@@ -70,11 +260,23 @@ public class ParameterViewController
         {
             Class.forName("org.sqlite.JDBC");
             connection = DriverManager.getConnection("jdbc:sqlite:" + file.getAbsolutePath());
-            statement = connection.prepareStatement("SELECT * FROM parametrizations LIMIT 128");
+            statement = constructSQLQuery(filter, connection);
             resultSet = statement.executeQuery();
 
             ResultSetMetaData tableData = resultSet.getMetaData();
 
+            if (contextMasks != null)
+            {
+                for (int i = 1; i <= tableData.getColumnCount(); i++)
+                {
+                    String columnName = tableData.getColumnName(i);
+                    if (columnName.startsWith("K"))
+                    {
+                        contextMasks.put(columnName, transformColumnName(columnName, connection));
+                    }
+                }
+            }
+            
             while (resultSet.next())
             {
                 Map<String, Object> cells = new LinkedHashMap<>();
@@ -113,10 +315,8 @@ public class ParameterViewController
                 logger.log(Level.SEVERE, ("Error closing connection to parameter database ID: " + id), e);
             }
         }
-
-        model.addAttribute("rows", rows);
         
-        return "parameterList";
+        return rows;
     }
     
     private String transformColumnName(String columnName, Connection connection) throws SQLException
@@ -124,6 +324,11 @@ public class ParameterViewController
         String[] contextData = columnName.split("_");
         if (!contextData[0].equals("K"))
         {
+            if (contextData[0].equals("Witness"))
+            {
+                return "Witness Path";
+            }
+            
             return columnName;
         }
         

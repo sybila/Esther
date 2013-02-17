@@ -11,13 +11,7 @@
     font-size: 12px;
     line-height: 18px;
     font-family: "Verdana", "Sans-Serif", "Calibri", "Arial";
-    margin: 0px;
-    padding: 0px;
-}
-
-#widget p {
-    margin-left: 8px;
-    margin-right: 8px;
+    margin: 4px 8px 4px 8px;
 }
 
 #widget h7 {
@@ -111,4 +105,44 @@
     background: #EEEEEE;
     border: 1px solid #999999;
     border-bottom: 0px;
+}
+
+#widget .container {
+    background: #FFFFFF;
+    border: 1px solid #CCFFFF;
+    margin: 8px 32px 16px 32px;
+    overflow: scroll;
+}
+
+#widget #constraint_container {
+    height: 164px;
+}
+
+#widget #filter_hide {
+    float: right;
+    height: 16px;
+    width: 16px;
+    margin: 8px;
+    cursor: pointer;
+}
+
+#widget select.drop_down {
+    color: #000033;
+    font-size: 12px;
+    line-height: 18px;
+    font-family: "Verdana", "Sans-Serif", "Calibri", "Arial";
+}
+
+#widget select.drop_down option {
+    color: #003366;
+    font-size: 12px;
+    line-height: 18px;
+    font-family: "Verdana", "Sans-Serif", "Calibri", "Arial";
+}
+
+#widget IMG.cancel_constraint {
+    height: 12px;
+    margin-left: 4px;
+    margin-right: 4px;
+    cursor: pointer;
 }

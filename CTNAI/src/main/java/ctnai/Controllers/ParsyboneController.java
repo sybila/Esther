@@ -3,6 +3,7 @@ package ctnai.Controllers;
 import ctnai.Database.CTNAIFile;
 import ctnai.Database.FileSystemManager;
 import ctnai.Database.UserManager;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -65,12 +66,14 @@ public class ParsyboneController
             return null;
         }
         
-        Long target_id = Long.parseLong(fileSystemController.createFile(file.getName(), "sqlite", new Long[] { file.getId() }));
+        Long targetId = Long.parseLong(fileSystemController.createFile(file.getName(), "sqlite", new Long[] { file.getId() }));
         
         StringBuilder outputBuilder = new StringBuilder();
         
         try
         {
+            File newFile = fileSystemManager.getSystemFileById(targetId);
+            
             StringBuilder commandBuilder = new StringBuilder();
             
             commandBuilder.append('"');
@@ -81,7 +84,7 @@ public class ParsyboneController
             commandBuilder.append(fileSystemManager.getSystemFileById(file.getId()).getAbsolutePath());
             commandBuilder.append('"');
             commandBuilder.append(" --data \"");
-            commandBuilder.append(fileSystemManager.getSystemFileById(target_id).getAbsolutePath());
+            commandBuilder.append(newFile.getAbsolutePath());
             commandBuilder.append('"');
             
             CommandLine cmdLine = CommandLine.parse(commandBuilder.toString());
@@ -90,6 +93,10 @@ public class ParsyboneController
             int exitValue = executor.execute(cmdLine);
             
             logger.log(Level.INFO, ("Parsybone exited with value: " + exitValue));
+            
+            CTNAIFile dbFile = fileSystemManager.getFileById(targetId);
+            dbFile.setSize(newFile.getTotalSpace());
+            fileSystemManager.updateFile(dbFile);
         }
         catch (IOException e)
         {

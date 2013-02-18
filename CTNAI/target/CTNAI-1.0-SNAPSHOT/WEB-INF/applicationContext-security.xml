@@ -24,6 +24,7 @@
         <intercept-url pattern="/File/*" access="isAuthenticated()" />
         <intercept-url pattern="/Parsybone" access="isAuthenticated()" />
         <intercept-url pattern="/Parameters/*" access="isAuthenticated()" />
+        <intercept-url pattern="/BehaviourMap" access="isAuthenticated()" />
         <intercept-url pattern="/" access="permitAll" />
         <intercept-url pattern="/**" access="denyAll" />
         <form-login default-target-url="/Home" login-page="/Login" authentication-failure-url="/LoginFailure" />

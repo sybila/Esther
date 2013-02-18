@@ -4,6 +4,8 @@
     <%@ include file="/WEB-INF/jsp/parameterList.jsp" %>
 </div>
 
+<input style="float: left" id="behaviourMap" class="button" type="submit" value="Behaviour Map" name="submit" />
+
 <p style="text-align: right; padding-right: 64px;" >
     <a id="filter" class="expandable closed" href="#">Filter ▲</a>
 </p>

@@ -21,26 +21,9 @@ function initializeParameterView(context, data)
             }
         });
 
-    context.find('#constraint_value').keydown(function(e)
+    context.find('#constraint_value').keyup(function()
         {
-                // backspace, delete, tab, escape, and enter
-            if (e.keyCode == 46 || e.keyCode == 8 || e.keyCode == 9 || e.keyCode == 27 || e.keyCode == 13 || 
-                // Allow: Ctrl+A
-               (e.keyCode == 65 && e.ctrlKey == true) || 
-                // Allow: home, end, left, right
-               (e.keyCode >= 35 && e.keyCode <= 39))
-            {
-                // let it happen, don't do anything
-                return;
-            }
-            else
-            {
-                // Prevent keypress if not number
-                if (e.shiftKey || e.altKey || (e.keyCode < 48 || e.keyCode > 57) && (e.keyCode < 96 || e.keyCode > 105 ))
-                {
-                    e.preventDefault(); 
-                }
-            }
+            context.find('#constraint_value').val(context.find('#constraint_value').val().replace(/[^0-9]/g,''));
         });
 
     context.find('#filter').click(function(e)
@@ -89,7 +72,10 @@ function initializeParameterView(context, data)
             context.find('#constraint_container #' + id + ' .cancel_constraint').click(function()
                 {
                     context.find('#constraint_container #' + id).remove();
+                    context.find('#constraint_container').addClass('unsaved');
                 });
+                
+            context.find('#constraint_container').addClass('unsaved');
         });
 
     context.find('#saveButton').click(function()
@@ -122,6 +108,8 @@ function initializeParameterView(context, data)
 
                 $.post('File/Write', { file: file, data: data });
             }
+            
+            context.find('#constraint_container').removeClass('unsaved');
         });
 
     context.find('#applyButton').click(function()
@@ -141,6 +129,32 @@ function initializeParameterView(context, data)
     context.find('#constraint_container p .cancel_constraint').click(function()
         {
             $(this).parent().remove();
+            context.find('#constraint_container').addClass('unsaved');
+        });
+        
+    context.find('#behaviourMap').click(function()
+        {
+            if (context.find('#constraint_container').hasClass('unsaved'))
+            {
+                if (!confirm('Warning: Any unsaved changes to the filter will have no effect on the behaviour map.'))
+                {
+                    return;
+                }
+            }
+            
+            var filter = context.find('#filter_controls').attr("filter");
+            var params;
+            
+            if ((typeof filter == 'undefined') || (filter == null) || (filter == ''))
+            {
+                params = { file: context.find('#filter_controls').attr("source") };
+            }
+            else
+            {
+                params = { file: context.find('#filter_controls').attr("source"), filter: filter };
+            }
+            
+            $.post('BehaviourMap', params);
         });
 }
 

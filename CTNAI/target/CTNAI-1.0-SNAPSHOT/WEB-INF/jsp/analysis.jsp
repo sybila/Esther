@@ -13,6 +13,10 @@
         <script type="text/javascript" src="<c:url value="/resources/Scripts/jquery.tablesorter.js"/>"></script>
         <script type="text/javascript" src="<c:url value="/resources/Scripts/interactionGraphWidget.js"/>"></script>
         <script type="text/javascript" src="<c:url value="/resources/Scripts/parameterViewWidget.js"/>"></script>
+        <script type="text/javascript" src="<c:url value="/resources/Scripts/json2.js"/>"></script>
+        <script type="text/javascript" src="<c:url value="/resources/Scripts/AC_OETags.js"/>"></script>
+        <script type="text/javascript" src="<c:url value="/resources/Scripts/cytoscapeweb.js"/>"></script>
+        <script type="text/javascript" src="<c:url value="/resources/Scripts/behaviourMapWidget.js"/>"></script>
         <script type="text/javascript" src="<c:url value="/resources/Scripts/ctnaiWidgetManager.js"/>"></script>
         <script type="text/javascript" src="<c:url value="/resources/Scripts/ctnaiFileSystem.js"/>"></script>
         <script type="text/javascript">

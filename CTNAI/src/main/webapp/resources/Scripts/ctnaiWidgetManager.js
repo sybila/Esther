@@ -51,6 +51,11 @@ function openWidget(fileRef)
                 $('#widget').openParameterView(source, fileRef.attr('file_id'));
                 break;
             }
+            case "xgmml":
+            {
+                $('#widget').openBehaviourMap(fileRef.attr('file_id'));
+                break;
+            }
             default:
             {
                 alert('No widget found for file of type: ' + cls);

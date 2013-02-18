@@ -1,5 +1,7 @@
 package ctnai.Controllers;
 
+import BehaviourMapper.BehaviourMapper;
+import ctnai.Database.CTNAIFile;
 import ctnai.Database.FileSystemManager;
 import java.io.BufferedReader;
 import java.io.File;
@@ -23,12 +25,16 @@ import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class ParameterViewController
@@ -53,6 +59,9 @@ public class ParameterViewController
         logger.addHandler(new StreamHandler(fs, new SimpleFormatter()));
         fileSystemManager.setLogger(fs);
     }
+    
+    @Autowired
+    private FileSystemController fileSystemController;
     
     @RequestMapping(value = "/Parameters/List", method = RequestMethod.GET)
     public String getParameterView(ModelMap model, @RequestParam("file") Long id,
@@ -129,6 +138,83 @@ public class ParameterViewController
         return "parameterList";
     }
     
+    @RequestMapping(value = "/BehaviourMap", method = RequestMethod.POST)
+    @ResponseBody
+    public String generateBehaviourMap(@RequestParam("file") Long sourceId,
+        @RequestParam(value = "filter", required = false) Long filterId)
+    {
+        if (sourceId == null)
+        {
+            return null;
+        }
+        
+        String[] filter = null;
+        
+        CTNAIFile source = fileSystemManager.getFileById(sourceId);
+        File file = fileSystemManager.getSystemFileById(sourceId);
+        
+        Long targetId;
+        
+        if (filterId != null)
+        {
+            filter = readFilter(filterId);
+            
+            targetId = Long.parseLong(fileSystemController.createFile(source.getName(), "xgmml", new Long[] { filterId }));
+        }
+        else
+        {
+            targetId = Long.parseLong(fileSystemController.createFile(source.getName(), "xgmml", new Long[] { source.getId() }));
+        }
+        
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        
+        try
+        {
+            Class.forName("org.sqlite.JDBC");
+            connection = DriverManager.getConnection("jdbc:sqlite:" + file.getAbsolutePath());
+            statement = constructSQLQuery(filter, connection, false);
+            resultSet = statement.executeQuery();
+            
+            File newFile = fileSystemManager.getSystemFileById(targetId);
+            
+            BehaviourMapper.behaviourMap(resultSet, newFile.getAbsolutePath());
+            
+            CTNAIFile bmFile = fileSystemManager.getFileById(targetId);
+            bmFile.setSize(newFile.getTotalSpace());
+            fileSystemManager.updateFile(bmFile);
+        }
+        catch (ClassNotFoundException | SQLException | ParserConfigurationException | TransformerException e)
+        {
+            logger.log(Level.SEVERE, ("Error building behaviour map for file ID: " + sourceId), e);
+        }
+        finally
+        {
+            try
+            {
+                if (resultSet != null)
+                {
+                    resultSet.close();
+                }
+                if (statement != null)
+                {
+                    statement.close();
+                }
+                if (connection != null)
+                {
+                    connection.close();
+                }
+            }
+            catch (SQLException e)
+            {
+                logger.log(Level.SEVERE, ("Error closing connection to parameter database ID: " + sourceId), e);
+            }
+        }
+        
+        return null;
+    }
+    
     private String[] readFilter(Long id)
     {
         File file = fileSystemManager.getSystemFileById(id);
@@ -180,7 +266,7 @@ public class ParameterViewController
         }
     }
     
-    private PreparedStatement constructSQLQuery(String[] filter, Connection connection) throws SQLException
+    private PreparedStatement constructSQLQuery(String[] filter, Connection connection, boolean limit) throws SQLException
     {
         StringBuilder queryBuilder = new StringBuilder();
         List<Object> constraintValues = new ArrayList<>();
@@ -222,7 +308,10 @@ public class ParameterViewController
             }
         }
         
-        queryBuilder.append(" LIMIT 128");
+        if (limit)
+        {
+            queryBuilder.append(" LIMIT 128");
+        }
         
         PreparedStatement statement = connection.prepareStatement(queryBuilder.toString());
         
@@ -260,7 +349,7 @@ public class ParameterViewController
         {
             Class.forName("org.sqlite.JDBC");
             connection = DriverManager.getConnection("jdbc:sqlite:" + file.getAbsolutePath());
-            statement = constructSQLQuery(filter, connection);
+            statement = constructSQLQuery(filter, connection, true);
             resultSet = statement.executeQuery();
 
             ResultSetMetaData tableData = resultSet.getMetaData();
@@ -310,7 +399,7 @@ public class ParameterViewController
                     connection.close();
                 }
             }
-            catch (Exception e)
+            catch (SQLException e)
             {
                 logger.log(Level.SEVERE, ("Error closing connection to parameter database ID: " + id), e);
             }

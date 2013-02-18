@@ -80,7 +80,7 @@ public class Node
     public Element export(Document doc, int maxInboundTransitionCount, int maxOutboundTransitionCount, int timeSerieLength)
     {
         Element node = doc.createElement("node");
-        node.setAttribute("label", Integer.toString(-id));
+        node.setAttribute("label", state.toString());
         node.setAttribute("id", Integer.toString(id));
 
         Element stateAtt = doc.createElement("att");
@@ -122,6 +122,12 @@ public class Node
         return node;
     }
 
+    @Override
+    public String toString()
+    {
+        return state.toString();
+    }
+    
     @Override
     public boolean equals(Object obj)
     {

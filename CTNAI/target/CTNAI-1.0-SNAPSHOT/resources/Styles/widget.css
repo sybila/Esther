@@ -146,3 +146,16 @@
     margin-right: 4px;
     cursor: pointer;
 }
+
+#widget #cytoscape_web {
+    height: 472px;
+    width: 712px;
+    margin: 8px;
+}
+
+#widget #graph_information {
+    height: 92px;
+    width: 712px;
+    margin: 0px 8px 8px 8px;
+    overflow: scroll;
+}

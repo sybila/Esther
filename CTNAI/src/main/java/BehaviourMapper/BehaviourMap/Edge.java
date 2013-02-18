@@ -50,6 +50,18 @@ public class Edge
         edge.setAttribute("label", from.getId() + " to " + to.getId());
         edge.setAttribute("source", Integer.toString(from.getId()));
         edge.setAttribute("target", Integer.toString(to.getId()));
+        
+        Element SourceStateAtt = doc.createElement("att");
+        SourceStateAtt.setAttribute("type", "string");
+        SourceStateAtt.setAttribute("name", "Source");
+        SourceStateAtt.setAttribute("value", from.toString());
+        edge.appendChild(SourceStateAtt);
+        
+        Element TargetStateAtt = doc.createElement("att");
+        TargetStateAtt.setAttribute("type", "string");
+        TargetStateAtt.setAttribute("name", "Target");
+        TargetStateAtt.setAttribute("value", to.toString());
+        edge.appendChild(TargetStateAtt);
 
         Element transitionCountAtt = doc.createElement("att");
         transitionCountAtt.setAttribute("type", "integer");

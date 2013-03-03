@@ -5,17 +5,17 @@
     <h1>Online Thomas Network Analyzer</h1>
     <p style="float: right;">
         <sec:authorize access="isAuthenticated()">
-            Logged in as <a href=""><sec:authentication property="principal.username" /></a>
-            , <a href="<c:url value="j_spring_security_logout"/>">log out</a>
+            Logged in as <a href="/CTNAI/Profile"><sec:authentication property="principal.username" /></a>
+            , <a href="<c:url value="/CTNAI/j_spring_security_logout"/>">log out</a>
         </sec:authorize>
         <sec:authorize access="isAnonymous()">
-            <a href="Login">Log in</a>, or create a <a href="Registration">new account</a>
+            <a href="/CTNAI/Login">Log in</a>, or create a <a href="/CTNAI/Registration">new account</a>
         </sec:authorize>
     </p>
 </div>
 
 <ul id="menu" style="pointer-events: none;">
-    <li style="pointer-events: auto;"><a href="Home">Home</a></li>
-    <li style="pointer-events: auto;"><a href="Analysis">Analyze</a></li>
+    <li style="pointer-events: auto;"><a href="/CTNAI/Home">Home</a></li>
+    <li style="pointer-events: auto;"><a href="/CTNAI/Analysis">Analyze</a></li>
     <li style="pointer-events: auto;"><a href="https://sybila.fi.muni.cz">About</a></li>
 </ul>

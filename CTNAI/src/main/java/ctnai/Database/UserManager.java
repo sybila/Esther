@@ -1,6 +1,9 @@
 package ctnai.Database;
 
 import java.io.FileOutputStream;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -107,13 +110,14 @@ public class UserManager
         {
             connection = dataSource.getConnection();
             statement = connection
-                .prepareStatement("UPDATE USERS SET username=?, email=?, enabled=? WHERE id=?",
+                .prepareStatement("UPDATE USERS SET username=?, password=?, email=?, enabled=? WHERE id=?",
                     Statement.RETURN_GENERATED_KEYS);
             
             statement.setString(1, user.getUsername());
-            statement.setString(2, user.getEmail());
-            statement.setBoolean(3, user.getEnabled());
-            statement.setLong(4, user.getId());
+            statement.setString(2, user.getPassword());
+            statement.setString(3, user.getEmail());
+            statement.setBoolean(4, user.getEnabled());
+            statement.setLong(5, user.getId());
             
             statement.executeUpdate();
             
@@ -452,7 +456,7 @@ public class UserManager
 
         user.setId(resultSet.getLong("id"));
         user.setUsername(resultSet.getString("username"));
-        user.setPassword(resultSet.getString("password"));
+        user.setEncryptedPassword(resultSet.getString("password"));
         user.setEmail(resultSet.getString("email"));
         user.setEnabled(resultSet.getBoolean("enabled"));
 

@@ -5,6 +5,8 @@ import Forms.UserForm;
 import ctnai.Database.User;
 import ctnai.Database.UserManager;
 import java.io.FileOutputStream;
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -56,7 +58,16 @@ public class RegistrationController
         
         StringBuilder errorBuilder = new StringBuilder();
         
-        User newUser = userForm.validate(errorBuilder);
+        User newUser;
+        
+        try
+        {
+            newUser = userForm.validate(errorBuilder);
+        }
+        catch (NoSuchAlgorithmException | UnsupportedEncodingException e)
+        {
+            return null;
+        }
         
         User nameCheck = userManager.getUserByUsername(username);
         User mailCheck = userManager.getUserByEmail(email);
@@ -238,7 +249,14 @@ public class RegistrationController
         }
         else
         {
-            user.setPassword(generateRandomPassword());
+            try
+            {
+                user.setPassword(generateRandomPassword());
+            }
+            catch (NoSuchAlgorithmException | UnsupportedEncodingException e)
+            {
+                return null;
+            }
             
             userManager.updateUser(user);
             

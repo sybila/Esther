@@ -1,6 +1,8 @@
 package Forms;
 
 import ctnai.Database.User;
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import org.apache.commons.validator.EmailValidator;
 
 public class UserForm
@@ -26,80 +28,118 @@ public class UserForm
         this.email = email;
     }
     
-    public User validate(StringBuilder errorOutbut)
+    public User validate(StringBuilder errorOutput) throws NoSuchAlgorithmException, UnsupportedEncodingException
     {
         User user = new User();
         
         user.setEnabled(false);
         
-        if ((username == null) || username.isEmpty())
-        {
-            errorOutbut.append("Username cannot be blank.");
-            errorOutbut.append("<br/>\n");
-        }
-        else if (username.length() < 3)
-        {
-            errorOutbut.append("Username must be at least 3 characters long.");
-            errorOutbut.append("<br/>\n");
-        }
-        else if (username.length() > 64)
-        {
-            errorOutbut.append("Username cannot be more than 64 characters long.");
-            errorOutbut.append("<br/>\n");
-        }
-        else
+        if (validateUsername(errorOutput))
         {
             user.setUsername(username);
         }
         
-        if ((email == null) || email.isEmpty())
-        {
-            errorOutbut.append("Please provide an E-Mail address.");
-            errorOutbut.append("<br/>\n");
-        }
-        else if (!EmailValidator.getInstance().isValid(email))
-        {
-            errorOutbut.append("The E-Mail address specified is invalid.");
-            errorOutbut.append("<br/>\n");
-        }
-        else if (email.length() > 128)
-        {
-            errorOutbut.append("E-Mail addresses longer than 128 characters are not supported.");
-            errorOutbut.append("<br/>\n");
-        }
-        else
+        if (validateEmail(errorOutput))
         {
             user.setEmail(email);
         }
         
-        if ((password == null) || password.isEmpty())
-        {
-            errorOutbut.append("Password cannot be blank.");
-            errorOutbut.append("<br/>\n");
-        }
-        else if (password.length() < 6)
-        {
-            errorOutbut.append("Password must be at least 6 characters long.");
-            errorOutbut.append("<br/>\n");
-        }
-        else if (password.length() > 64)
-        {
-            errorOutbut.append("Password cannot be more than 64 characters long.");
-            errorOutbut.append("<br/>\n");
-        }
-        else if (!password.equals(cPassword))
-        {
-            errorOutbut.append("Passwords do not match.");
-            errorOutbut.append("<br/>\n");
-        }
-        else
+        if (validatePassword(errorOutput))
         {
             user.setPassword(password);
         }
         
         return user;
     }
+    
+    public boolean validateUsername(StringBuilder errorOutput)
+    {
+        if ((username == null) || username.isEmpty())
+        {
+            errorOutput.append("Username cannot be blank.");
+            errorOutput.append("<br/>\n");
+            
+            return false;
+        }
+        else if (username.length() < 3)
+        {
+            errorOutput.append("Username must be at least 3 characters long.");
+            errorOutput.append("<br/>\n");
+            
+            return false;
+        }
+        else if (username.length() > 64)
+        {
+            errorOutput.append("Username cannot be more than 64 characters long.");
+            errorOutput.append("<br/>\n");
+            
+            return false;
+        }
+        
+        return true;
+    }
 
+    public boolean validateEmail(StringBuilder errorOutput)
+    {
+        if ((email == null) || email.isEmpty())
+        {
+            errorOutput.append("Please provide an E-Mail address.");
+            errorOutput.append("<br/>\n");
+            
+            return false;
+        }
+        else if (!EmailValidator.getInstance().isValid(email))
+        {
+            errorOutput.append("The E-Mail address specified is invalid.");
+            errorOutput.append("<br/>\n");
+            
+            return false;
+        }
+        else if (email.length() > 128)
+        {
+            errorOutput.append("E-Mail addresses longer than 128 characters are not supported.");
+            errorOutput.append("<br/>\n");
+            
+            return false;
+        }
+        
+        return true;
+    }
+    
+    public boolean validatePassword(StringBuilder errorOutput)
+    {
+        if ((password == null) || password.isEmpty())
+        {
+            errorOutput.append("Password cannot be blank.");
+            errorOutput.append("<br/>\n");
+            
+            return false;
+        }
+        else if (password.length() < 6)
+        {
+            errorOutput.append("Password must be at least 6 characters long.");
+            errorOutput.append("<br/>\n");
+            
+            return false;
+        }
+        else if (password.length() > 64)
+        {
+            errorOutput.append("Password cannot be more than 64 characters long.");
+            errorOutput.append("<br/>\n");
+            
+            return false;
+        }
+        else if (!password.equals(cPassword))
+        {
+            errorOutput.append("Passwords do not match.");
+            errorOutput.append("<br/>\n");
+            
+            return false;
+        }
+        
+        return true;
+    }
+    
     public String getUsername()
     {
         return username;

@@ -1,5 +1,8 @@
 package ctnai.Database;
 
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
 
 public class User
@@ -37,9 +40,24 @@ public class User
         return password;
     }
 
-    public void setPassword(String password)
+    public void setPassword(String password)  throws NoSuchAlgorithmException, UnsupportedEncodingException
     {
-        this.password = password;
+        StringBuilder hashBuilder = new StringBuilder();
+        
+        MessageDigest sha = MessageDigest.getInstance("SHA-256");
+        byte[] digest = sha.digest(password.getBytes("UTF-8"));
+        
+        for (byte b : digest)
+        {
+            hashBuilder.append(String.format("%02x", b));
+        }
+        
+        this.password = hashBuilder.toString();
+    }
+    
+    public void setEncryptedPassword(String hash)
+    {
+        password = hash;
     }
 
     public String getEmail()

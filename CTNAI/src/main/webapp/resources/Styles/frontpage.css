@@ -1,46 +1,38 @@
-/* 
-    Document   : frontpage
-    Created on : Nov 10, 2012, 6:02:32 PM
-    Author     : Jooji
-    Description:
-        Purpose of the stylesheet follows.
-*/
-
-root { 
+ROOT { 
     display: block;
 }
 
 /* GENERAL */
 
-html {
+HTML {
     min-height: 100%;
 }
 
-body {
+BODY {
     background: #000000;
 }
 
-a:link {
+A:link {
     color: #990033;
     text-decoration: none;
 }
 
-a:visited {
+A:visited {
     color: #009999;
     text-decoration: none;
 }
 
-a:hover {
+A:hover {
     color: #33CCCC;
     text-decoration: underline;
 }
 
-a:active {
+A:active {
     color: #33CCCC;
     text-decoration: none;
 }
 
-p {
+P {
     color: #CCCCFF;
     font-family: "MV Boli", "Monotype Corsiva", "Burton Sketch", "Calibri", "Arial";
     font-size: 1.2em;
@@ -48,21 +40,21 @@ p {
     line-height: 1.6em;
 }
 
-ul {
+UL {
     margin: 32px 64px;
     line-height: 2.4em;
 }
 
-header,
-footer,
-nav,
-section {
+HEADER,
+FOOTER,
+NAV,
+SECTION {
     display: block;
 }
 
 /*HEADERS AND FOOTERS*/
 
-h1 {
+H1 {
     font-size: 2.4em;
     font-family: "Verdana", "Lucida Console", "Calibri", "Arial";
     color: #990033;
@@ -73,7 +65,7 @@ h1 {
     text-shadow: 1px 1px #660000;
 }
 
-h2 {
+H2 {
     font-size: 3.5em;
     font-family: "Freestyle Script", "Lucide Console", "Monotype Corsiva", "Calibri", "Arial";
     color: #6633CC;
@@ -82,7 +74,7 @@ h2 {
     margin-bottom: 32px;
 }
 
-footer {
+FOOTER {
     color: #CCCCFF;
     font-size: 1em;
     font-family: "Corbel", "Dotum", "Calibri", "Arial";
@@ -94,7 +86,7 @@ footer {
     text-align: right;
 }
 
-footer img {
+FOOTER IMG {
     margin: 8px;
 }
 
@@ -106,7 +98,7 @@ footer img {
     margin-top: 4px;
 }
 
-#header p {
+#header P {
     color: #CCCCFF;
     font-size: 1em;
     font-family: "Corbel", "Dotum", "Calibri", "Arial";
@@ -125,7 +117,7 @@ footer img {
 
 /* TABS */
 
-ul#menu {
+UL#menu {
     border-bottom: 1px #CCCCCC solid;
     position: relative;
     width: 984px;
@@ -136,12 +128,12 @@ ul#menu {
     text-align: left;
 }
 
-ul#menu li {
+UL#menu LI {
     display: inline;
     list-style: none;
 }
 
-ul#menu li a {
+UL#menu LI A {
     font-size: 1.6em;
     font-family: "Corbel", "Dotum", "Calibri", "Arial";
     font-weight: bold;
@@ -153,12 +145,12 @@ ul#menu li a {
     background: #333333;
 }
 
-ul#menu li a:hover {
+UL#menu LI A:hover {
     color: #000000;
     background-color: #990000;
 }
 
-ul#menu li a:active {
+UL#menu LI A:active {
     color: #000000;
     background-color: #990000;
 }
@@ -174,7 +166,7 @@ ul#menu li a:active {
 
 /* TABLES */
 
-table tr th {
+TABLE TR TH {
     color: #CCCCFF;
     font-size: 1em;
     font-family: "MV Boli", "Monotype Corsiva", "Burton Sketch", "Calibri", "Arial";
@@ -182,20 +174,50 @@ table tr th {
     text-align: left;
 }
 
-table tr td {
+TABLE TR TH {
     margin: 4px;
+}
+
+TABLE.profile_chapter {
+    border-collapse: collapse;
+    width: 864px;
+    margin: 8px;
+    margin-left: 32px;
+    margin-right: 32px;
+}
+
+TABLE.profile_chapter TR TH,TD {
+    font-size: 1em;
+    font-family: "MV Boli", "Monotype Corsiva", "Burton Sketch", "Calibri", "Arial";
+    text-align: left;
+    margin: 0px;
+    padding: 8px;
+}
+
+TABLE.profile_chapter TR TH {
+    background: #000000;
+    border: 1px solid #003366;
+}
+
+TABLE.profile_chapter TR TH A {
+    float: right;
+}
+
+TABLE.profile_chapter TR TD {
+    background: #666666;
+    color: #240044;
 }
 
 /* INPUT CONTROLS */
 
-input {
+INPUT {
     color: #006699;
     font-size: 1em;
     font-family: "MV Boli", "Monotype Corsiva", "Burton Sketch", "Calibri", "Arial";
     text-align: left;
 }
 
-input.button {
+INPUT.button {
     color: #000033;
     font-family: "Corbel", "Dotum", "Calibri", "Arial";
     text-align: center;

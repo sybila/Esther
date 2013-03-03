@@ -22,8 +22,10 @@ if(jQuery) (function($)
 
                 function bindFiles(f) {
                     var links = $(f).find('LI A');
-                    links.click(function()
+                    links.click(function(e)
                         {
+                            e.preventDefault();
+                            
                             if ($(this).parent().hasClass('expanded'))
                             {
                                 $(this).parent().find('UL').slideUp({ duration: 420 });
@@ -83,9 +85,12 @@ if(jQuery) (function($)
                                     {
                                         showFiles($(this).parent(), $(this).attr('file_id'), 'public');
                                     }
-
-                                    openWidget($(this));
                                 }
+                            }
+                            
+                            if ($(this).parent().hasClass('file'))
+                            {
+                                openWidget($(this));
                             }
                             return false;
                         });
@@ -122,6 +127,7 @@ if(jQuery) (function($)
                                                             if (confirm('The file cannot be restored after deleting. Are you sure you want to proceed?'))
                                                             {
                                                                 $.post('File/Delete', { file: file_id });
+                                                                closeWidget(file_id);
                                                             }
                                                             break;
                                                         }

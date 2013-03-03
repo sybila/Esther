@@ -1,12 +1,12 @@
 #widget {
-    position: relative;
     background: #EEEEEE;
     border: #CCCCCC 2px inset;
     margin-left: 196px;
     height: 640px;
+    overflow: hidden;
 }
 
-#widget p {
+#widget P {
     color: #000000;
     font-size: 12px;
     line-height: 18px;
@@ -14,16 +14,18 @@
     margin: 4px 8px 4px 8px;
 }
 
-#widget h7 {
+#widget H7 {
     color: #006666;
     line-height: 2em;
     font-size: 1.2em;
     font-family: "Verdana", "Sans-Serif", "Calibri", "Arial";
-    padding: 32px;
-    margin: 32px;
+    margin-left: 64px;
+    margin-right: 64px;
+    margin-top: 64px;
+    margin-bottom: 32px;
 }
 
-#widget #frontpage p {
+#widget #frontpage P {
     color: #000000;
     font-size: 14px;
     line-height: 20px;
@@ -32,29 +34,29 @@
     padding: 8px;
 }
 
-#widget input {
+#widget INPUT {
     font-family: "Verdana", "Sans-Serif", "Calibri", "Arial";
     margin: 16px 8px 8px 16px;
 }
 
-#widget div.viewpoint {
-    height: 564px;
+#widget DIV.viewpoint {
+    height: 480px;
     width: 712px;
     overflow: scroll;
     margin: 8px 8px 8px 8px;
 }
 
-#widget table {
+#widget TABLE {
     border-collapse: collapse;
 }
 
-#widget table tr th,td {
+#widget TABLE TR TH,TD {
     border: 1px solid;
     font-family: "Verdana", "Sans-Serif", "Calibri", "Arial";
     white-space: nowrap;
 }
 
-#widget table tr th {
+#widget TABLE TR TH {
     border-color: #000000;
     background: #009999;
     color: #99FFFF;
@@ -66,15 +68,15 @@
     padding-right: 16px;
 }
 
-#widget table tr th.headerSortUp {
+#widget TABLE TR TH.headerSortUp {
     background-image: url(../Graphics/TableSorter/ascending.gif);
 }
 
-#widget table tr th.headerSortDown {
+#widget TABLE TR TH.headerSortDown {
     background-image: url(../Graphics/TableSorter/descending.gif);
 }
 
-#widget a.expandable {
+#widget A.expandable {
     font-size: 14px;
     line-height: 20px;
     padding-left: 4px;
@@ -82,17 +84,21 @@
     margin: 16px;
 }
 
-#widget table tr td {
+#widget TABLE TR TD {
     border-color: #009999;
     color: #000000;
     font-size: 10px;
 }
 
-#widget textarea {
-    height: 542px;
+#widget TEXTAREA {
+    height: 480px;
     width: 706px;
     margin: 8px 8px 8px 8px;
     resize: none;
+}
+
+#widget INPUT {
+    margin: 8px;
 }
 
 #widget #filter_controls {
@@ -101,13 +107,17 @@
     width: 640px;
     height: 320px;
     right: 8px;
-    bottom: 68px;
+    bottom: 28px;
     background: #EEEEEE;
     border: 1px solid #999999;
     border-bottom: 0px;
 }
 
-#widget .container {
+#widget #filter_controls P INPUT {
+    margin: 4px;
+}
+
+#widget DIV.container {
     background: #FFFFFF;
     border: 1px solid #CCFFFF;
     margin: 8px 32px 16px 32px;
@@ -126,14 +136,14 @@
     cursor: pointer;
 }
 
-#widget select.drop_down {
+#widget SELECT.drop_down {
     color: #000033;
     font-size: 12px;
     line-height: 18px;
     font-family: "Verdana", "Sans-Serif", "Calibri", "Arial";
 }
 
-#widget select.drop_down option {
+#widget SELECT.drop_down OPTION {
     color: #003366;
     font-size: 12px;
     line-height: 18px;
@@ -147,8 +157,8 @@
     cursor: pointer;
 }
 
-#widget #cytoscape_web {
-    height: 472px;
+#widget DIV.cytoscape {
+    height: 380px;
     width: 712px;
     margin: 8px;
 }
@@ -158,4 +168,56 @@
     width: 712px;
     margin: 0px 8px 8px 8px;
     overflow: scroll;
+}
+
+#widget #tabs {
+    overflow: hidden;
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+    height: 30px;
+    background: #009999;
+    font-size: 0px;
+    white-space: nowrap;
+}
+
+#widget #tabs LI {
+    display: inline-block;
+    list-style: none;
+    padding: 4px;
+    margin-top: 4px;
+    margin-bottom: 0px;
+    margin-left: 4px;
+    margin-right: 2px;
+    background: #CCCCCC;
+    border: 1px solid #003366;
+}
+
+#widget #tabs LI A {
+    line-height: 16px;
+    font-size: 14px;
+    font-family: "Verdana", "Sans-Serif", "Calibri", "Arial";
+    color: #000000;
+    cursor: pointer;
+    margin-right: 4px;
+}
+
+#widget #tabs LI A:hover {
+    text-decoration: none;
+}
+
+#widget #tabs LI.ui-tabs-active {
+    background: #EEEEEE;
+    border-bottom: 0px;
+    padding-bottom: 5px;
+}
+
+#widget #tabs li.ui-tabs-active {
+    margin-bottom: -1px;
+}
+
+#widget #tabs LI.ui-tabs-active A,
+#widget #tabs LI.ui-state-disabled A,
+#widget #tabs LI.ui-tabs-loading A {
+    cursor: text;
 }

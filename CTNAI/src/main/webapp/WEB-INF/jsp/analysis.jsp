@@ -22,7 +22,7 @@
         <script type="text/javascript">
             $(document).ready( function() {
                 $('#filesystembrowser').loadFileSystem();
-                $('#widget').openWelcomeScreen();
+                $('#widget').setupTabs();
             });
         </script>
         
@@ -33,6 +33,25 @@
         <div id="filesystembrowser">
         </div>
         <div id="widget">
+            <ul id="tabs">
+                <li file="null">
+                    <a href="#tab_1">Start Page</a>
+                    <img height="10" style="cursor: pointer;" src="<c:url value="/resources/Graphics/x_button.png" />" />
+                </li>
+            </ul>
+            <div id="tab_1">
+                <div id="frontpage">
+                    <h7>Welcome to the analysis screen!</h7>
+                    <p>
+                        If this is your first time visiting you might want to try our
+                        <a href="">Getting Started Tutorial</a>.
+                    </p>
+                    <p>
+                        Or you may just select one of the existing files to the left or
+                        <a href="javascript:newModel()">create a new model</a> right now!
+                    </p>
+                </div>
+            </div>
         </div>
     </body>
 </html>

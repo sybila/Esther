@@ -36,7 +36,7 @@ function initializeParameterView(context, data)
                 $(this).removeClass('open');
                 $(this).addClass('closed');
 
-                $('#filter_controls').hide('slide', { direction: 'down' }, 640);
+                context.find('#filter_controls').hide('slide', { direction: 'down' }, 640);
             }
             else if ($(this).hasClass('closed'))
             {
@@ -44,7 +44,7 @@ function initializeParameterView(context, data)
                 $(this).removeClass('closed');
                 $(this).addClass('open');
 
-                $('#filter_controls').show('slide', { direction: 'down' }, 640);
+                context.find('#filter_controls').show('slide', { direction: 'down' }, 640);
             }
         });
 
@@ -95,6 +95,8 @@ function initializeParameterView(context, data)
                             var filter_data = encodeConstraints(context.find('#constraint_container p'));
 
                             $.post('File/Write', { file: data, data: filter_data });
+                        
+                            context.find('#filter_controls').attr('filter', data);
                         });
                 }
                 else

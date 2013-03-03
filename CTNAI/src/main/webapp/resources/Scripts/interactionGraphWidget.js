@@ -11,6 +11,7 @@ if(jQuery) (function($)
             $.get('File/Read',
                 { file: file }, function(data)
                     {
+                        context.append('<h7>Model:</h7>');
                         context.append('<textarea spellcheck=false id="contents">' +
                             data + '</textarea>');
                         context.append('<input class="button" id="savebutton" file_id="' +

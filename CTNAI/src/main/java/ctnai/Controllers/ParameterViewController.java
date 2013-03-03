@@ -157,9 +157,11 @@ public class ParameterViewController
         
         if (filterId != null)
         {
+            CTNAIFile filterFile = fileSystemManager.getFileById(filterId);
+            
             filter = readFilter(filterId);
             
-            targetId = Long.parseLong(fileSystemController.createFile(source.getName(), "xgmml", new Long[] { filterId }));
+            targetId = Long.parseLong(fileSystemController.createFile(filterFile.getName(), "xgmml", new Long[] { filterId }));
         }
         else
         {

@@ -8,14 +8,14 @@ if(jQuery) (function($)
             
             context.empty();
             
-            $.get('BehaviourMapInterface', function(data)
+            $.get('BehaviourMapInterface', { file: file }, function(data)
                 {
                     context.append(data);
             
                     context.find('#node_table').tablesorter();
                     context.find('#edge_table').tablesorter();
                     
-                    var vis = new org.cytoscapeweb.Visualization('cytoscape_web', { swfPath: "resources/Flash/CytoscapeWeb",
+                    var vis = new org.cytoscapeweb.Visualization(('cytoscape_web_' + file), { swfPath: "resources/Flash/CytoscapeWeb",
                             flashInstallerPath: "resources/Flash/playerProductInstall" });
 
                     vis.ready(function()

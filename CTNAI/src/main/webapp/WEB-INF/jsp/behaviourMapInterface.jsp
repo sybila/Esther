@@ -1,9 +1,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
 
-<div id="cytoscape_web">
-    
-</div>
+<h7>Behaviour Map:</h7>
+
+<div class="cytoscape" id="cytoscape_web_${file}" />
 
 <div id="graph_information">
     <table style="border-collapse: separate;">

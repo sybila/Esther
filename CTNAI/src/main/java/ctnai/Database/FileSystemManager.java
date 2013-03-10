@@ -255,18 +255,41 @@ public class FileSystemManager
         return null;
     }
     
-    public List<CTNAIFile> getPublicRootFiles()
+    public List<CTNAIFile> getPublicRootFiles(UserInformation user)
     {
+        if (user == null)
+        {
+            throw new NullPointerException("User");
+        }
+        
+        if (user.getId() == null)
+        {
+            throw new IllegalArgumentException("User information cannot have NULL ID.");
+        }
+        
         Connection connection = null;
         PreparedStatement statement = null;
         
         try
         {
+            StringBuilder queryBuilder = new StringBuilder();
+            
+            queryBuilder.append("SELECT f.* FROM FILES f LEFT OUTER JOIN ");
+            queryBuilder.append("SPECIFICATIONS s JOIN FILES g ON g.id = s.parent AND g.public = TRUE ");
+            queryBuilder.append("ON f.id = s.child WHERE s.child IS NULL AND f.public = TRUE");
+            
+            if (user.getHidePublicOwned())
+            {
+                queryBuilder.append(" AND f.owner != ?");
+            }
+            
             connection = dataSource.getConnection();
-            statement = connection
-                .prepareStatement("SELECT f.* FROM FILES f LEFT OUTER JOIN " +
-                    "SPECIFICATIONS s JOIN FILES g ON g.id = s.parent AND g.public = TRUE " +
-                    "ON f.id = s.child WHERE s.child IS NULL AND f.public = TRUE");
+            statement = connection.prepareStatement(queryBuilder.toString());
+            
+            if (user.getHidePublicOwned())
+            {
+                statement.setLong(1, user.getId());
+            }
             
             ResultSet resultSet = statement.executeQuery();
             
@@ -360,11 +383,11 @@ public class FileSystemManager
         return null;
     }
     
-    public List<CTNAIFile> getPublicSubfiles(CTNAIFile parent)
+    public List<CTNAIFile> getPublicSubfiles(CTNAIFile parent, UserInformation user)
     {
         if (parent == null)
         {
-            throw new NullPointerException("Parent ID");
+            throw new NullPointerException("Parent");
         }
         
         if (parent.getId() == null)
@@ -372,16 +395,39 @@ public class FileSystemManager
             throw new IllegalArgumentException("Cannot find subfiles of file with NULL ID.");
         }
         
+        if (user == null)
+        {
+            throw new NullPointerException("User");
+        }
+        
+        if (user.getId() == null)
+        {
+            throw new IllegalArgumentException("User information cannot have NULL ID.");
+        }
+        
         Connection connection = null;
         PreparedStatement statement = null;
         
         try
         {
+            StringBuilder queryBuilder = new StringBuilder();
+            
+            queryBuilder.append("SELECT f.* FROM FILES f JOIN SPECIFICATIONS s ON f.id = s.child WHERE s.parent = ? AND f.public = TRUE");
+            
+            if (user.getHidePublicOwned())
+            {
+                queryBuilder.append(" AND f.owner != ?");
+            }
+            
             connection = dataSource.getConnection();
-            statement = connection
-                .prepareStatement("SELECT f.* FROM FILES f JOIN SPECIFICATIONS s ON f.id = s.child WHERE s.parent = ? AND f.public = TRUE");
+            statement = connection.prepareStatement(queryBuilder.toString());
             
             statement.setLong(1, parent.getId());
+            
+            if (user.getHidePublicOwned())
+            {
+                statement.setLong(2, user.getId());
+            }
             
             ResultSet resultSet = statement.executeQuery();
             

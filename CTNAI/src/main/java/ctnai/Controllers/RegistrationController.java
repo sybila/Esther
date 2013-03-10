@@ -3,6 +3,7 @@ package ctnai.Controllers;
 import Emailer.CTNAIEmailer;
 import Forms.UserForm;
 import ctnai.Database.User;
+import ctnai.Database.UserInformation;
 import ctnai.Database.UserManager;
 import java.io.FileOutputStream;
 import java.io.UnsupportedEncodingException;
@@ -96,8 +97,14 @@ public class RegistrationController
         {
             Long id;
             if ((id = userManager.registerUser(newUser)) != null)
-            {
+            {                
                 userManager.setUserRole(newUser, "user");
+                
+                UserInformation userInformation = new UserInformation();
+                userInformation.setId(id);
+                userInformation.setHidePublicOwned(Boolean.TRUE);
+                
+                userManager.setUserInformation(userInformation);
                 
                 String token = generateToken();
                 userManager.setActivationToken(newUser, token);

@@ -3,6 +3,7 @@ package ctnai.Controllers;
 import ctnai.Database.CTNAIFile;
 import ctnai.Database.FileSystemManager;
 import ctnai.Database.User;
+import ctnai.Database.UserInformation;
 import ctnai.Database.UserManager;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -89,7 +90,17 @@ public class FileSystemController
     @RequestMapping(value = "/Files/Public", method = RequestMethod.GET)
     public String publicFiles(ModelMap model)
     {
-        List<CTNAIFile> files = fileSystemManager.getPublicRootFiles();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!authentication.isAuthenticated())
+        {
+            return null;
+        }
+        String currentUserName = authentication.getName();
+        
+        User user = userManager.getUserByUsername(currentUserName);
+        UserInformation information = userManager.getUserInformation(user.getId());
+        
+        List<CTNAIFile> files = fileSystemManager.getPublicRootFiles(information);
         
         model.addAttribute("privacy", "public");
         model.addAttribute("files", files);
@@ -107,19 +118,21 @@ public class FileSystemController
         if (authentication.isAuthenticated())
         {
             String username = authentication.getName();
+            
+            User user = userManager.getUserByUsername(username);
+            
             switch (privacy)
             {
                 case "private":
                     {
-                        files = fileSystemManager
-                            .getSubfilesOwnedBy(fileSystemManager.getFileById(parentId),
-                                getUserId(username));
+                        files = fileSystemManager.getSubfilesOwnedBy(fileSystemManager.getFileById(parentId), user.getId());
                         break;
                     }
                 case "public":
                     {
-                        files = fileSystemManager
-                            .getPublicSubfiles(fileSystemManager.getFileById(parentId));
+                        UserInformation information = userManager.getUserInformation(user.getId());
+                        
+                        files = fileSystemManager.getPublicSubfiles(fileSystemManager.getFileById(parentId), information);
                         break;
                     }
             }

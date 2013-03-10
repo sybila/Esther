@@ -1,9 +1,6 @@
 package ctnai.Database;
 
 import java.io.FileOutputStream;
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -450,6 +447,123 @@ public class UserManager
         return null;
     }
     
+    public void setUserInformation(UserInformation information)
+    {
+        if (information == null)
+        {
+            throw new NullArgumentException("Information");
+        }
+        
+        if ((information.getId() == null) || (information.getHidePublicOwned() == null))
+        {
+            throw new IllegalArgumentException("User Information misses required attributes.");
+        }
+        
+        Connection connection = null;
+        PreparedStatement statement = null;
+        
+        try
+        {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement("INSERT INTO PREFERENCES (id, hide_public_owned) VALUES (?, ?)");
+            
+            statement.setLong(1, information.getId());
+            statement.setBoolean(2, information.getHidePublicOwned());
+            
+            statement.executeUpdate();
+        }
+        catch (SQLException e)
+        {
+            logger.log(Level.SEVERE, ("Error setting user information for User ID: " + information.getId()), e);
+        }
+        finally
+        {
+            DBUtils.closeQuietly(connection, statement);
+        }
+    }
+    
+    public void updateUserInformation(UserInformation information)
+    {
+        if (information == null)
+        {
+            throw new NullArgumentException("Information");
+        }
+        
+        if ((information.getId() == null) || (information.getHidePublicOwned() == null))
+        {
+            throw new IllegalArgumentException("User Information misses required attributes.");
+        }
+        
+        Connection connection = null;
+        PreparedStatement statement = null;
+        
+        try
+        {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement("UPDATE PREFERENCES SET hide_public_owned=? WHERE id=?");
+            
+            statement.setBoolean(1, information.getHidePublicOwned());
+            statement.setLong(2, information.getId());
+            
+            statement.executeUpdate();
+        }
+        catch (SQLException e)
+        {
+            logger.log(Level.SEVERE, ("Error updating user information for User ID: " + information.getId()), e);
+        }
+        finally
+        {
+            DBUtils.closeQuietly(connection, statement);
+        }
+    }
+    
+    public UserInformation getUserInformation(Long id)
+    {
+        if (id == null)
+        {
+            throw new NullArgumentException("ID");
+        }
+        
+        Connection connection = null;
+        PreparedStatement statement = null;
+        
+        try
+        {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement("SELECT * FROM PREFERENCES WHERE id=?");
+            
+            statement.setLong(1, id);
+            
+            ResultSet resultSet = statement.executeQuery();
+            
+            if (resultSet.next())
+            {
+                UserInformation result = getUserInformationFromResultSet(resultSet);
+                
+                if (resultSet.next())
+                {
+                    return null; //TODO
+                }
+                
+                return result;
+            }
+            else
+            {
+                return null;
+            }
+        }
+        catch (SQLException e)
+        {
+            logger.log(Level.SEVERE, "Error selecting information of user ID: " + id + " from database.", e);
+        }
+        finally
+        {
+            DBUtils.closeQuietly(connection, statement);
+        }
+        
+        return null;
+    }
+    
     private User getUserFromResultSet(ResultSet resultSet) throws SQLException
     {
         User user = new User();
@@ -461,6 +575,16 @@ public class UserManager
         user.setEnabled(resultSet.getBoolean("enabled"));
 
         return user;
+    }
+    
+    private UserInformation getUserInformationFromResultSet(ResultSet resultSet) throws SQLException
+    {
+        UserInformation information = new UserInformation();
+        
+        information.setId(resultSet.getLong("id"));
+        information.setHidePublicOwned(resultSet.getBoolean("hide_public_owned"));
+        
+        return information;
     }
     
     public void setUserRole(User user, String role)

@@ -2,6 +2,7 @@ package ctnai.Controllers;
 
 import Forms.UserForm;
 import ctnai.Database.User;
+import ctnai.Database.UserInformation;
 import ctnai.Database.UserManager;
 import java.io.FileOutputStream;
 import java.io.UnsupportedEncodingException;
@@ -59,7 +60,12 @@ public class ProfileController
         
         User user = userManager.getUserByUsername(username);
         
+        UserInformation information = userManager.getUserInformation(user.getId());
+        
         map.addAttribute("email", user.getEmail());
+        
+        map.addAttribute("hide_public_owned", information.getHidePublicOwned());
+        
         map.addAttribute("page", "profile");
         
         return "frontpage";
@@ -203,6 +209,48 @@ public class ProfileController
             
             map.addAttribute("page", "changePasswordSuccess");
         }
+        
+        return "frontpage";
+    }
+    
+    @RequestMapping(value = "/Profile/Edit/Preferences", method = RequestMethod.GET)
+    public String changePreferences(ModelMap map)
+    {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!authentication.isAuthenticated())
+        {
+            return null;
+        }
+        String userName = authentication.getName();
+        
+        User user = userManager.getUserByUsername(userName);
+        
+        UserInformation information = userManager.getUserInformation(user.getId());
+        
+        map.addAttribute("hide_public_owned", information.getHidePublicOwned());
+        map.addAttribute("page", "editPreferencesProfile");
+        
+        return "frontpage";
+    }
+    
+    @RequestMapping(value = "/Profile/Edit/Preferences", method = RequestMethod.POST)
+    public String submitPreferences(ModelMap map, @RequestParam(value = "hide_public_owned", required = false) Boolean hidePublicOwned)
+    {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!authentication.isAuthenticated())
+        {
+            return null;
+        }
+        String currentUserName = authentication.getName();
+        
+        User user = userManager.getUserByUsername(currentUserName);
+        UserInformation information = userManager.getUserInformation(user.getId());
+        
+        information.setHidePublicOwned((((hidePublicOwned != null) && hidePublicOwned.booleanValue()) ? true : false));
+
+        userManager.updateUserInformation(information);
+
+        map.addAttribute("page", "editProfileSuccess");
         
         return "frontpage";
     }

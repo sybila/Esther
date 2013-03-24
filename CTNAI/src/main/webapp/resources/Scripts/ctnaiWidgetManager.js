@@ -140,3 +140,10 @@ function closeTab(tab)
 
     $('#widget').find('#scrollBar DIV').width($('#widget').find('#tabs')[0].scrollWidth);
 }
+
+function renameTab(file_id, name)
+{
+    $('#widget #tabs LI[file=' + file_id + '] A').text(name);
+    
+    $('#widget').find('#scrollBar DIV').width($('#widget').find('#tabs')[0].scrollWidth);
+}

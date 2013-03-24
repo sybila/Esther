@@ -6,6 +6,41 @@ if(jQuery) (function($)
         {
             $(this).each( function()
             {
+                function extractExtension(name)
+                {
+                    return name.split('.').pop();
+                }
+                
+                function removeFileEntries(id, context)
+                {
+                    context.find('UL.ctnaiFileSystem LI A[file_id="' + id + '"]').parent().remove();
+                }
+                
+                function renameFileEntries(id, name, context)
+                {
+                    context.find('UL.ctnaiFileSystem LI A[file_id="' + id + '"]').text(name);
+                }
+                
+                function appendFileEntries(parent_id, id, name, cls, context)
+                {
+                    var parents = context.find('UL.ctnaiFileSystem LI A[file_id="' + parent_id + '"]');
+                    
+                    if (parents.length == 0)
+                    {
+                        parents = context.find('> UL');
+                    }
+                    
+                    parents.parent().each(function()
+                        {
+                            if ($(this).hasClass('expanded'))
+                            {
+                                $(this).find('> UL.ctnaiFileSystem').append('<li class="' + cls + '"><a file_id="' + id +
+                                    '" href="#">' + name + '</a></li>');
+                                bindFiles(this);
+                            }
+                        })
+                }
+                
                 function showFiles(c, f, p)
                 {
                     $(".ctnaiFileSystem.start").remove();
@@ -22,6 +57,10 @@ if(jQuery) (function($)
 
                 function bindFiles(f) {
                     var links = $(f).find('LI A');
+                    
+                    links.unbind('click');
+                    links.unbind('contextmenu');
+                    
                     links.click(function(e)
                         {
                             e.preventDefault();
@@ -103,12 +142,16 @@ if(jQuery) (function($)
                                     e.pageY + 'px; left: ' + e.pageX + 'px">');
                                 
                                 var file_id = $(this).attr('file_id');
+                                var file_name = $(this).text();
+                                var parent = $(this).parent().parent().parent().find('> A').attr('file_id');
+                                
                                 $.get('File/Menu', { file: file_id }, function(data)
                                     {
                                         $(document).find('BODY DIV.fileMenu').append(data);
                                         
-                                        $(document).find('BODY DIV.fileMenu A').click(function ()
+                                        $(document).find('BODY DIV.fileMenu A').click(function (e)
                                             {
+                                                //e.precentDefault();
                                                 var func = $(this).attr('func');
                                                 
                                                 switch(func)
@@ -118,7 +161,13 @@ if(jQuery) (function($)
                                                             var copyname;
                                                             if (((copyname = prompt("Enter new file name: ", "")) != null) && (copyname != ''))
                                                             {
-                                                                $.post('File/Copy', { file: file_id, name: copyname });
+                                                                $.post('File/Copy', { file: file_id, name: copyname }, function(data)
+                                                                    {
+                                                                        appendFileEntries(parent, data,
+                                                                            (copyname + '.' + extractExtension(file_name)),
+                                                                            ('file private ' + extractExtension(file_name)),
+                                                                            $('UL.ctnaiFileSystem LI#privateFolder'));
+                                                                    });
                                                             }
                                                             break;
                                                         }
@@ -126,8 +175,11 @@ if(jQuery) (function($)
                                                         {
                                                             if (confirm('The file cannot be restored after deleting. Are you sure you want to proceed?'))
                                                             {
-                                                                $.post('File/Delete', { file: file_id });
-                                                                closeWidget(file_id);
+                                                                $.post('File/Delete', { file: file_id }, function()
+                                                                    {
+                                                                        closeWidget(file_id);
+                                                                        removeFileEntries(file_id, $(document));
+                                                                    });
                                                             }
                                                             break;
                                                         }
@@ -143,12 +195,20 @@ if(jQuery) (function($)
                                                         }
                                                     case 'privatize':
                                                         {
-                                                            $.post('File/Privatize', { file: file_id });
+                                                            $.post('File/Privatize', { file: file_id }, function()
+                                                                {
+                                                                    removeFileEntries(file_id, $('LI#publicFolder'));
+                                                                });
+                                                                
                                                             break;
                                                         }
                                                     case 'publish':
                                                         {
-                                                            $.post('File/Publish', { file: file_id });
+                                                            $.post('File/Publish', { file: file_id }, function()
+                                                                {
+                                                                    appendFileEntries(parent, file_id, file_name,
+                                                                        ('file public ' + extractExtension(file_name)), $('UL.ctnaiFileSystem LI#publicFolder'));
+                                                                });
                                                             break;
                                                         }
                                                     case 'rename':
@@ -156,7 +216,11 @@ if(jQuery) (function($)
                                                             var newname;
                                                             if (((newname = prompt("Enter new name: ", "")) != null) && (newname != ''))
                                                             {
-                                                                $.post('File/Rename', { file: file_id, name: newname });
+                                                                $.post('File/Rename', { file: file_id, name: newname }, function()
+                                                                    {
+                                                                        renameFileEntries(file_id, (newname + '.' + extractExtension(file_name)), $(document));
+                                                                        renameTab(file_id, (newname + '.' + extractExtension(file_name)));
+                                                                    });
                                                             }
                                                             break;
                                                         }

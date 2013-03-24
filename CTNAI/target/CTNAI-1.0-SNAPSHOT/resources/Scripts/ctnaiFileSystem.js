@@ -131,6 +131,16 @@ if(jQuery) (function($)
                                                             }
                                                             break;
                                                         }
+                                                    case 'download':
+                                                        {
+                                                            var url = window.location.pathname;
+                                                            
+                                                            url = url.replace('Analysis', ('File/Download?file=' + file_id));
+                                                            
+                                                            window.open(url);
+                                                            
+                                                            break;
+                                                        }
                                                     case 'privatize':
                                                         {
                                                             $.post('File/Privatize', { file: file_id });
@@ -153,6 +163,8 @@ if(jQuery) (function($)
                                                     default:
                                                         break;
                                                 }
+                                                
+                                                $("div.fileMenu").remove();
                                             })
                                     });
                             }

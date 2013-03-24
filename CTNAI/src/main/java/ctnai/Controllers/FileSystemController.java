@@ -13,6 +13,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,9 +24,10 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -184,6 +186,7 @@ public class FileSystemController
         }
         
         links.put("copy", "Copy");
+        links.put("download", "Download");
         
         model.addAttribute("links", links);
         
@@ -290,23 +293,33 @@ public class FileSystemController
         fileSystemManager.updateFile(file);
     }
     
-    @RequestMapping(value = "/File/Download", method = RequestMethod.POST)
-    @ResponseBody
-    public FileSystemResource downloadFile(@RequestParam("file") Long id)
+    @RequestMapping(value = "/File/Download", method = RequestMethod.GET)
+    public void downloadFile(@RequestParam("file") Long id, HttpServletResponse response)
     {
         if (id == null)
         {
-            return null;
+            return;
         }
         
-        File file = fileSystemManager.getSystemFileById(id);
+        CTNAIFile ctnaiFile = fileSystemManager.getFileById(id);
+        File file = fileSystemManager.getSystemFileById(ctnaiFile.getId());
         
-        if (file == null)
+        response.setContentType("application/downloadable");
+        response.setContentLength(ctnaiFile.getSize().intValue());
+        response.setHeader("Content-Disposition:", ("attachment; filename=" + ctnaiFile.getName() + "." + ctnaiFile.getType()));
+        
+        try
         {
-            return null;
+            InputStream is = new FileInputStream(file);
+
+            IOUtils.copy(is, response.getOutputStream());
+
+            response.flushBuffer();
         }
-        
-        return new FileSystemResource(file);
+        catch (IOException e)
+        {
+            logger.log(Level.SEVERE, ("Error sending contents of file ID: " + id));
+        }
     }
     
     @RequestMapping(value = "/File/Copy", method = RequestMethod.POST)

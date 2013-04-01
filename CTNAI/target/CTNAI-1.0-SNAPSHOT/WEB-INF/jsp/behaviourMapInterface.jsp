@@ -9,7 +9,7 @@
     <table style="border-collapse: separate;">
         <tr>
             <td valign="top" style="border: 0px; margin: 2px;">
-                <table id="node_table" style="display: none;">
+                <table class="list" id="node_table" style="display: none;">
                     <thead>
                         <tr>
                             <th>State</th>
@@ -22,7 +22,7 @@
                 </table>
             </td>
             <td valign="top" style="border: 0px; margin: 2px;">
-                <table id="edge_table" style="display: none;">
+                <table class="list" id="edge_table" style="display: none;">
                     <thead>
                         <tr>
                             <th>Source</th>

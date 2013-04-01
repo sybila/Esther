@@ -15,6 +15,8 @@ public class CTNAIFile
     
     private Long size;
     
+    private Boolean blocked;
+    
     public Long getId()
     {
         return id;
@@ -74,8 +76,18 @@ public class CTNAIFile
     {
         this.size = size;
     }
+
+    public Boolean getBlocked()
+    {
+        return blocked;
+    }
+
+    public void setBlocked(Boolean blocked)
+    {
+        this.blocked = blocked;
+    }
     
-    public static CTNAIFile newFile(String name, String type, Long ownerId, Boolean published, Long size)
+    public static CTNAIFile newFile(String name, String type, Long ownerId, Boolean published, Long size, Boolean blocked)
     {
         CTNAIFile file = new CTNAIFile();
         
@@ -84,6 +96,7 @@ public class CTNAIFile
         file.setOwner(ownerId);
         file.setPublished(published);
         file.setSize(size);
+        file.setBlocked(blocked);
         
         return file;
     }

@@ -161,11 +161,11 @@ public class ParameterViewController
             
             filter = readFilter(filterId);
             
-            targetId = Long.parseLong(fileSystemController.createFile(filterFile.getName(), "xgmml", new Long[] { filterId }));
+            targetId = Long.parseLong(fileSystemController.createFile(filterFile.getName(), "xgmml", new Long[] { filterId }, false));
         }
         else
         {
-            targetId = Long.parseLong(fileSystemController.createFile(source.getName(), "xgmml", new Long[] { source.getId() }));
+            targetId = Long.parseLong(fileSystemController.createFile(source.getName(), "xgmml", new Long[] { source.getId() }, false));
         }
         
         Connection connection = null;

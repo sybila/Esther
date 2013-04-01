@@ -196,7 +196,8 @@ public class FileSystemController
     @RequestMapping(value = "/File/Create", method = RequestMethod.POST)
     @ResponseBody
     public String createFile(@RequestParam("name") String name, @RequestParam("type") String type,
-        @RequestParam(value="parents[]", required = false) Long[] parents)
+        @RequestParam(value="parents[]", required = false) Long[] parents,
+        @RequestParam(value="blocked", required = false) Boolean blocked)
     {
         if ((name == null) || (type == null) || name.isEmpty() || type.isEmpty())
         {
@@ -210,7 +211,8 @@ public class FileSystemController
         }
         String username = authentication.getName();
         
-        CTNAIFile file = CTNAIFile.newFile(name, type, getUserId(username), false, new Long(0));
+        CTNAIFile file = CTNAIFile.newFile(name, type, getUserId(username), false, new Long(0),
+            ((blocked == null) ? false : blocked));
         
         Long id = fileSystemManager.createFile(file);
         
@@ -345,7 +347,7 @@ public class FileSystemController
             parentIds[i] = parents.get(i).getId();
         }
         
-        Long newId = Long.parseLong(createFile(name, file.getType(), parentIds));
+        Long newId = Long.parseLong(createFile(name, file.getType(), parentIds, false));
         
         CTNAIFile newFile = fileSystemManager.getFileById(newId);
         newFile.setSize(file.getSize());

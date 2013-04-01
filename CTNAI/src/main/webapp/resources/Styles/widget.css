@@ -46,18 +46,26 @@
     margin: 8px 8px 8px 8px;
 }
 
-#widget TABLE {
+#widget TABLE.list {
     border-collapse: collapse;
 }
 
-#widget TABLE TR TH,TD {
-    border: 1px solid;
+#widget TABLE TR TH, TD {
     font-family: "Verdana", "Sans-Serif", "Calibri", "Arial";
-    white-space: nowrap;
     margin: 0px;
 }
 
+#widget TABLE.list TR TH,TD {
+    border: 1px solid;
+    white-space: nowrap;
+}
+
 #widget TABLE TR TH {
+    cursor: pointer;
+    padding-left: 4px;
+}
+
+#widget TABLE.list TR TH {
     border-color: #000000;
     background: #009999;
     color: #99FFFF;
@@ -69,11 +77,21 @@
     padding-right: 16px;
 }
 
-#widget TABLE TR TH.headerSortUp {
+#widget TABLE TR TD {
+    padding: 0px;
+}
+
+#widget TABLE.list TR TD {
+    border-color: #009999;
+    color: #000000;
+    font-size: 10px;
+}
+
+#widget TABLE.list TR TH.headerSortUp {
     background-image: url(../Graphics/TableSorter/ascending.gif);
 }
 
-#widget TABLE TR TH.headerSortDown {
+#widget TABLE.list TR TH.headerSortDown {
     background-image: url(../Graphics/TableSorter/descending.gif);
 }
 
@@ -83,13 +101,6 @@
     padding-left: 4px;
     padding-right: 4px;
     margin: 16px;
-}
-
-#widget TABLE TR TD {
-    border-color: #009999;
-    color: #000000;
-    font-size: 10px;
-    padding: 0px;
 }
 
 #widget TEXTAREA {
@@ -222,4 +233,65 @@
 #widget #tabs LI.ui-state-disabled A,
 #widget #tabs LI.ui-tabs-loading A {
     cursor: text;
+}
+
+#widget #parsybone_output {
+    position: absolute;
+    z-index: 1000;
+    width: 706px;
+    height: 240px;
+    right: 8px;
+    bottom: 28px;
+    background: #EEEEEE;
+    border: 1px solid #999999;
+    border-bottom: 0px;
+}
+
+DIV.task {
+    height: 42px;
+    background: #CCEEFF;
+    border: #009999 1px solid;
+    border-bottom-color: #006666;
+    border-right-color: #006666;
+    padding: 4px 16px 4px 16px;
+    margin: 8px;
+    overflow: hidden;
+}
+
+DIV.task.expanded {
+    height: 240px;
+}
+
+DIV.task TABLE {
+    border: 0px;
+    width: 100%;
+    float: right;
+}
+
+DIV.task TABLE TR TH {
+    color: #000000;
+    line-height: 16px;
+    border: 0px;
+    padding-right: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    height: 40px;
+}
+
+DIV.task TABLE TR TD { 
+    border: 0px;
+    height: 40px;
+}
+
+DIV.task TABLE TR TD INPUT {
+    padding: 0px;
+    margin: 0px;
+    font-family: "Verdana", "Sans-Serif", "Calibri", "Arial";
+    font-size: 12px;
+}
+
+DIV.task TABLE TR TD IMG {
+    cursor: pointer;
+    padding: 2px;
+    margin: 0px;
 }

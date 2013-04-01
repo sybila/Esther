@@ -21,7 +21,7 @@ public class FileSystemManager
 {
     private DataSource dataSource;
     private String dataLocation;
-    public static final Logger logger = Logger.getLogger(FileSystemManager.class.getName());
+    private static final Logger logger = Logger.getLogger(FileSystemManager.class.getName());
     
     public void setDataSource(DataSource dataSource)
     {
@@ -52,7 +52,7 @@ public class FileSystemManager
         
         if ((file.getName() == null) || (file.getType() == null) ||
                 (file.getOwner() == null) || (file.getPublished() == null) ||
-                (file.getSize() == null))
+                (file.getSize() == null) || (file.getBlocked() == null))
         {
             throw new IllegalArgumentException("File misses required attributes.");
         }
@@ -64,7 +64,7 @@ public class FileSystemManager
         {
             connection = dataSource.getConnection();
             statement = connection
-                .prepareStatement("INSERT INTO FILES (name, type, owner, public, size) VALUES (?, ?, ?, ?, ?)",
+                .prepareStatement("INSERT INTO FILES (name, type, owner, public, size, blocked) VALUES (?, ?, ?, ?, ?, ?)",
                     Statement.RETURN_GENERATED_KEYS);
             
             statement.setString(1, file.getName());
@@ -72,6 +72,7 @@ public class FileSystemManager
             statement.setLong(3, file.getOwner());
             statement.setBoolean(4, file.getPublished());
             statement.setLong(5, file.getSize());
+            statement.setBoolean(6, file.getBlocked());
             
             statement.executeUpdate();
             
@@ -160,14 +161,15 @@ public class FileSystemManager
         {
             connection = dataSource.getConnection();
             statement = connection
-                    .prepareStatement("UPDATE FILES SET name=?, type=?, owner=?, public=?, size=? WHERE id=?");
+                    .prepareStatement("UPDATE FILES SET name=?, type=?, owner=?, public=?, size=?, blocked=? WHERE id=?");
             
             statement.setString(1, file.getName());
             statement.setString(2, file.getType());
             statement.setLong(3, file.getOwner());
             statement.setBoolean(4, file.getPublished());
             statement.setLong(5, file.getSize());
-            statement.setLong(6, file.getId());
+            statement.setBoolean(6, file.getBlocked());
+            statement.setLong(7, file.getId());
             
             statement.executeUpdate();
             
@@ -275,8 +277,8 @@ public class FileSystemManager
             StringBuilder queryBuilder = new StringBuilder();
             
             queryBuilder.append("SELECT f.* FROM FILES f LEFT OUTER JOIN ");
-            queryBuilder.append("SPECIFICATIONS s JOIN FILES g ON g.id = s.parent AND g.public = TRUE ");
-            queryBuilder.append("ON f.id = s.child WHERE s.child IS NULL AND f.public = TRUE");
+            queryBuilder.append("SPECIFICATIONS s JOIN FILES g ON g.id = s.parent AND g.public = TRUE AND g.blocked = FALSE ");
+            queryBuilder.append("ON f.id = s.child WHERE s.child IS NULL AND f.public = TRUE AND f.blocked = FALSE");
             
             if (user.getHidePublicOwned())
             {
@@ -322,8 +324,8 @@ public class FileSystemManager
             connection = dataSource.getConnection();
             statement = connection
                 .prepareStatement("SELECT f.* FROM FILES f LEFT OUTER JOIN " +
-                    "SPECIFICATIONS s JOIN FILES g ON g.id = s.parent AND g.owner = ? " +
-                    "ON f.id = s.child WHERE s.child IS NULL AND f.owner = ?");
+                    "SPECIFICATIONS s JOIN FILES g ON g.id = s.parent AND g.owner = ? AND g.blocked = FALSE " +
+                    "ON f.id = s.child WHERE s.child IS NULL AND f.owner = ? AND f.blocked = false");
             
             statement.setLong(1, ownerId);
             statement.setLong(2, ownerId);
@@ -412,7 +414,7 @@ public class FileSystemManager
         {
             StringBuilder queryBuilder = new StringBuilder();
             
-            queryBuilder.append("SELECT f.* FROM FILES f JOIN SPECIFICATIONS s ON f.id = s.child WHERE s.parent = ? AND f.public = TRUE");
+            queryBuilder.append("SELECT f.* FROM FILES f JOIN SPECIFICATIONS s ON f.id = s.child WHERE s.parent = ? AND f.public = TRUE AND f.blocked = FALSE");
             
             if (user.getHidePublicOwned())
             {
@@ -469,7 +471,7 @@ public class FileSystemManager
         {
             connection = dataSource.getConnection();
             statement = connection
-                .prepareStatement("SELECT f.* FROM FILES f JOIN SPECIFICATIONS s ON f.id = s.child WHERE s.parent = ? AND f.owner = ?");
+                .prepareStatement("SELECT f.* FROM FILES f JOIN SPECIFICATIONS s ON f.id = s.child WHERE s.parent = ? AND f.owner = ? AND f.blocked = FALSE");
             
             statement.setLong(1, parent.getId());
             statement.setLong(2, ownerId);
@@ -524,6 +526,7 @@ public class FileSystemManager
         file.setOwner(resultSet.getLong("owner"));
         file.setPublished(resultSet.getBoolean("public"));
         file.setSize(resultSet.getLong("size"));
+        file.setBlocked(resultSet.getBoolean("blocked"));
         
         return file;
     }

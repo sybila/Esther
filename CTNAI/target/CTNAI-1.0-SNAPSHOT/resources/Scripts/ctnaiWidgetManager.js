@@ -20,10 +20,94 @@ if(jQuery) (function($)
             context.tabs();
             
             scrollerOnTop(context.find('#tabs'));
+                    
+            openWidget('tasklist');
             
             context.find('#tabs LI IMG').click(function()
                 {
                     closeTab($(this).parent());
+                });
+        }
+    });
+    
+    $.extend($.fn,
+    {
+        openTaskList: function()
+        {
+            var context = $(this);
+            
+            $.get('Tasks', function(data)
+                {
+                    context.append(data);
+                    
+                    context.find('INPUT[name=refresh]').click(function()
+                        {
+                            context.empty();
+                            
+                            context.openTaskList();
+                        });
+                        
+                    context.find('INPUT[name=cancelAll]').click(function()
+                        {
+                            context.find('DIV.task IMG').trigger('click');
+                        });
+                        
+                    context.find('DIV.task').each(function()
+                        {
+                            var task = $(this);
+                            
+                            task.find('IMG').click(function()
+                                {
+                                    if (task.attr('status') == 'ready')
+                                    {
+                                        if (!confirm('Are you sure you want to cancel this task? You will be unable to acess the result once cancelled.'))
+                                        {
+                                            return;
+                                        }
+                                    }
+                                    else if (task.attr('status') == 'running')
+                                    {
+                                        if (!confirm('This task is still running. Are you sure you want to cancel it?'))
+                                        {
+                                            return;
+                                        }
+                                    }
+                                    
+                                    $.post('Task/Cancel', { task: task.attr('task_id') });
+                                    task.remove();
+                                });
+                                
+                            task.find('INPUT').click(function()
+                                {
+                                    $.post('Task/Save', { task: task.attr('task_id')}, function(data)
+                                        {
+                                            appendFileEntries(task.attr('file_id'), task.attr('result_id'),
+                                                data, ('file private ' + data.split('.')[1]), $(document));
+                                                
+                                            context.find('INPUT[name=refresh]').trigger('click');
+                                        });
+                                });
+                                
+                            task.find('TH').click(function()
+                                {
+                                    if (task.hasClass('expanded'))
+                                    {
+                                        task.animate({ height: 42 }, 640, function()
+                                            {
+                                                task.removeClass('expanded');
+                                            });
+                                        task.find('P').hide();
+                                    }
+                                    else
+                                    {
+                                        task.animate({ height: 200 }, 640, function()
+                                            {
+                                                task.addClass('expanded');
+                                            });
+                                        task.find('P').show();
+                                    }
+                                });
+                        });
                 });
         }
     });
@@ -46,21 +130,54 @@ function closeWidget(file_id)
 
 function openWidget(fileRef)
 {
+    var fileID;
+    var tabName;
+    
+    var clss = null;
+    
+    if (fileRef == 'frontpage')
+    {
+        fileID = 'frontpage';
+        tabName = 'Frontpage';
+    }
+    else if (fileRef == 'tasklist')
+    {
+        fileID = 'tasklist';
+        tabName = 'My Tasks';
+    }
+    else
+    {
+        fileID = fileRef.attr('file_id');
+        tabName = fileRef.html();
+        
+        clss = fileRef.parent().attr('class').split(/\s+/);
+    }
+    
     var tabs = $('#widget #tabs').find('LI');
             
     for (var j in tabs)
     {
         for (var k in tabs[j].attributes)
         {
-            if ((tabs[j].attributes[k].name == 'file') && (tabs[j].attributes[k].value == fileRef.attr('file_id')))
+            if ((tabs[j].attributes[k].name == 'file') && (tabs[j].attributes[k].value == fileID))
             {
                 $('#widget').tabs('option', 'active', j);
                 return;
             }
         }
     }
+        
+    var tab = createTab(fileID, tabName);
     
-    var clss = fileRef.parent().attr('class').split(/\s+/);
+    if (clss == null)
+    {
+        if (fileID == 'tasklist')
+        {
+            $(tab).openTaskList();
+        }
+        
+        return;
+    }
     
     for (var i = 0; i < clss.length; i++)
     {
@@ -68,19 +185,17 @@ function openWidget(fileRef)
         
         if ((cls == 'public') || (cls == 'private') || (cls == 'expanded') || (cls == 'file'))
             continue;
-        
-        var tab = createTab(fileRef.attr('file_id'), fileRef.html());
 
         switch (cls)
         {
             case "dbm":
             {
-                $(tab).openInteractionGraph(fileRef.attr('file_id'));
+                $(tab).openInteractionGraph(fileID);
                 break;
             }
             case "sqlite":
             {
-                $(tab).openParameterView(fileRef.attr('file_id'));
+                $(tab).openParameterView(fileID);
                 break;
             }
             case "filter":
@@ -89,12 +204,12 @@ function openWidget(fileRef)
 
                 source = fileRef.parent().parent().parent().find('A').attr('file_id');
 
-                $(tab).openParameterView(source, fileRef.attr('file_id'));
+                $(tab).openParameterView(source, fileID);
                 break;
             }
             case "xgmml":
             {
-                $(tab).openBehaviourMap(fileRef.attr('file_id'));
+                $(tab).openBehaviourMap(fileID);
                 break;
             }
             default:

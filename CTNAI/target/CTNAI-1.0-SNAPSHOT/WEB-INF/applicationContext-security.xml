@@ -24,10 +24,13 @@
         <intercept-url pattern="/Analysis" access="isAuthenticated()" />
         <intercept-url pattern="/Files/*" access="isAuthenticated()" />
         <intercept-url pattern="/File/*" access="isAuthenticated()" />
+        <intercept-url pattern="/Model" access="isAuthenticated()" />
         <intercept-url pattern="/Parsybone" access="isAuthenticated()" />
         <intercept-url pattern="/Parameters/*" access="isAuthenticated()" />
         <intercept-url pattern="/BehaviourMap" access="isAuthenticated()" />
         <intercept-url pattern="/BehaviourMapInterface" access="isAuthenticated()" />
+        <intercept-url pattern="/Tasks" access="isAuthenticated()" />
+        <intercept-url pattern="/Task/*" access="isAuthenticated()" />
         <intercept-url pattern="/" access="permitAll" />
         <intercept-url pattern="/**" access="denyAll" />
         <form-login default-target-url="/Home" login-page="/Login" authentication-failure-url="/LoginFailure" />

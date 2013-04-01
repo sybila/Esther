@@ -34,7 +34,7 @@
         </div>
         <div id="widget">
             <ul id="tabs">
-                <li file="null">
+                <li file="frontpage">
                     <a href="#tab_1">Start Page</a>
                     <img height="10" style="cursor: pointer;" src="<c:url value="/resources/Graphics/x_button.png" />" />
                 </li>

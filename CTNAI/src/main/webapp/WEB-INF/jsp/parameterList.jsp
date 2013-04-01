@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
-<table id="parameter_list">
+<table class="list" id="parameter_list">
     <thead>
         <tr>
         <c:forEach items="${rows[0]}" var="column">

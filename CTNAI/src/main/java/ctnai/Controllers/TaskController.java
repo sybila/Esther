@@ -16,6 +16,7 @@ import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -55,6 +56,9 @@ public class TaskController
         taskManager.setLogger(fs);
         userManager.setLogger(fs);
     }
+    
+    @Autowired
+    FileSystemController fileSystemController;
     
     @RequestMapping(value = "/Tasks", method = RequestMethod.GET)
     public String getTasks(ModelMap map)
@@ -150,6 +154,11 @@ public class TaskController
                 
                 CTNAIFile result = fileSystemManager.getFileById(task.getResult());
                 File resultFile = fileSystemManager.getSystemFileById(result.getId());
+                
+                if (fileSystemController.exceedsAllowedSpace())
+                {
+                    return "LIMIT_REACHED=5Gb";
+                }
                 
                 result.setSize(resultFile.getTotalSpace());
                 result.setBlocked(false);

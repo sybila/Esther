@@ -67,10 +67,17 @@ if(jQuery) (function($)
                             {
                                 $.post('Task/Save', { task: task.attr('task_id')}, function(data)
                                     {
-                                        appendFileEntries(task.attr('file_id'), task.attr('result_id'),
-                                            data, ('file private ' + data.split('.')[1]), $(document));
+                                        if (data.split('=')[0] == 'LIMIT_REACHED')
+                                        {
+                                            resqueFile(task.attr('result_id'), data.split('=')[1]);
+                                        }
+                                        else
+                                        {
+                                            appendFileEntries(task.attr('file_id'), task.attr('result_id'),
+                                                data, ('file private ' + data.split('.')[1]), $(document));
 
-                                        context.find('INPUT[name=refresh]').trigger('click');
+                                            context.find('INPUT[name=refresh]').trigger('click');
+                                        }
                                     });
                             });
 

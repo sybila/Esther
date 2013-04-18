@@ -353,7 +353,7 @@ public class FileSystemController
         
         if (exceedsAllowedSpace(sourceFile))
         {
-            return "LIMIT_REACHED=5GB";
+            return "LIMIT_REACHED=5Gb";
         }
         
         Long[] parentIds = new Long[parents.size()];
@@ -516,7 +516,7 @@ public class FileSystemController
         
         if (exceedsAllowedSpace())
         {
-            return "LIMIT_REACHED=5GB";
+            return "LIMIT_REACHED=5Gb";
         }
         else
         {
@@ -535,7 +535,7 @@ public class FileSystemController
         return null;
     }
     
-    private Boolean exceedsAllowedSpace()
+    public Boolean exceedsAllowedSpace()
     {
         return exceedsAllowedSpace(null);
     }

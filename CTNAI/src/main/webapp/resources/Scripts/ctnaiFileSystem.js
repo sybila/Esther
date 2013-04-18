@@ -51,71 +51,78 @@ function bindFiles(f)
         {
             e.preventDefault();
 
-            if ($(this).parent().hasClass('expanded'))
+            if ($(this).parent().hasClass('unexpandable'))
             {
-                $(this).parent().find('UL').slideUp({ duration: 420 });
-                $(this).parent().removeClass('expanded');
-
-                if ($(this).parent().hasClass('open_folder'))
-                {
-                    $(this).parent().removeClass('open_folder');
-                    $(this).parent().addClass('folder');
-                }
+                openWidget($(this).parent().attr('id'));
             }
             else
             {
-                $(this).parent().find('UL').remove();
-                $(this).parent().addClass('expanded');
-
-                if ($(this).parent().hasClass('folder'))
+                if ($(this).parent().hasClass('expanded'))
                 {
-                    $(this).parent().removeClass('folder');
-                    $(this).parent().addClass('open_folder');
+                    $(this).parent().find('UL').slideUp({ duration: 420 });
+                    $(this).parent().removeClass('expanded');
 
-                    var context = $(this).parent();
-
-                    $(".ctnaiFileSystem.start").remove();
-                    if ($(this).parent().hasClass('private'))
+                    if ($(this).parent().hasClass('open_folder'))
                     {
-                        $.get('Files/My', function(data)
-                            {
-                                context.find('.start').html('');
-                                context.append(data);
-
-                                context.find('UL:hidden').slideDown({ duration: 420 });
-
-                                bindFiles(context);
-                            });
-                    }
-                    else if ($(this).parent().hasClass('public'))
-                    {
-                        $.get('Files/Public', function(data)
-                            {
-                                context.find('.start').html('');
-                                context.append(data);
-
-                                context.find('UL:hidden').slideDown({ duration: 420 });
-
-                                bindFiles(context);
-                            });
+                        $(this).parent().removeClass('open_folder');
+                        $(this).parent().addClass('folder');
                     }
                 }
-                else if ($(this).parent().hasClass('file'))
+                else
                 {
-                    if ($(this).parent().hasClass('private'))
+                    $(this).parent().find('UL').remove();
+                    $(this).parent().addClass('expanded');
+
+                    if ($(this).parent().hasClass('folder'))
                     {
-                        showFiles($(this).parent(), $(this).attr('file_id'), 'private');
+                        $(this).parent().removeClass('folder');
+                        $(this).parent().addClass('open_folder');
+
+                        var context = $(this).parent();
+
+                        $(".ctnaiFileSystem.start").remove();
+                        if ($(this).parent().hasClass('private'))
+                        {
+                            $.get('Files/My', function(data)
+                                {
+                                    context.find('.start').html('');
+                                    context.append(data);
+
+                                    context.find('UL:hidden').slideDown({ duration: 420 });
+
+                                    bindFiles(context);
+                                });
+                        }
+                        else if ($(this).parent().hasClass('public'))
+                        {
+                            $.get('Files/Public', function(data)
+                                {
+                                    context.find('.start').html('');
+                                    context.append(data);
+
+                                    context.find('UL:hidden').slideDown({ duration: 420 });
+
+                                    bindFiles(context);
+                                });
+                        }
                     }
-                    else if ($(this).parent().hasClass('public'))
+                    else if ($(this).parent().hasClass('file'))
                     {
-                        showFiles($(this).parent(), $(this).attr('file_id'), 'public');
+                        if ($(this).parent().hasClass('private'))
+                        {
+                            showFiles($(this).parent(), $(this).attr('file_id'), 'private');
+                        }
+                        else if ($(this).parent().hasClass('public'))
+                        {
+                            showFiles($(this).parent(), $(this).attr('file_id'), 'public');
+                        }
                     }
                 }
-            }
 
-            if ($(this).parent().hasClass('file'))
-            {
-                openWidget($(this));
+                if ($(this).parent().hasClass('file'))
+                {
+                    openWidget($(this));
+                }
             }
             return false;
         });

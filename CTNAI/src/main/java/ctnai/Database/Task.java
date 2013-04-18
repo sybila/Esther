@@ -13,7 +13,6 @@ public class Task
     private String type;
     private Boolean active;
     
-    //private Executor executor;
     private Process process;
     
     private String progress;
@@ -87,11 +86,6 @@ public class Task
         this.type = type;
     }
     
-//    public void setExecutor(Executor executor)
-//    {
-//        this.executor = executor;
-//    }
-    
     public void setProcess(Process process)
     {
         this.process = process;
@@ -156,7 +150,14 @@ public class Task
                 return "Error";
             }
             
-            return "Ready";
+            if (getActive())
+            {
+                return "Ready";
+            }
+            else
+            {
+                return "Finished";
+            }
         }
         
         readOutput();

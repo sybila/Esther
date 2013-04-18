@@ -46,7 +46,6 @@ public class ParsyboneController
     public void setDataLocation(String dataLocation)
     {
         fileSystemManager.setDataLocation(dataLocation);
-        taskManager.setDataLocation(dataLocation);
     }
     
     public void setLogger(FileOutputStream fs)
@@ -107,79 +106,5 @@ public class ParsyboneController
                 "-vrW", "--data", result.getAbsolutePath() });
         
         return taskId.toString();
-        
-//        Long targetId = Long.parseLong(fileSystemController.createFile(file.getName(), "sqlite", new Long[] { file.getId() }));
-//        
-//        StringBuilder outputBuilder = new StringBuilder();
-//        
-//        try
-//        {
-//            File newFile = fileSystemManager.getSystemFileById(targetId);
-//            
-//            StringBuilder commandBuilder = new StringBuilder();
-//            
-//            commandBuilder.append('"');
-//            commandBuilder.append(parsyboneLocation);
-//            commandBuilder.append("\" ");
-//            commandBuilder.append("-vrW ");
-//            commandBuilder.append('"');
-//            commandBuilder.append(fileSystemManager.getSystemFileById(file.getId()).getAbsolutePath());
-//            commandBuilder.append('"');
-//            commandBuilder.append(" --data \"");
-//            commandBuilder.append(newFile.getAbsolutePath());
-//            commandBuilder.append('"');
-//            
-//            CommandLine cmdLine = CommandLine.parse(commandBuilder.toString());
-//            DefaultExecutor executor = new DefaultExecutor();
-//            
-//            ProcessBuilder procBuilder = new ProcessBuilder(parsyboneLocation,
-//                fileSystemManager.getSystemFileById(file.getId()).getAbsolutePath(),
-//                "-vrW", "--data", newFile.getAbsolutePath());
-//            
-//            procBuilder.redirectOutput(Redirect.PIPE);
-//            procBuilder.redirectError(Redirect.PIPE);
-//            
-//            Process process = procBuilder.start();
-//            
-//            ExecuteStreamHandler esHandler = new PumpStreamHandler();
-//            
-//            InputStream parsyboneOutput = new PipedInputStream();
-//            
-//            esHandler.setProcessOutputStream(parsyboneOutput);
-//            
-//            executor.setStreamHandler(esHandler);
-//            
-//            int exitValue = executor.execute(cmdLine);
-//            int exitValue = process.waitFor();
-//            
-//            int c;
-//            while ((c = process.getInputStream().read()) != (-1))
-//            {
-//                outputBuilder.append((char)c);
-//            }
-//            
-//            while ((c = process.getErrorStream().read()) != (-1))
-//            {
-//                outputBuilder.append((char)c);
-//            }
-//            
-//            char c;
-//            while ((c = (char)parsyboneOutput.read()) != (-1))
-//            {
-//                outputBuilder.append(c);
-//            }
-//            
-//            logger.log(Level.INFO, ("Parsybone exited with value: " + exitValue + "\n" + outputBuilder.toString()));
-//            
-//            CTNAIFile dbFile = fileSystemManager.getFileById(targetId);
-//            dbFile.setSize(newFile.getTotalSpace());
-//            fileSystemManager.updateFile(dbFile);
-//        }
-//        catch (InterruptedException | IOException e)
-//        {
-//            logger.log(Level.SEVERE, "Error executing Parsybone binary.", e);
-//        }
-//        
-//        return outputBuilder.toString();
     }
 }

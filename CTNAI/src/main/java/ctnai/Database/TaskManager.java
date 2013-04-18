@@ -20,20 +20,13 @@ import javax.sql.DataSource;
 public class TaskManager
 {
     private DataSource dataSource;
-    private String dataLocation;
     private static final Logger logger = Logger.getLogger(FileSystemManager.class.getName());
     
-    //private static final Map<Long, Executor> tasks = new HashMap<>();
     private static final Map<Long, Process> tasks = new HashMap<>();
     
     public void setDataSource(DataSource dataSource)
     {
         this.dataSource = dataSource;
-    }
-    
-    public void setDataLocation(String dataLocation)
-    { 
-        this.dataLocation = dataLocation;
     }
     
     public void setLogger(FileOutputStream fs)
@@ -82,15 +75,6 @@ public class TaskManager
             
             Long id = DBUtils.getID(statement.getGeneratedKeys());
             task.setId(id);
-            
-//            Executor executor = new DefaultExecutor();
-//            
-//            executor.getStreamHandler().setProcessOutputStream(new PipedInputStream());
-//            
-//            tasks.put(id, executor);
-//            task.setExecutor(executor);
-//         
-//            executor.execute(cmdLine, new DefaultExecuteResultHandler());
             
             Process process = new ProcessBuilder(cmdArgs).start();
             
@@ -327,7 +311,6 @@ public class TaskManager
         task.setError(resultSet.getString("error"));
         task.setInformation(resultSet.getString("information"));
         
-        //task.setExecutor(tasks.get(task.getId()));
         task.setProcess(tasks.get(task.getId()));
         
         return task;

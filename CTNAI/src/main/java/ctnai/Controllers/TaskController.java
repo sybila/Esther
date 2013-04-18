@@ -46,7 +46,6 @@ public class TaskController
     public void setDataLocation(String dataLocation)
     {
         fileSystemManager.setDataLocation(dataLocation);
-        taskManager.setDataLocation(dataLocation);
     }
     
     public void setLogger(FileOutputStream fs)

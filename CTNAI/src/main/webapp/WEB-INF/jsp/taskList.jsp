@@ -12,9 +12,7 @@
         <table>
             <tr>
                 <th>${task.type} : ${task.progress}</th>
-                <c:if test="${task.finished && empty task.error && task.active}">
-                    <td style="width: 64px;"><input class="button" type="Submit" value="Save Result" name="save"/></td>
-                </c:if>
+                <td style="width: 64px;"><input class="button" style="<c:if test="${not task.finished || task.error || not task.active}">display: none;</c:if>" type="Submit" value="Save Result" name="save"/></td>               
                 <td style="width: 16px;"><img height="12px" style="padding: 2px;" src="<c:url value="/resources/Graphics/x_button.png" />" /></td>
             </tr>
         </table>

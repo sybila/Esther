@@ -144,7 +144,7 @@ function bindFiles(f)
 
                         $(document).find('BODY DIV.fileMenu A').click(function (e)
                             {
-                                //e.precentDefault();
+                                e.preventDefault();
                                 var func = $(this).attr('func');
 
                                 switch(func)
@@ -156,10 +156,18 @@ function bindFiles(f)
                                             {
                                                 $.post('File/Copy', { file: file_id, name: copyname }, function(data)
                                                     {
-                                                        appendFileEntries(parent, data,
-                                                            (copyname + '.' + extractExtension(file_name)),
-                                                            ('file private ' + extractExtension(file_name)),
-                                                            $('UL.ctnaiFileSystem LI#privateFolder'));
+                                                        if (data.split('=')[0] == "LIMIT_REACHED")
+                                                        {
+                                                            alert('You do not have enough space available to save a copy of this file! Your '
+                                                                + data.split('=')[1] + ' limit has been reached.');
+                                                        }
+                                                        else
+                                                        {
+                                                            appendFileEntries(parent, data,
+                                                                (copyname + '.' + extractExtension(file_name)),
+                                                                ('file private ' + extractExtension(file_name)),
+                                                                $('UL.ctnaiFileSystem LI#privateFolder'));
+                                                        }
                                                     });
                                             }
                                             break;
@@ -168,21 +176,13 @@ function bindFiles(f)
                                         {
                                             if (confirm('The file cannot be restored after deleting. Are you sure you want to proceed?'))
                                             {
-                                                $.post('File/Delete', { file: file_id }, function()
-                                                    {
-                                                        closeWidget(file_id);
-                                                        removeFileEntries(file_id, $(document));
-                                                    });
+                                                deleteFile(file_id);
                                             }
                                             break;
                                         }
                                     case 'download':
                                         {
-                                            var url = window.location.pathname;
-
-                                            url = url.replace('Analysis', ('File/Download?file=' + file_id));
-
-                                            window.open(url);
+                                            downloadFile(file_id);
 
                                             break;
                                         }
@@ -262,4 +262,42 @@ function appendFileEntries(parent_id, id, name, cls, context)
                 bindFiles(this);
             }
         })
+}
+
+function deleteFile(file)
+{
+    $.post('File/Delete', { file: file }, function()
+    {
+        closeWidget(file);
+        removeFileEntries(file, $(document));
+    });
+}
+
+function downloadFile(file)
+{
+    var url = window.location.pathname;
+
+    url = url.replace('Analysis', ('File/Download?file=' + file));
+
+    window.open(url);
+}
+
+function resqueFile(file, limit)
+{
+    if (confirm('You have exceeded your storage space capacity of ' + limit +
+            '. Would you like to download the file instead? (You will lose your data otherwise.)'))
+    {
+        var url = window.location.pathname;
+
+        url = url.replace('Analysis', ('File/Resque?file=' + file));
+
+        window.open(url);
+
+        closeWidget(file);
+        removeFileEntries(file);
+    }
+    else
+    {
+        deleteFile(file);
+    }
 }

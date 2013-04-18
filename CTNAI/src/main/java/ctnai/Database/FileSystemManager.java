@@ -622,4 +622,48 @@ public class FileSystemManager
             DBUtils.closeQuietly(connection, statement);
         }
     }
+    
+    public Long getTotalSize(Long ownerId)
+    {
+        if (ownerId == null)
+        {
+            throw new NullPointerException("Owner ID");
+        }
+        
+        Connection connection = null;
+        PreparedStatement statement = null;
+        
+        try
+        {
+            connection = dataSource.getConnection();
+            statement = connection
+                .prepareStatement("SELECT SUM(size) FROM FILES WHERE owner=?");
+            
+            statement.setLong(1, ownerId);
+            
+            ResultSet resultSet = statement.executeQuery();
+            
+            if (resultSet.next())
+            {
+                Long result = resultSet.getLong(1);
+                
+                if (resultSet.next())
+                {
+                    return null;
+                }
+                
+                return result;
+            }
+        }
+        catch (SQLException e)
+        {
+            logger.log(Level.SEVERE, ("Error counting total size of files of owner ID: " + ownerId), e);
+        }
+        finally
+        {
+            DBUtils.closeQuietly(connection, statement);
+        }
+        
+        return null;
+    }
 }

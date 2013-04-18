@@ -324,6 +324,14 @@ public class FileSystemController
         }
     }
     
+    @RequestMapping(value = "/File/Resque", method = RequestMethod.GET)
+    public void resqueFile(@RequestParam("file") Long id, HttpServletResponse response)
+    {
+        downloadFile(id, response);
+        
+        deleteFile(id);
+    }
+    
     @RequestMapping(value = "/File/Copy", method = RequestMethod.POST)
     @ResponseBody
     public String copyFile(@RequestParam("file") Long id, @RequestParam("name") String name)
@@ -340,6 +348,13 @@ public class FileSystemController
         
         CTNAIFile file = fileSystemManager.getFileById(id);
         List<CTNAIFile> parents = fileSystemManager.getFileParents(file);
+        
+        File sourceFile = fileSystemManager.getSystemFileById(file.getId());
+        
+        if (exceedsAllowedSpace(sourceFile))
+        {
+            return "LIMIT_REACHED=5GB";
+        }
         
         Long[] parentIds = new Long[parents.size()];
         for (int i = 0; i < parents.size(); i++)
@@ -358,7 +373,6 @@ public class FileSystemController
             fileSystemManager.setParent(child, newFile);
         }
         
-        File sourceFile = fileSystemManager.getSystemFileById(file.getId());
         File destinationFile = fileSystemManager.getSystemFileById(newFile.getId());
         
         FileChannel source = null;
@@ -455,18 +469,18 @@ public class FileSystemController
     
     @RequestMapping(value = "/File/Write", method = RequestMethod.POST)
     @ResponseBody
-    public void writeFile(@RequestParam("file") Long id, @RequestParam("data") String data)
+    public String writeFile(@RequestParam("file") Long id, @RequestParam("data") String data)
     {
         if ((id == null) || (data == null))
         {
-            return;
+            return null;
         }
         
         File file = fileSystemManager.getSystemFileById(id);
         
         if (file == null)
         {
-            return;
+            return null;
         }
         
         BufferedWriter bw = null;
@@ -499,6 +513,15 @@ public class FileSystemController
         CTNAIFile ctnaiFile = fileSystemManager.getFileById(id);
         ctnaiFile.setSize(file.getTotalSpace());
         fileSystemManager.updateFile(ctnaiFile);
+        
+        if (exceedsAllowedSpace())
+        {
+            return "LIMIT_REACHED=5GB";
+        }
+        else
+        {
+            return id.toString();
+        }
     }
     
     private Long getUserId(String username)
@@ -510,5 +533,31 @@ public class FileSystemController
         }
         
         return null;
+    }
+    
+    private Boolean exceedsAllowedSpace()
+    {
+        return exceedsAllowedSpace(null);
+    }
+    
+    private Boolean exceedsAllowedSpace(File newFile)
+    {
+        Long size = 0l;
+        
+        if (newFile != null)
+        {
+            size += newFile.getTotalSpace();
+        }
+        
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!authentication.isAuthenticated())
+        {
+            return null;
+        }
+        Long userId = getUserId(authentication.getName());
+        
+        size += fileSystemManager.getTotalSize(userId);
+
+        return (size > 5368709120l);
     }
 }

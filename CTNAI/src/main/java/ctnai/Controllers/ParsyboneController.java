@@ -91,7 +91,7 @@ public class ParsyboneController
         
         if (taskManager.getActiveTaskCount(user) >= 2)
         {
-            return "REACHED_LIMIT=2";
+            return "LIMIT_REACHED=2";
         }
         
         Long resultID = Long.parseLong(fileSystemController.createFile(file.getName(),

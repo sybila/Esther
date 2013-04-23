@@ -7,7 +7,7 @@
     overflow: scroll;
 }
 
-ul.ctnaiFileSystem {
+UL.ctnaiFileSystem {
     color: #000000;
     font-size: 12px;
     line-height: 18px;
@@ -16,7 +16,7 @@ ul.ctnaiFileSystem {
     padding: 0px;
 }
 
-ul.ctnaiFileSystem li {
+UL.ctnaiFileSystem LI {
     list-style: none;
     padding: 0px;
     padding-left: 20px;
@@ -24,18 +24,18 @@ ul.ctnaiFileSystem li {
     white-space: nowrap;
 }
 
-ul.ctnaiFileSystem a {
+UL.ctnaiFileSystem A {
     color: #000033;
     text-decoration: none;
     display: block;
     padding: 0px 2px;
 }
 
-ul.ctnaiFileSystem a:hover {
+UL.ctnaiFileSystem A:hover {
     background: #CCFFFF;
 }
 
-div.fileMenu {
+DIV.fileMenu {
     position: absolute;
     z-index: 1024;
     color: #000000;
@@ -47,18 +47,29 @@ div.fileMenu {
     padding: 2px;
 }
 
-div.fileMenu a {
+DIV.fileMenu A {
     margin: 4px;
 }
 
+FORM#uploadOptions TABLE TR {
+    margin: 0px;
+    padding: 0px;
+}
+
+FORM#uploadOptions TABLE TR TD {
+    border: 0px;
+    margin: 0px;
+    padding: 0px;
+}
+
 /* Core Styles */
-ul.ctnaiFileSystem li.file {
+UL.ctnaiFileSystem LI.file {
     background: url(../Graphics/FileIcons/file.png) left top no-repeat;
 }
-ul.ctnaiFileSystem li.folder {
+UL.ctnaiFileSystem LI.folder {
     background: url(../Graphics/FileIcons/folder.png) left top no-repeat;
 }
-ul.ctnaiFileSystem li.open_folder {
+UL.ctnaiFileSystem LI.open_folder {
     background: url(../Graphics/FileIcons/folder_open.png) left top no-repeat;
 }
 

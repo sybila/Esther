@@ -8,9 +8,9 @@ if(jQuery) (function($)
             {                
                 $(document).bind('mousedown', function(e)
                     {
-                        if (!$(e.target).parent().hasClass('fileMenu'))
+                        if ($('DIV.fileMenu').find(e.target).length == 0)
                         {
-                            $("div.fileMenu").remove();
+                            $("DIV.fileMenu").remove();
                         }
                     });
 
@@ -129,7 +129,8 @@ function bindFiles(f)
     links.bind('contextmenu', function(e)
         {
             e.preventDefault();
-            if ($(this).parent().hasClass('file'))
+            if ($(this).parent().hasClass('file') || ($(this).parent().hasClass('private') &&
+                ($(this).parent().hasClass('folder') || $(this).parent().hasClass('open_folder'))))
             {
                 $(document).find('BODY').append('<div class="fileMenu" style=" top: ' +
                     e.pageY + 'px; left: ' + e.pageX + 'px">');
@@ -137,12 +138,64 @@ function bindFiles(f)
                 var file_id = $(this).attr('file_id');
                 var file_name = $(this).text();
                 var parent = $(this).parent().parent().parent().find('> A').attr('file_id');
+                
+                if (!$(this).parent().hasClass('file'))
+                {
+                    file_id = null;
+                }
 
                 $.get('File/Menu', { file: file_id }, function(data)
                     {
-                        $(document).find('BODY DIV.fileMenu').append(data);
+                        $('DIV.fileMenu').append(data);
 
-                        $(document).find('BODY DIV.fileMenu A').click(function (e)
+                        $('DIV.fileMenu FORM#uploadOptions').submit(function()
+                            {
+                                var fileExt = $('DIV.fileMenu FORM#uploadOptions TR TD INPUT[type=file]').val().split('.');
+                                if ($(this).attr('ext') != fileExt[fileExt.length - 1])
+                                {
+                                    alert('Invalid file specified! Please select a .' + $(this).attr('ext') + ' file.');
+                                    return false;
+                                }
+                                
+                                var parentData = { };
+                                
+                                if (file_id != null)
+                                {
+                                    parentData = { 'parent': (file_id + '') }
+                                }
+                                
+                                $.ajaxFileUpload({
+                                        url:'File/Upload',
+                                        secureuri:false,
+                                        fileElementId:'fileInput',
+                                        data: parentData,
+                                        dataType: 'json',
+                                        success: function (data, status) 
+                                            {
+                                                data = (data + '');
+                                                if (data.split('=')[0] == 'LIMIT_REACHED')
+                                                {
+                                                    alert('Cannot upload file. Your ' +
+                                                        data.split('=')[1] + ' storage limit has been reached.');
+                                                }
+                                            
+                                                var filePath = $('DIV.fileMenu FORM#uploadOptions TR TD INPUT[type=file]').val().split('[\\/]');
+                                                appendFileEntries(file_id, data, filePath[filePath.length - 1],
+                                                    ('file private ' + fileExt[fileExt.length - 1]),
+                                                    $('UL.ctnaiFileSystem LI#privateFolder'));
+                                    
+                                                $('DIV.fileMenu').remove();
+                                            },
+                                        
+                                        error: function (data, status, e) {
+                                                alert(e);
+                                            }
+                                    });
+                                    
+                                return false;
+                            });
+
+                        $('DIV.fileMenu A').click(function (e)
                             {
                                 e.preventDefault();
                                 var func = $(this).attr('func');
@@ -170,6 +223,9 @@ function bindFiles(f)
                                                         }
                                                     });
                                             }
+
+                                            $('DIV.fileMenu').remove();
+                                            
                                             break;
                                         }
                                     case 'delete':
@@ -178,11 +234,16 @@ function bindFiles(f)
                                             {
                                                 deleteFile(file_id);
                                             }
+                                            
+                                            $('DIV.fileMenu').remove();
+                                            
                                             break;
                                         }
                                     case 'download':
                                         {
                                             downloadFile(file_id);
+
+                                            $('DIV.fileMenu').remove();
 
                                             break;
                                         }
@@ -193,6 +254,8 @@ function bindFiles(f)
                                                     removeFileEntries(file_id, $('LI#publicFolder'));
                                                 });
 
+                                            $('DIV.fileMenu').remove();
+
                                             break;
                                         }
                                     case 'publish':
@@ -202,6 +265,9 @@ function bindFiles(f)
                                                     appendFileEntries(parent, file_id, file_name,
                                                         ('file public ' + extractExtension(file_name)), $('UL.ctnaiFileSystem LI#publicFolder'));
                                                 });
+
+                                            $('DIV.fileMenu').remove();
+                                            
                                             break;
                                         }
                                     case 'rename':
@@ -215,14 +281,31 @@ function bindFiles(f)
                                                         renameTab(file_id, (newname + '.' + extractExtension(file_name)));
                                                     });
                                             }
+
+                                            $('DIV.fileMenu').remove();
+                                            
+                                            break;
+                                        }
+                                    case 'upload':
+                                        {
+                                            if ($('div.fileMenu FORM#uploadOptions TABLE').hasClass('visible'))
+                                            {
+                                                $('div.fileMenu FORM#uploadOptions TABLE').removeClass('visible');
+                                                
+                                                $('div.fileMenu FORM#uploadOptions TABLE').slideUp({ duration: 360 });
+                                            }
+                                            else
+                                            {
+                                                $('div.fileMenu FORM#uploadOptions TABLE').addClass('visible');
+                                                
+                                                $('div.fileMenu FORM#uploadOptions TABLE').slideDown({ duration: 360 });
+                                            }
                                             break;
                                         }
                                     default:
                                         break;
                                 }
-
-                                $("div.fileMenu").remove();
-                            })
+                            });
                     });
             }
             return false;

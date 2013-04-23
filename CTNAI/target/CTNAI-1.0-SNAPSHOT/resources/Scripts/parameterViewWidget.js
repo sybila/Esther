@@ -92,11 +92,8 @@ function initializeParameterView(context, data)
                             parents: [ context.find('#filter_controls').attr('source') ] },
                         function(data)
                         {
-                            var filter_data = encodeConstraints(context.find('#constraint_container p'));
-
-                            $.post('File/Write', { file: data, data: filter_data });
-                        
                             context.find('#filter_controls').attr('filter', data);
+                            file = data;
                         });
                 }
                 else
@@ -108,7 +105,13 @@ function initializeParameterView(context, data)
             {
                 var data = encodeConstraints(context.find('#constraint_container p'));
 
-                $.post('File/Write', { file: file, data: data });
+                $.post('File/Write', { file: file, data: data }, function(data)
+                    {
+                        if (data.split('=')[0] == 'LIMIT_REACHED')
+                        {
+                            resqueFile(file, data.split('=')[1]);
+                        }
+                    });
             }
             
             context.find('#constraint_container').removeClass('unsaved');
@@ -156,7 +159,13 @@ function initializeParameterView(context, data)
                 params = { file: context.find('#filter_controls').attr("source"), filter: filter };
             }
             
-            $.post('BehaviourMap', params);
+            $.post('BehaviourMap', params, function(data)
+                {
+                    if (data.split('=')[0] == 'LIMIT_REACHED')
+                    {
+                        resqueFile(data.split('=')[2], data.split('=')[1]);
+                    }
+                });
         });
 }
 

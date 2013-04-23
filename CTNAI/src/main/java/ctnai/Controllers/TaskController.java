@@ -155,15 +155,15 @@ public class TaskController
                 CTNAIFile result = fileSystemManager.getFileById(task.getResult());
                 File resultFile = fileSystemManager.getSystemFileById(result.getId());
                 
+                result.setSize(resultFile.length());
+                result.setBlocked(false);
+                
+                fileSystemManager.updateFile(result);
+                
                 if (fileSystemController.exceedsAllowedSpace())
                 {
                     return "LIMIT_REACHED=5Gb";
                 }
-                
-                result.setSize(resultFile.getTotalSpace());
-                result.setBlocked(false);
-                
-                fileSystemManager.updateFile(result);
                 
                 return (result.getName() + "." + result.getType());
             }

@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 public class FileSystemController
@@ -149,44 +150,72 @@ public class FileSystemController
     @RequestMapping(value = "/File/Menu", method = RequestMethod.GET)
     public String getFileMenu(ModelMap model, @RequestParam("file") Long id)
     {
-        if (id == null)
-        {
-            return null;
-        }
-        
-        CTNAIFile file = fileSystemManager.getFileById(id);
-        
-        if (file == null)
-        {
-            return null;
-        }
-        
         Map<String, String> links = new HashMap<>();
         
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (!authentication.isAuthenticated())
+        if (id == null)
         {
-            return null;
-        }
-        String username = authentication.getName();
-        
-        if (getUserId(username).equals(file.getOwner()))
-        {
-            links.put("delete", "Delete");
-            links.put("rename", "Rename");
+            links.put("upload", "Upload");
             
-            if (file.getPublished())
-            {
-                links.put("privatize", "Make Private");
-            }
-            else
-            {
-                links.put("publish", "Make Public");
-            }
+            model.addAttribute("ext", "dbm");
         }
-        
-        links.put("copy", "Copy");
-        links.put("download", "Download");
+        else
+        {
+            CTNAIFile file = fileSystemManager.getFileById(id);
+
+            if (file == null)
+            {
+                return null;
+            }
+
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (!authentication.isAuthenticated())
+            {
+                return null;
+            }
+            String username = authentication.getName();
+
+            if (getUserId(username).equals(file.getOwner()))
+            {
+                links.put("delete", "Delete");
+                links.put("rename", "Rename");
+                
+                switch(file.getType())
+                {
+                    case "dbm":
+                    {
+                        links.put("upload", "Upload");
+                        model.addAttribute("ext", "sqlite");
+                        break;
+                    }
+                    case "sqlite":
+                    {
+                        
+                    }
+                    case "filter":
+                    {
+                        links.put("upload", "Upload");
+                        model.addAttribute("ext", "xgmml");
+                        break;
+                    }
+                    default:
+                    {
+                        break;
+                    }
+                }
+
+                if (file.getPublished())
+                {
+                    links.put("privatize", "Make Private");
+                }
+                else
+                {
+                    links.put("publish", "Make Public");
+                }
+            }
+
+            links.put("copy", "Copy");
+            links.put("download", "Download");
+        }
         
         model.addAttribute("links", links);
         
@@ -324,6 +353,67 @@ public class FileSystemController
         }
     }
     
+    @RequestMapping(value = "/File/Upload", method = RequestMethod.POST)
+    @ResponseBody
+    public String uploadFile(@RequestParam("file") MultipartFile file,
+        @RequestParam(value = "parent", required = false) Long parent)
+    {        
+        if (exceedsAllowedSpace(file.getSize()))
+        {
+            return "LIMIT_REACHED=5Gb";
+        }
+        
+        String name = file.getOriginalFilename().split("\\.")[0];
+        String type = file.getOriginalFilename().split("\\.")[1];
+        
+        Long[] parents = new Long[] { };
+        if (parent != null)
+        {
+            parents = new Long[] { parent };
+        }
+        
+        Long id = Long.parseLong(createFile(name, type, parents, true));
+        
+        CTNAIFile newFile = fileSystemManager.getFileById(id);
+        File uploadedFile = fileSystemManager.getSystemFileById(id);
+        
+        FileOutputStream output = null;
+        
+        try
+        {
+            byte[] content = file.getBytes();
+            
+            output = new FileOutputStream(uploadedFile);
+            output.write(content, 0, content.length);
+            
+            newFile.setSize(uploadedFile.length());
+            newFile.setBlocked(false);
+            fileSystemManager.updateFile(newFile);
+            
+            return id.toString();
+        }
+        catch (IOException e)
+        {
+            logger.log(Level.SEVERE, ("Error uploading file " + file.getOriginalFilename()), e);
+        }
+        finally
+        {
+            if (output != null)
+            {
+                try
+                {
+                    output.close();
+                }
+                catch (IOException e)
+                {
+                    logger.log(Level.SEVERE, ("Error uploading file " + file.getOriginalFilename()), e);
+                }
+            }
+        }
+        
+        return null;
+    }
+    
     @RequestMapping(value = "/File/Resque", method = RequestMethod.GET)
     public void resqueFile(@RequestParam("file") Long id, HttpServletResponse response)
     {
@@ -351,7 +441,7 @@ public class FileSystemController
         
         File sourceFile = fileSystemManager.getSystemFileById(file.getId());
         
-        if (exceedsAllowedSpace(sourceFile))
+        if (exceedsAllowedSpace(file.getSize()))
         {
             return "LIMIT_REACHED=5Gb";
         }
@@ -511,7 +601,7 @@ public class FileSystemController
         }
         
         CTNAIFile ctnaiFile = fileSystemManager.getFileById(id);
-        ctnaiFile.setSize(file.getTotalSpace());
+        ctnaiFile.setSize(file.length());
         fileSystemManager.updateFile(ctnaiFile);
         
         if (exceedsAllowedSpace())
@@ -537,17 +627,12 @@ public class FileSystemController
     
     public Boolean exceedsAllowedSpace()
     {
-        return exceedsAllowedSpace(null);
+        return exceedsAllowedSpace(0l);
     }
     
-    private Boolean exceedsAllowedSpace(File newFile)
+    private Boolean exceedsAllowedSpace(long newFileSize)
     {
-        Long size = 0l;
-        
-        if (newFile != null)
-        {
-            size += newFile.getTotalSpace();
-        }
+        Long size = newFileSize;
         
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!authentication.isAuthenticated())
@@ -557,7 +642,7 @@ public class FileSystemController
         Long userId = getUserId(authentication.getName());
         
         size += fileSystemManager.getTotalSize(userId);
-
+        
         return (size > 5368709120l);
     }
 }

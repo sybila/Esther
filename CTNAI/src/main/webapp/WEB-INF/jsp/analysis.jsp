@@ -11,6 +11,7 @@
         <script type="text/javascript" src="<c:url value="/resources/Scripts/jquery.ui.js"/>"></script>
         <script type="text/javascript" src="<c:url value="/resources/Scripts/jquery.easing.js"/>"></script>
         <script type="text/javascript" src="<c:url value="/resources/Scripts/jquery.tablesorter.js"/>"></script>
+        <script type="text/javascript" src="<c:url value="/resources/Scripts/ajaxfileupload.js"/>"></script>
         <script type="text/javascript" src="<c:url value="/resources/Scripts/interactionGraphWidget.js"/>"></script>
         <script type="text/javascript" src="<c:url value="/resources/Scripts/parameterViewWidget.js"/>"></script>
         <script type="text/javascript" src="<c:url value="/resources/Scripts/json2.js"/>"></script>

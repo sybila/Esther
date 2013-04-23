@@ -184,8 +184,15 @@ public class ParameterViewController
             BehaviourMapper.behaviourMap(resultSet, newFile.getAbsolutePath());
             
             CTNAIFile bmFile = fileSystemManager.getFileById(targetId);
-            bmFile.setSize(newFile.getTotalSpace());
+            bmFile.setSize(newFile.length());
             fileSystemManager.updateFile(bmFile);
+            
+            if (fileSystemController.exceedsAllowedSpace())
+            {
+                return ("LIMIT_REACHED=5Gb=" + bmFile.getId());
+            }
+            
+            return bmFile.getId().toString();
         }
         catch (ClassNotFoundException | SQLException | ParserConfigurationException | TransformerException e)
         {

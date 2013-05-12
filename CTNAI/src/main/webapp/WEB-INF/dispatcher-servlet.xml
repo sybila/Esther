@@ -30,7 +30,7 @@
     <context:property-placeholder location="classpath:/Properties/ctnaiApp.properties,
             classpath:/Properties/ctnaiDatabase.properties" />
     
-    <context:component-scan base-package="ctnai.Controllers" />
+    <context:component-scan base-package="ctnai.Controllers, mu.fi.sybila.modeleditorwidget" />
  
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix">

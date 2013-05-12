@@ -16,6 +16,24 @@
     </properties>
 
     <dependencies>
+        <!-- CTNAI.CORE -->
+        
+        <dependency>
+            <groupId>com.ctnai</groupId>
+            <artifactId>ctnai.core</artifactId>
+            <version>1.0</version>
+        </dependency>
+        
+        <!-- Widgets -->
+        
+        <dependency>
+            <groupId>mu.fi.sybila</groupId>
+            <artifactId>ModelEditorWidget</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        
+        <!-- Spring MVC -->
+        
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aop</artifactId>

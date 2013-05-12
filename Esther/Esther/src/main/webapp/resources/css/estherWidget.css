@@ -1,0 +1,244 @@
+/* WIDGET */
+
+#widget
+{
+    background: #EEEEEE;
+    border: #CCCCCC 2px inset;
+    margin-left: 196px;
+    height: 640px;
+    overflow: hidden;
+}
+
+#widget p
+{
+    color: #000000;
+    font-size: 12px;
+    line-height: 18px;
+    font-family: "Verdana", "Sans-Serif", "Calibri", "Arial";
+    margin: 4px 8px 4px 8px;
+}
+
+#widget h7
+{
+    color: #006666;
+    line-height: 2em;
+    font-size: 1.2em;
+    font-family: "Verdana", "Sans-Serif", "Calibri", "Arial";
+    margin-left: 64px;
+    margin-right: 64px;
+    margin-top: 64px;
+    margin-bottom: 32px;
+}
+
+#widget input
+{
+    font-family: "Verdana", "Sans-Serif", "Calibri", "Arial";
+    margin: 16px 8px 8px 16px;
+}
+
+/* INFO PAGE */
+
+div#widget div.info p
+{
+    color: #000000;
+    font-size: 14px;
+    line-height: 20px;
+    font-family: "Verdana", "Sans-Serif", "Calibri", "Arial";
+    margin: 8px;
+    padding: 8px;
+}
+
+/* VIEWPOINT */
+
+#widget div.viewpoint
+{
+    height: 480px;
+    width: 712px;
+    overflow: scroll;
+    margin: 8px 8px 8px 8px;
+}
+
+/* TABLE */
+
+#widget table.list
+{
+    border-collapse: collapse;
+}
+
+#widget table tr tr, td
+{
+    font-family: "Verdana", "Sans-Serif", "Calibri", "Arial";
+    margin: 0px;
+}
+
+#widget table.list tr th,td
+{
+    border: 1px solid;
+    white-space: nowrap;
+}
+
+#widget table tr th
+{
+    cursor: pointer;
+    padding-left: 4px;
+}
+
+#widget table.list tr th
+{
+    border-color: #000000;
+    background: #009999;
+    color: #99FFFF;
+    font-size: 12px;
+    background-repeat: no-repeat;
+    background-position: center right;
+    cursor: pointer;
+    padding-left: 4px;
+    padding-right: 16px;
+}
+
+#widget table tr td
+{
+    padding: 0px;
+}
+
+#widget Ttable.list tr td
+{
+    border-color: #009999;
+    color: #000000;
+    font-size: 10px;
+}
+
+#widget table.list tr th.headerSortUp
+{
+    background-image: url(../images/TableSorter/ascending.gif);
+}
+
+#widget table.list tr th.headerSortDown
+{
+    background-image: url(../images/TableSorter/descending.gif);
+}
+
+/* TABS */
+
+#widget #tabs {
+    overflow: hidden;
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+    height: 30px;
+    background: #009999;
+    font-size: 0px;
+    white-space: nowrap;
+}
+
+#widget #tabs li
+{
+    display: inline-block;
+    list-style: none;
+    padding: 4px;
+    margin-top: 4px;
+    margin-bottom: 0px;
+    margin-left: 4px;
+    margin-right: 2px;
+    background: #CCCCCC;
+    border: 1px solid #003366;
+}
+
+#widget #tabs li a
+{
+    line-height: 16px;
+    font-size: 14px;
+    font-family: "Verdana", "Sans-Serif", "Calibri", "Arial";
+    color: #000000;
+    cursor: pointer;
+    margin-right: 4px;
+}
+
+#widget #tabs li a:hover
+{
+    text-decoration: none;
+}
+
+#widget #tabs li.ui-tabs-active
+{
+    background: #EEEEEE;
+    border-bottom: 0px;
+    padding-bottom: 5px;
+}
+
+#widget #tabs li.ui-tabs-active
+{
+    margin-bottom: -1px;
+}
+
+#widget #tabs li.ui-tabs-active a,
+#widget #tabs li.ui-state-disabled a,
+#widget #tabs li.ui-tabs-loading a
+{
+    cursor: text;
+}
+
+/* TASKS */
+
+div.task
+{
+    height: 42px;
+    background: #CCEEFF;
+    border: #009999 1px solid;
+    border-bottom-color: #006666;
+    border-right-color: #006666;
+    padding: 4px 16px 4px 16px;
+    margin: 8px;
+    overflow: hidden;
+}
+
+div.task.expanded
+{
+    height: 240px;
+}
+
+div.task table
+{
+    border: 0px;
+    width: 100%;
+    float: right;
+}
+
+div.task table tr th
+{
+    color: #000000;
+    line-height: 16px;
+    border: 0px;
+    padding-right: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    height: 40px;
+}
+
+div.task table tr td
+{ 
+    border: 0px;
+    height: 40px;
+}
+
+div.task table tr td input
+{
+    padding: 0px;
+    margin: 0px;
+    font-family: "Verdana", "Sans-Serif", "Calibri", "Arial";
+    font-size: 12px;
+}
+
+div.task table tr td img
+{
+    cursor: pointer;
+    padding: 2px;
+    margin: 0px;
+}
+
+/* WIDGET STARTER */
+
+div#widget_starter
+{
+    display: none;
+}

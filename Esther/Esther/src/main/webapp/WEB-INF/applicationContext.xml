@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+        http://www.springframework.org/schema/util
+        http://www.springframework.org/schema/util/spring-util-3.1.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+
+    <bean id="multipartResolver"
+        class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="5368709120"/>
+    </bean>
+    
+    <bean id="dataSource"
+	class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+	<property name="driverClassName" value="${jdbc.driver}" />
+	<property name="url" value="${jdbc.url}" />
+	<property name="username" value="${jdbc.username}" />
+	<property name="password" value="${jdbc.password}" />
+    </bean>
+    
+    <bean id="modelEditorWidget"
+          class="mu.fi.sybila.esther.modeleditorwidget.ModelEditorWidget" />
+    
+    <bean id="parsyboneWidget"
+          class="mu.fi.sybila.esther.parsybonewidget.ParsyboneWidget" />
+    
+    <bean id="parameterViewWidget"
+          class="mu.fi.sybila.esther.parameterviewwidget.ParameterViewWidget" />
+    
+    <bean id="behaviourMapWidget"
+          class="mu.fi.sybila.esther.behaviourmapwidget.BehaviourMapWidget" />
+    
+    <bean id="widgetList" class="org.springframework.beans.factory.config.ListFactoryBean">
+        <property name="sourceList">
+            <list>
+                <ref bean="modelEditorWidget" />
+                <ref bean="parsyboneWidget" />
+                <ref bean="parameterViewWidget" />
+                <ref bean="behaviourMapWidget" />
+            </list>
+        </property>
+    </bean>
+
+</beans>

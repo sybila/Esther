@@ -1,0 +1,18 @@
+/* CYTOSCAPE WEB */
+
+#widget DIV.cytoscape
+{
+    height: 380px;
+    width: 712px;
+    margin: 8px;
+}
+
+/* GRAPH INFORMATION */
+
+#widget #graph_information
+{
+    height: 92px;
+    width: 712px;
+    margin: 0px 8px 8px 8px;
+    overflow: scroll;
+}

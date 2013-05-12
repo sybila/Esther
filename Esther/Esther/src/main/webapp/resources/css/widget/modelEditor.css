@@ -1,0 +1,9 @@
+/* TEXTAREA */
+
+#widget textarea
+{
+    height: 480px;
+    width: 706px;
+    margin: 8px 8px 8px 8px;
+    resize: none;
+}

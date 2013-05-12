@@ -1,0 +1,90 @@
+/* FILE SYSTEM BROWSER */
+
+#filesystembrowser
+{
+    background: #FFFFFF;
+    border: #CCCCCC 2px inset;
+    float: left;
+    width: 192px;
+    height: 640px;
+    overflow: scroll;
+}
+
+ul.estherFileSystem
+{
+    color: #000000;
+    font-size: 12px;
+    line-height: 18px;
+    font-family: "Verdana", "Sans-Serif", "Calibri", "Arial";
+    margin: 0px;
+    padding: 0px;
+}
+
+ul.estherFileSystem li
+{
+    list-style: none;
+    padding: 0px;
+    padding-left: 20px;
+    margin: 0px;
+    white-space: nowrap;
+}
+
+ul.estherFileSystem a
+{
+    color: #000033;
+    text-decoration: none;
+    display: block;
+    padding: 0px 2px;
+}
+
+ul.estherFileSystem a:hover
+{
+    background: #CCFFFF;
+}
+
+/* FILE MENU */
+
+div.fileMenu
+{
+    position: absolute;
+    z-index: 1024;
+    color: #000000;
+    font-size: 12px;
+    line-height: 18px;
+    font-family: "Verdana", "Sans-Serif", "Calibri", "Arial";
+    background: #EEEEEE;
+    border: 1px solid #009999;
+    padding: 2px;
+}
+
+div.fileMenu a
+{
+    margin: 4px;
+}
+
+form#uploadOptions table tr
+{
+    margin: 0px;
+    padding: 0px;
+}
+
+form#uploadOptions table tr td
+{
+    border: 0px;
+    margin: 0px;
+    padding: 0px;
+}
+
+/* FILE ICONS */
+ul.estherFileSystem li.file
+{
+    background: url(../images/FileIcons/file.png) left top no-repeat;
+}
+ul.estherFileSystem li.folder
+{
+    background: url(../images/FileIcons/folder.png) left top no-repeat;
+}
+ul.estherFileSystem li.open_folder
+{
+    background: url(../images/FileIcons/folder_open.png) left top no-repeat;
+}

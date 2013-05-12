@@ -10,6 +10,7 @@
     <http pattern="/resources/**" security="none" />
     
     <http auto-config="true" use-expressions="true">
+        <intercept-url pattern="/Dummy" access="permitAll" />
         <intercept-url pattern="/Home" access="permitAll" />
         <intercept-url pattern="/Registration" access="permitAll" />
         <intercept-url pattern="/Register" access="permitAll" />

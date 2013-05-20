@@ -1,0 +1,8 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page pageEncoding="UTF-8" %>
+<select name="country">
+    <option <c:if test="${empty information.country}">selected="selected"</c:if> value="NULL">Country...</option>
+    <c:forEach items="${countries}" var="country">
+        <option <c:if test="${country == information.country}">selected="selected"</c:if> value="${country}" >${country}</option>
+    </c:forEach>
+</select>

@@ -1,2 +1,8 @@
-CommonThomasNetworkAnalysisInterface
-====================================
+Esther
+======
+
+This repository contains the source codes and documentation of Esther,
+a common web interface for parameter identification, classification and evaluation.
+
+To build Esther, customize the properties in Database.properties and Esther.properties
+files to suit your environment.

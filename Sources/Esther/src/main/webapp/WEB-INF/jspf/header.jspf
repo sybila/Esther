@@ -1,0 +1,21 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ page pageEncoding="UTF-8" %>
+<div id="header">
+    <h1>Esther</h1>
+    <p style="float: right;">
+        <sec:authorize access="isAuthenticated()">
+            Logged in as <a href="/Esther/Profile"><sec:authentication property="principal.username" /></a>
+            , <a href="<c:url value="/Esther/j_spring_security_logout"/>">log out</a>
+        </sec:authorize>
+        <sec:authorize access="isAnonymous()">
+            <a href="/Esther/Login">Log in</a>, or create a <a href="/Esther/Registration">new account</a>
+        </sec:authorize>
+    </p>
+</div>
+
+<ul id="menu" style="pointer-events: none;">
+    <li style="pointer-events: auto;"><a href="/Esther/Home">Home</a></li>
+    <li style="pointer-events: auto;"><a href="/Esther/Analysis">Analyze</a></li>
+    <li style="pointer-events: auto;"><a href="/Esther/About">About</a></li>
+</ul>

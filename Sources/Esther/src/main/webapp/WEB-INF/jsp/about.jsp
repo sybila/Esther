@@ -80,7 +80,7 @@
         </p>
         
         <p>
-            Parsybone was as well developed by <a href="http://sybila.fi.muni.cz">SyBiLa</a> 
+            Parsybone was as well developed at <a href="http://sybila.fi.muni.cz">SyBiLa</a> 
             and is available on <a href="https://github.com/sybila/Parsybone.git">GitHub</a> under <a href="http://www.gnu.org/licenses/gpl.html">GNU GPL</a>.
         </p>
         

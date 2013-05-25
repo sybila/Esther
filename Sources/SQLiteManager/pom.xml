@@ -4,7 +4,7 @@
 
     <groupId>mu.fi.sybila</groupId>
     <artifactId>esther-sqlite</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <packaging>jar</packaging>
 
     <name>SQLiteManager</name>
@@ -27,22 +27,12 @@
     </properties>
 
     <dependencies>
-        
         <!-- Sqlite -->
         
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.6.16</version>
-        </dependency>
-        
-        <!-- Test Scope -->
-        
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>3.8.1</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

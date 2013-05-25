@@ -349,27 +349,30 @@ public class AccountController
         
         UserInformation userInformation = informationForm.validate(errorBuilder);
         
-        User nameCheck = userManager.getUserByUsername(newUser.getUsername());
-        User mailCheck = userManager.getUserByEmail(newUser.getEmail());
-        
-        if (nameCheck != null)
+        if (errorBuilder.length() == 0)
         {
-            errorBuilder.append("Username: ");
-            errorBuilder.append(newUser.getUsername());
-            errorBuilder.append(" is alrady in use.");
-            errorBuilder.append("<br/>\n");
+            User nameCheck = userManager.getUserByUsername(newUser.getUsername());
+            User mailCheck = userManager.getUserByEmail(newUser.getEmail());
             
-            map.addAttribute("passRecPrompt", true);
-        }
-        
-        if (mailCheck != null)
-        {
-            errorBuilder.append("E-Mail: ");
-            errorBuilder.append(newUser.getEmail());
-            errorBuilder.append(" is alrady in use.");
-            errorBuilder.append("<br/>\n");
-            
-            map.addAttribute("nameRecPrompt", true);
+            if (nameCheck != null)
+            {
+                errorBuilder.append("Username: ");
+                errorBuilder.append(newUser.getUsername());
+                errorBuilder.append(" is alrady in use.");
+                errorBuilder.append("<br/>\n");
+
+                map.addAttribute("passRecPrompt", true);
+            }
+
+            if (mailCheck != null)
+            {
+                errorBuilder.append("E-Mail: ");
+                errorBuilder.append(newUser.getEmail());
+                errorBuilder.append(" is alrady in use.");
+                errorBuilder.append("<br/>\n");
+
+                map.addAttribute("nameRecPrompt", true);
+            }
         }
         
         if (errorBuilder.length() == 0)

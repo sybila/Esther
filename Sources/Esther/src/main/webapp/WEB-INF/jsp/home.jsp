@@ -45,7 +45,7 @@
             </p>
         </sec:authorize>
         <p>
-            Esther was developed by Systems Biology Laboratory (<a href="http://sybila.fi.muni.cz">SyBiLa</a>)
+            Esther was developed at Systems Biology Laboratory (<a href="http://sybila.fi.muni.cz">SyBiLa</a>)
             of Masaryk University, Brno, Czech Republic.</br>
             Esther is distributed under <a href="http://www.gnu.org/licenses/gpl.html">GNU general public license</a>
             and all the source codes and documentation are available at

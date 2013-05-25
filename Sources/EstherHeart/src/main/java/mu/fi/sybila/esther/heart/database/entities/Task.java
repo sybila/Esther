@@ -189,7 +189,7 @@ public class Task
         
         for (String line : lines)
         {
-            if (!line.trim().startsWith("Round"))
+            if (!line.isEmpty() && !line.trim().startsWith("Round"))
             {
                 if (outputInformation == null)
                 {

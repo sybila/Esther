@@ -18,7 +18,8 @@
             If you're unsure you can try <a href="/Esther/Login">logging in</a> right now.
         </p>
         <p>
-            Is the link we sent you broken? If so, you can have the confirmation e-mail resent by clicking <a href=""<!--TODO-->>here</a>.
+            Is the link we sent you broken? If so, you can have the confirmation e-mail resent by clicking
+            <a href="/Esther/ResendToken?user=${user_id}">here</a>.
         </p>
     </body>
 </html>

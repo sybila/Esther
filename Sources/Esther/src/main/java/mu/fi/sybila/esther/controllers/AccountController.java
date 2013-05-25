@@ -406,6 +406,7 @@ public class AccountController
                 }
                 
                 map.addAttribute("email", newUser.getEmail());
+                map.addAttribute("user_id", newUser.getId());
                 map.addAttribute("page", "security/registrationSuccess");
             }
         }
@@ -446,8 +447,60 @@ public class AccountController
         }
         else
         {
+            map.addAttribute("user_id", id);
             map.addAttribute("page", "security/activationFailure");
         }
+        
+        return "frontpage";
+    }
+    
+    /**
+     * Handler method for resending activation tokens.
+     * 
+     * @param map The map of UI properties.
+     * @param id The ID of the user account whose activation token is coveted.
+     * @return Resend token success page if sending the token succeeds. Resend token failure page otherwise.
+     */
+    @RequestMapping(value = "/ResendToken", method = RequestMethod.GET)
+    public String resendActivationToken(ModelMap map, @RequestParam("user") Long id)
+    {
+        User user = null;
+        
+        if (id != null)
+        {
+            user = userManager.getUserById(id);
+        }
+        
+        String token = null;
+        
+        if (user != null)
+        {
+            token = userManager.getActivationToken(user);
+        }
+        
+        if (token != null)
+        {
+            try
+            {
+                Emailer emailer = new Emailer(emailAddress, emailHost);
+                emailer.setSignature(estherSignature);
+
+                emailer.sendMail(user.getEmail(), "Esther account activation", ("<h2>Welcome " +
+                    user.getUsername() + "!</h2><p>Click the link below to complete the registration.</p>" +
+                    "<p>" + estherURL + "Activate?user=" + id + "&token=" + token + "</p>"));
+
+                logger.log(Level.INFO, ("Succesfuly sent activation e-mail to: " + user.getEmail()));
+
+                map.addAttribute("email", user.getEmail());
+                map.addAttribute("page", "ResendTokenSuccess");
+            }
+            catch (MessagingException e)
+            {
+                logger.log(Level.SEVERE, ("Failed sending activation e-mail to: " + user.getEmail()), e);
+            }
+        }
+        
+        map.addAttribute("page", "ResendTokenFailure");
         
         return "frontpage";
     }
@@ -502,7 +555,7 @@ public class AccountController
                         "<p>Your username is " + user.getUsername() + "</p>" +
                         "<p>If you're not the one who asked for this information please ignore this e-mail and allow us to apologize for the inconvenience caused.</p>"));
                     
-                    logger.log(Level.INFO, ("Succesfuly sent username recovery e-mail to: " + user.getEmail()));
+                    logger.log(Level.INFO, ("Successfuly sent username recovery e-mail to: " + user.getEmail()));
                 }
                 catch (MessagingException e)
                 {

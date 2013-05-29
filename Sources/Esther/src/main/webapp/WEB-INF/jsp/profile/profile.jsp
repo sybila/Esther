@@ -10,18 +10,18 @@
     <body>
         <h2><sec:authentication property="principal.username" />'s Profile</h2>
         <table class="profile_chapter">
-            <tr><th>Core information<a href="/Esther/Profile/Edit/Core">edit</a></th></tr>
+            <tr><th>Core information<a href="/Profile/Edit/Core">edit</a></th></tr>
             <tr><td>Username: <sec:authentication property="principal.username" /></td></tr>
             <tr><td>E-mail: ${user.email}</td></tr>
-            <tr><td>Password: <a href="/Esther/Profile/Edit/Password">change</a></td></tr>
+            <tr><td>Password: <a href="/Profile/Edit/Password">change</a></td></tr>
         </table>
         <table class="profile_chapter">
-            <tr><th>Personal Information <a href="/Esther/Profile/Edit/Personal">edit</a></th></tr>
+            <tr><th>Personal Information <a href="/Profile/Edit/Personal">edit</a></th></tr>
             <tr><td>Country: ${information.country}</td></tr>
             <tr><td>Organization: ${information.organization}</td></tr>
         </table>
         <table class="profile_chapter">
-            <tr><th>Preferences <a href="/Esther/Profile/Edit/Preferences">edit</a></th></tr>
+            <tr><th>Preferences <a href="/Profile/Edit/Preferences">edit</a></th></tr>
             <tr>
                 <td>
                     <c:if test="${information.hidePublicOwned}">

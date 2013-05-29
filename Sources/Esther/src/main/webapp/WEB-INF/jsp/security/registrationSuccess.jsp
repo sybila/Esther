@@ -13,7 +13,7 @@
             Use the confirmation link we sent to ${email} to activate your account.
         </p>
         <p>
-            You did not receive our e-mail? <a href="/Esther/ResendToken?user=${user_id}">Click here</a> to have it resend.
+            You did not receive our e-mail? <a href="/ResendToken?user=${user_id}">Click here</a> to have it resend.
         </p>
     </body>
 </html>

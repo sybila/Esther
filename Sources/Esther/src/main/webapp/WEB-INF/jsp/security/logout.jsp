@@ -11,7 +11,7 @@
             Logged out successfully.
         </p>
         <p>
-            Return to Esther <a href="/Esther/Home">Home</a> page.
+            Return to Esther <a href="/Home">Home</a> page.
         </p>
     </body>
 </html>

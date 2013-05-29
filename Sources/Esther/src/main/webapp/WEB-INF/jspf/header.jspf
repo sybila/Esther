@@ -5,17 +5,17 @@
     <h1>Esther</h1>
     <p style="float: right;">
         <sec:authorize access="isAuthenticated()">
-            Logged in as <a href="/Esther/Profile"><sec:authentication property="principal.username" /></a>
-            , <a href="<c:url value="/Esther/j_spring_security_logout"/>">log out</a>
+            Logged in as <a href="/Profile"><sec:authentication property="principal.username" /></a>
+            , <a href="<c:url value="/j_spring_security_logout"/>">log out</a>
         </sec:authorize>
         <sec:authorize access="isAnonymous()">
-            <a href="/Esther/Login">Log in</a>, or create a <a href="/Esther/Registration">new account</a>
+            <a href="/Login">Log in</a>, or create a <a href="/Registration">new account</a>
         </sec:authorize>
     </p>
 </div>
 
 <ul id="menu" style="pointer-events: none;">
-    <li style="pointer-events: auto;"><a href="/Esther/Home">Home</a></li>
-    <li style="pointer-events: auto;"><a href="/Esther/Analysis">Analyze</a></li>
-    <li style="pointer-events: auto;"><a href="/Esther/About">About</a></li>
+    <li style="pointer-events: auto;"><a href="/Home">Home</a></li>
+    <li style="pointer-events: auto;"><a href="/Analysis">Analyze</a></li>
+    <li style="pointer-events: auto;"><a href="/About">About</a></li>
 </ul>

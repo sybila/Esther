@@ -11,7 +11,7 @@
         
         <p>
             Your new password has been successfully sent to ${email}.
-            When you receive it you can proceed to <a href="/Esther/Login">login</a>.
+            When you receive it you can proceed to <a href="/Login">login</a>.
         </p>
     </body>
 </html>

@@ -37,7 +37,7 @@
             
         <c:if test="${not empty registerPrompt}">
             <p>
-                If you don't have an account yet <a href="/Esther/Registration">register here</a>.
+                If you don't have an account yet <a href="/Registration">register here</a>.
             </p>
         </c:if>
     </body>

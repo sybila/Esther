@@ -48,16 +48,16 @@
             </p>
         </form>
         <p>
-            Already a member? <a href="/Esther/Login">Log in here.</a>
+            Already a member? <a href="/Login">Log in here.</a>
         </p>
         <c:if test="${not empty passRecPrompt}">
             <p>
-                Forgot your password? Proceed with <a href="/Esther/Recover/Password">password recovery</a>.
+                Forgot your password? Proceed with <a href="/Recover/Password">password recovery</a>.
             </p>
         </c:if>
         <c:if test="${not empty nameRecPrompt}">
             <p>
-                Can't remember your username? Try the <a href="/Esther/Recover/Username">username recovery</a>.
+                Can't remember your username? Try the <a href="/Recover/Username">username recovery</a>.
             </p>
         </c:if>
     </body>

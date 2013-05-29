@@ -11,7 +11,7 @@
         
         <p>
             Congratulations! Your Esther account has been successfully activated.
-            You can now <a href="/Esther/Login">login</a>.
+            You can now <a href="/Login">login</a>.
         </p>
     </body>
 </html>

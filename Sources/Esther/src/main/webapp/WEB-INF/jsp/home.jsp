@@ -22,7 +22,7 @@
         <p>
             So what is it that Esther does?</br>
             Well, basically Esther provides you with a set of tools, including a powerful
-            coloured model checker <a href="/Esther/About#Parsybone">Parsybone</a>,
+            coloured model checker <a href="/About#Parsybone">Parsybone</a>,
             that you can use to analyse your model and determine the optimal parametrizations.
         </p>
         <p>
@@ -35,13 +35,13 @@
             And what's more! The parametrizations come ranked by several criteria.
             All that's left is to filter them or even visualise them and voila!
             You have just reverse engineered parameters for you model!</br>
-            If you want to learn more about parameter evaluation visit our <a href="/Esther/About">About</a> page.
+            If you want to learn more about parameter evaluation visit our <a href="/About">About</a> page.
         </p>
         <sec:authorize access="isAnonymous()">
             <p>
                 You don't have an account yet?</br>
-                Don't let your models wait and <a href="/Esther/Registration">register now!</a> Completely free of charge!</br>
-                We even give you a free 5 GB storage space for your models and analyses.
+                Don't let your models wait and <a href="/Registration">register now!</a> Completely free of charge!</br>
+                We even give you a free server-side storage space for your models and analyses.
             </p>
         </sec:authorize>
         <p>

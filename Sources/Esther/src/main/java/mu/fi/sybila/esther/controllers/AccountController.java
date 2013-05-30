@@ -18,6 +18,10 @@ import mu.fi.sybila.esther.heart.database.entities.User;
 import mu.fi.sybila.esther.heart.database.entities.UserInformation;
 import mu.fi.sybila.esther.heart.database.forms.InformationForm;
 import mu.fi.sybila.esther.heart.database.forms.UserForm;
+import net.tanesha.recaptcha.ReCaptcha;
+import net.tanesha.recaptcha.ReCaptchaFactory;
+import net.tanesha.recaptcha.ReCaptchaImpl;
+import net.tanesha.recaptcha.ReCaptchaResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -241,6 +245,11 @@ public class AccountController
     private String emailHost;
     private static final String estherSignature = "<p>=== THIS IS AN AUTO-GENERATED E-MAIL, RESPONDING IS FUTILE ===</p><br/><p>Yours sincerely, Esther mail bot</p>";
     
+    @Value("${captcha_public_key}")
+    private String captchaPublicKey;
+    @Value("${captcha_private_key}")
+    private String captchaPrivateKey;
+    
     /**
      * Method for setting up the controller.
      * 
@@ -315,6 +324,11 @@ public class AccountController
     @RequestMapping(value = "/Registration", method = RequestMethod.GET)
     public String getRegistrationPage(ModelMap map)
     {
+        ReCaptcha c = ReCaptchaFactory.newReCaptcha(captchaPublicKey, captchaPrivateKey, false);
+        String captchaHtml = c.createRecaptchaHtml(null, null);
+        
+        map.addAttribute("captcha", captchaHtml);
+        
         map.addAttribute("countries", countries);
         map.addAttribute("user", new UserForm());
         map.addAttribute("page", "security/registration");
@@ -375,6 +389,19 @@ public class AccountController
             }
         }
         
+        String remoteAddr = request.getRemoteAddr();
+        ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
+        reCaptcha.setPrivateKey(captchaPrivateKey);
+
+        String challenge = request.getParameter("recaptcha_challenge_field");
+        String uresponse = request.getParameter("recaptcha_response_field");
+        ReCaptchaResponse reCaptchaResponse = reCaptcha.checkAnswer(remoteAddr, challenge, uresponse);
+        
+        if (!reCaptchaResponse.isValid())
+        {
+            errorBuilder.append("Are you sure you are not a bot? Your captcha is all wrong!");
+        }
+        
         if (errorBuilder.length() == 0)
         {
             Long id;
@@ -412,6 +439,11 @@ public class AccountController
         }
         else
         {
+            ReCaptcha c = ReCaptchaFactory.newReCaptcha(captchaPublicKey, captchaPrivateKey, false);
+            String captchaHtml = c.createRecaptchaHtml(null, null);
+
+            map.addAttribute("captcha", captchaHtml);
+            
             map.addAttribute("countries", countries);
             map.addAttribute("error", errorBuilder.toString());
             map.addAttribute("user", userForm);

@@ -204,6 +204,14 @@
             <version>1.4.6</version>
         </dependency>
         
+        <!-- ReCaptcha -->
+        
+        <dependency>
+            <groupId>net.tanesha.recaptcha4j</groupId>
+            <artifactId>recaptcha4j</artifactId>
+            <version>0.0.7</version>
+        </dependency>
+        
         <!-- Java EE 6 -->
         
         <dependency>

@@ -1,9 +1,16 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
+<%@ page import="net.tanesha.recaptcha.ReCaptcha" %>
+<%@ page import="net.tanesha.recaptcha.ReCaptchaFactory" %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script type="text/javascript">
+            var RecaptchaOptions = {
+               theme : 'blackglass'
+            };
+        </script>
         <title>Esther registration</title>
     </head>
     <body>
@@ -43,6 +50,7 @@
                     <td><input type="text" name="organization" value="${information.organization}"/></td>
                 </tr>
             </table>
+            ${captcha}
             <p>
                 <input class="button" type="Submit" value="Register" name="submit"/>
             </p>

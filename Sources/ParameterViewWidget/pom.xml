@@ -43,4 +43,12 @@
             <version>1.0</version>
         </dependency>
     </dependencies>
+	
+    <repositories>
+    	<repository>
+            <id>esther.local</id>
+            <name>esther_repo</name>
+            <url>file:/var/lib/Esther/mvn_repo</url>
+		</repository>
+    </repositories>
 </project>

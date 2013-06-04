@@ -214,8 +214,6 @@ public class FileSystemController
         if (id == null)
         {
             links.put("upload", "Upload");
-            
-            map.addAttribute("ext", "dbm");
         }
         else
         {
@@ -724,21 +722,55 @@ public class FileSystemController
     {
         if ((id == null) || (data == null))
         {
-            return null;
+            return "ERROR=Invalid data specified.";
         }
         
-        File file = fileSystemManager.getSystemFileById(id);
+        EstherFile file = fileSystemManager.getFileById(id);
         
         if (file == null)
         {
-            return null;
+            return "ERROR=Invalid data specified.";
         }
+        
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!authentication.isAuthenticated())
+        {
+            return "ERROR=You are not logged in.";
+        }
+        String username = authentication.getName();
+            
+        if (file.getOwner() != getUserId(username))
+        {
+            List<EstherFile> parents = fileSystemManager.getFileParents(file);
+            Long[] parentIds = new Long[parents.size()];
+            for (int i = 0; i < parents.size(); i++)
+            {
+                parentIds[i] = parents.get(i).getId();
+            }
+            
+            String createMessage = createFile(file.getName(), file.getType(), parentIds, false);
+            
+            Long newId;
+            
+            try
+            {
+                newId = Long.parseLong(createMessage);
+            }
+            catch (NumberFormatException e)
+            {
+                return createMessage;
+            }
+            
+            file = fileSystemManager.getFileById(newId);
+        }
+        
+        File sysFile = fileSystemManager.getSystemFileById(file.getId());
         
         BufferedWriter bw = null;
 
         try
         {
-            bw = new BufferedWriter(new FileWriter(file));
+            bw = new BufferedWriter(new FileWriter(sysFile));
 
             bw.write(data);
         }
@@ -761,9 +793,8 @@ public class FileSystemController
             }
         }
         
-        EstherFile estherFile = fileSystemManager.getFileById(id);
-        estherFile.setSize(file.length());
-        fileSystemManager.updateFile(estherFile);
+        file.setSize(sysFile.length());
+        fileSystemManager.updateFile(file);
         
         if (exceedsAllowedSpace())
         {

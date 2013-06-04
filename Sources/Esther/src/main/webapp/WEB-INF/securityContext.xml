@@ -15,6 +15,7 @@
         <intercept-url pattern="/Register" access="permitAll" />
         <intercept-url pattern="/Activate" access="permitAll" />
         <intercept-url pattern="/ResendToken" access="permitAll" />
+        <intercept-url pattern="/favicon.ico" access="permitAll" />
         <intercept-url pattern="/Login" access="permitAll" />
         <intercept-url pattern="/LoginFailure" access="permitAll" />
         <intercept-url pattern="/Logout" access="permitAll" />

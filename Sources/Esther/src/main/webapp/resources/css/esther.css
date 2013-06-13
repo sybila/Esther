@@ -42,6 +42,7 @@ p
 {
     color: white;
     font-size: 1.1em;
+    margin-bottom: 32px;
 }
 
 div#header {
@@ -213,4 +214,9 @@ table.profile_chapter a
 {
     text-transform:lowercase;
     float: right;
+}
+
+a.logo {
+    padding-left: 1em; 
+    text-decoration: none;
 }

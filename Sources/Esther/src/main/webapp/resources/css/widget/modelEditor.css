@@ -3,7 +3,7 @@
 #widget textarea
 {
     height: 480px;
-    width: 706px;
-    margin: 8px 8px 8px 8px;
+    width: 90%;
+    margin-left: 5%;
     resize: none;
 }

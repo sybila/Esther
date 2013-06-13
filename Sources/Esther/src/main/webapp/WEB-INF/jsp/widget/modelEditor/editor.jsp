@@ -6,11 +6,11 @@
     <script type="text/javascript" src="<c:url value="/resources/scripts/widget/modelEditor.js"/>"></script>
 </head>
 
-<div id="widget_starter" init_function="initModelEditor" />
+<div id="widget_starter" init_function="initModelEditor" /> 
 
-<h7>Model:</h7>
+<h2 class="widget">Model:</h2> <br />
 
-<textarea spellcheck="false" id="model">${model}</textarea>
+<textarea spellcheck="false" id="model">${model}</textarea> <br />
 
 <input class="button" id="save_button" file_id="${file}" type="Submit" value="Save" />
 <c:if test="${not empty parsybone}">

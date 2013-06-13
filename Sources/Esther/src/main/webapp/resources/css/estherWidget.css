@@ -2,11 +2,12 @@
 
 #widget
 {
-    background: #EEEEEE;
     border: #CCCCCC 2px inset;
-    margin-left: 196px;
     height: 640px;
+    width:auto;
     overflow: hidden;
+    background: #FFFFFF;
+    margin: auto;
 }
 
 #widget p
@@ -18,16 +19,13 @@
     margin: 4px 8px 4px 8px;
 }
 
-#widget h7
+h2.widget
 {
-    color: #006666;
-    line-height: 2em;
+    color: #666666;
+    line-height: 1.8em;
     font-size: 1.2em;
     font-family: "Verdana", "Sans-Serif", "Calibri", "Arial";
-    margin-left: 64px;
-    margin-right: 64px;
-    margin-top: 64px;
-    margin-bottom: 32px;
+    padding-left: 5%;
 }
 
 #widget input
@@ -53,7 +51,7 @@ div#widget div.info p
 #widget div.viewpoint
 {
     height: 480px;
-    width: 712px;
+    width: 100%;
     overflow: scroll;
     margin: 8px 8px 8px 8px;
 }
@@ -86,7 +84,6 @@ div#widget div.info p
 #widget table.list tr th
 {
     border-color: #000000;
-    background: #009999;
     color: #99FFFF;
     font-size: 12px;
     background-repeat: no-repeat;
@@ -121,18 +118,19 @@ div#widget div.info p
 /* TABS */
 
 #widget #tabs {
+    background: #DDDDDD;
     overflow: hidden;
     margin: 0px;
     padding: 0px;
     width: 100%;
     height: 30px;
-    background: #009999;
     font-size: 0px;
     white-space: nowrap;
 }
 
 #widget #tabs li
 {
+    background: #FFFFFF;
     display: inline-block;
     list-style: none;
     padding: 4px;
@@ -140,12 +138,12 @@ div#widget div.info p
     margin-bottom: 0px;
     margin-left: 4px;
     margin-right: 2px;
-    background: #CCCCCC;
     border: 1px solid #003366;
 }
 
 #widget #tabs li a
 {
+    background: #FFFFFF;
     line-height: 16px;
     font-size: 14px;
     font-family: "Verdana", "Sans-Serif", "Calibri", "Arial";
@@ -161,7 +159,7 @@ div#widget div.info p
 
 #widget #tabs li.ui-tabs-active
 {
-    background: #EEEEEE;
+    
     border-bottom: 0px;
     padding-bottom: 5px;
 }
@@ -183,7 +181,6 @@ div#widget div.info p
 div.task
 {
     height: 42px;
-    background: #CCEEFF;
     border: #009999 1px solid;
     border-bottom-color: #006666;
     border-right-color: #006666;

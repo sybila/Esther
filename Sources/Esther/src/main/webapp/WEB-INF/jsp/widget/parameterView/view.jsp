@@ -8,7 +8,7 @@
 
 <div id="widget_starter" init_function="initParameterView" />
 
-<h7>Parameters:</h7>
+<h2 class="widget">Parameters:</h2>
 
 <div class="viewpoint">
     <%@ include file="/WEB-INF/jsp/widget/parameterView/list.jsp" %>

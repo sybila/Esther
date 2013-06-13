@@ -9,7 +9,7 @@
 
 <div id="widget_starter" init_function="initBehaviourMap" file="${file}" />
 
-<h7>Behaviour Map:</h7>
+<h2 class="widget">Behaviour Map:</h2>
 
 <div class="cytoscape" id="cytoscape_web_${file}" />
 

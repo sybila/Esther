@@ -177,6 +177,10 @@ ul.page_navigation li
 
 /* TABLES */
 
+th {
+    text-align: left;
+}
+
 table.profile_chapter
 {
     width: 100%;
@@ -185,7 +189,7 @@ table.profile_chapter
         margin-bottom: 1em;
 }
 
-table tr th
+table.profile_chapter tr th
 {
     color: grey;
     font-size: 1.3em;

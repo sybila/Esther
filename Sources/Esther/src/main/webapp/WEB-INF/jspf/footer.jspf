@@ -1,7 +1,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page pageEncoding="UTF-8" %>
 <footer>
-    <a href="http://sybila.fi.muni.cz">
+    <a class="logo" href="http://www.mi.fu-berlin.de/en/math/groups/dibimath/projects/a24.html" >
+        <img height="42" src="<c:url value="/resources/images/matheon_logo.png"/>"/>
+    </a>
+    <a class="logo" href="http://sybila.fi.muni.cz">
         <img height="42" src="<c:url value="/resources/images/sybila_logo.png"/>"/>
     </a>
+
 </footer>

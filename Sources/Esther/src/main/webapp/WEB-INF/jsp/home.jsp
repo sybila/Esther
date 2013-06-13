@@ -7,7 +7,7 @@
         <title>Esther Home</title>
     </head>
     <body>
-        <h2>Home</h2>
+        <h1 class="section">Home</h1>
         <p>
             Welcome to Esther, the parameter estimator for discrete gene regulatory networks.
         </p>

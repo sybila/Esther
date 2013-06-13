@@ -8,7 +8,7 @@
         <title>Esther profile edit</title>
     </head>
     <body>
-        <h2>Edit Profile</h2>
+        <h1 class="section">Edit Profile</h1>
         
         <form name="form" action="<c:url value='/Profile/Edit/Preferences' />" method="POST">
             <table>

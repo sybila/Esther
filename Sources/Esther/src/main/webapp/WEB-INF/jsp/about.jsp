@@ -7,7 +7,7 @@
         <title>Esther About</title>
     </head>
     <body>
-        <h2>About</h2>
+        <h1 class="section">About</h1>
         <ul class="page_navigation">
             <p>
                 Page navigation
@@ -26,7 +26,7 @@
             </li>
         </ul>
         
-        <h3>What's Esther?</h3>
+        <h2 class="subsection">What's Esther?</h2>
         <a id="Esther"></a>
         <p>
             Esther is an application for developing and sharing gene regulatory models. 
@@ -44,7 +44,7 @@
             You can access all the source codes and documentation on <a href="https://github.com/sybila/Esther.git">GitHub</a>.
         </p>
         
-        <h3>Parameter evaluation</h3>
+        <h2 class="subsection">Parameter evaluation</h2>
         <a id="ParamEval"></a>
         <p>
             The process of parameter evaluation is sequential analysis of the input model. 
@@ -71,7 +71,7 @@
             refer to the published <a href="http://link.springer.com/chapter/10.1007%2F978-3-642-33636-2_13">article</a>
         </p>
         
-        <h3>Parsybone</h3>
+        <h2 class="subsection">Parsybone</h2>
         <a id="Parsybone"></a>
         <p>
             Parsybone is a complex tool for parameter identification Esther uses. 
@@ -84,13 +84,13 @@
             and is available on <a href="https://github.com/sybila/Parsybone.git">GitHub</a> under <a href="http://www.gnu.org/licenses/gpl.html">GNU GPL</a>.
         </p>
         
-        <h3>Getting started tutorial</h3>
+        <h2 class="subsection">Getting started tutorial</h2>
         <a id="Tutorial"></a>
         <p>
             This is a brief tutorial to get you started with Esther.
         </p>
         
-        <h6>1. Creating a model:</h6>
+        <h3 class="subsubsection">1. Creating a model:</h3>
         <p>
             To create a model open the start page on the analysis screen and click the "create a new model" link. 
             This will bring up a new model file opened in the model editor. 
@@ -99,7 +99,7 @@
             to discover all the possibilities the model file allows you.
         </p>
         
-        <h6>2. Parameter identification</h6>
+        <h3 class="subsubsection">2. Parameter identification</h3>
         <p>
             Running the parameter identification is simple! 
             Just click the Parsybone button at the bottom of the model editor and a new Task will start up. 
@@ -108,7 +108,7 @@
             file you can find under your model file.
         </p>
         
-        <h6>3. Filtering parameters</h6>
+        <h3 class="subsubsection">3. Filtering parameters</h3>
         <p>
             Upon opening the sqlite file you will see a table of possible parametrizations. 
             To save you the trouble only 128 of the parameters is displayed. 
@@ -117,7 +117,7 @@
             a constraint on many different values available from the dropdown list.
         </p>
         
-        <h6>4. Behaviour map</h6>
+        <h3 class="subsubsection">4. Behaviour map</h3>
         <p>
             To visualise the parameters chosen by the filter (all the whole parameter set obtained) 
             just click the Behaviour map button at the bottom of the parameter list screen. 

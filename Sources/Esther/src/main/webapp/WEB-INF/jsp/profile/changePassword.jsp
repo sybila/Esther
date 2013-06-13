@@ -8,7 +8,7 @@
         <title>Esther password change</title>
     </head>
     <body>
-        <h2>Change Password</h2>
+        <h1 class="section">Change Password</h1>
         
         <c:if test="${not empty error}">
             <div id="error">

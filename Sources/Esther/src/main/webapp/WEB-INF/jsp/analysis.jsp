@@ -27,7 +27,7 @@
         <title>Esther Analysis</title>
     </head>
     <body>
-        <h2>Analysis</h2>
+        <h1 class="section">Analysis</h1>
         <div id="filesystembrowser">
         </div>
         <div id="widget">

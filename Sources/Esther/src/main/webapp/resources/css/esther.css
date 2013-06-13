@@ -8,44 +8,48 @@ root
 html
 {
     min-height: 100%;
+    font-family: "Estrangelo Edessa", sans-serif;
 }
 
 body
 {
+    width: 70%;
     background: #000000;
+    margin: auto;
+    color: white;
 }
 
 a:link
 {
-    color: #990033;
+    color: #999999;
     text-decoration: none;
+}
+
+
+a:hover
+{
+    color: #999999;
+    text-decoration: underline;
 }
 
 a:visited
 {
-    color: #009999;
+    color: #999999;
     text-decoration: none;
-}
-
-a:hover
-{
-    color: #33CCCC;
-    text-decoration: underline;
 }
 
 a:active
 {
-    color: #33CCCC;
+    color: #990000;
     text-decoration: none;
 }
 
+
 p
 {
-    color: #CCCCFF;
-    font-family: "URW Gothic L", "Euphemia", "Calibri", "Arial";
-    font-size: 1em;
+    color: white;
+    font-size: 1.1em;
     margin-bottom: 32px;
-    line-height: 1.2em;
 }
 
 header,
@@ -56,59 +60,40 @@ section
     display: block;
 }
 
+div#header {
+    padding: 1em;
+}
+
 /* HEADERS AND FOOTERS */
-
-h1
-{
-    font-size: 3.6em;
-    font-family: "Estrangelo Edessa", "Liberation Sans", "Calibri", "Arial";
-    color: #990033;
-    margin-left: 128px;
-    margin-top: 4px;
-    margin-bottom: 4px;
-    text-shadow: 1px 1px #660000;
+h1,h2,h3 {
+    text-transform:uppercase;
+    font-weight: bold;
+    margin: 0;
 }
 
-h2
-{
-    font-size: 3.2em;
-    font-family: "FreeSans", "Corbel", "Calibri", "Arial";
-    color: #6633CC;
-    margin-left: 64px;
-    margin-top: 32px;
-    margin-bottom: 32px;
+h1.section {
+   font-size: 1.8em;
+   background-color: #950000; /* Kinda red-ish. */
+   color: white;
+   margin-bottom: 1.0em;
+   
+   padding: 0.3em 0.3em 0.12em 0.6em; /* Font is in capitals, no need for bottom line. */
 }
 
-h3
+h2.subsection
 {
-    font-size: 1.6em;
-    font-family: "URW Gothic L", "Euphemia", "Calibri", "Arial";
-    color: #99CCFF;
-    margin-left: 32px;
-    margin-top: 32px;
-    margin-bottom: 32px;
+    font-size: 1.5em;
+    color: #999999;
 }
 
-h6
+h3.subsubsection
 {
-    color: #66CCCC;
-    font-family: "URW Gothic L", "Euphemia", "Calibri", "Arial";
-    font-size: 1.32em;
-    margin-left: 48px;
-    margin-bottom: 16px;
+    font-size: 1.2em;
+    color: #999999;
 }
 
-footer
-{
-    color: #CCCCFF;
-    font-size: 1em;
-    font-family: "Corbel", "FreeSans", "Calibri", "Arial";
-    border-top: 1px #CCCCCC solid;
-    width: 1024px;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 32px;
-    text-align: right;
+footer {
+    float:right;
 }
 
 footer img
@@ -118,7 +103,6 @@ footer img
 
 #header 
 {
-    width: 1024px;
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 4px;
@@ -129,7 +113,6 @@ footer img
 {
     color: #CCCCFF;
     font-size: 1em;
-    font-family: "Corbel", "FreeSans", "Calibri", "Arial";
     margin: 4px 64px 32px 4px;
 }
 
@@ -138,7 +121,6 @@ footer img
 #page
 {
     background: #333333;
-    width: 928px;
     margin-left: auto;
     margin-right: auto;
     padding: 16px;
@@ -148,13 +130,8 @@ footer img
 
 ul#menu
 {
-    border-bottom: 1px #CCCCCC solid;
-    position: relative;
-    width: 984px;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 0px;
-    margin-top: 0px;
+    margin: 0em;
+    padding: 0em;
     text-align: left;
     line-height: 2.4em;
 }
@@ -162,32 +139,27 @@ ul#menu
 ul#menu li
 {
     display: inline;
-    list-style: none;
 }
 
 ul#menu li a
 {
     font-size: 1.6em;
-    font-family: "Corbel", "FreeSans", "Calibri", "Arial";
-    font-weight: bold;
-    color: #3399CC;
+    font-weight: bolder;
+    color: grey;
     border-radius: 4px 4px 0 0;
     -webkit-border-radius: 4px 4px 0 0;
     -moz-border-radius: 4px 4px 0 0;
     padding: 0px 16px 4px 16px;
-    background: #333333;
 }
 
 ul#menu li a:hover
 {
-    color: #000000;
-    background-color: #990000;
+    color: grey;
 }
 
 ul#menu li a:active
 {
-    color: #000000;
-    background-color: #990000;
+    color: grey;
 }
 
 /* ERROR MESSAGES */
@@ -196,7 +168,6 @@ ul#menu li a:active
 {
     color: #FF0033;
     font-size: 1em;
-    font-family: "Euphemia", "URW Gothic L", "Calibri", "Arial";
     margin: 8px 16px 8px 16px;
 }
 
@@ -206,7 +177,6 @@ table tr th
 {
     color: #CCCCFF;
     font-size: 1em;
-    font-family: "URW Gothic L", "Euphemia", "Calibri", "Arial";
     margin: 4px;
     text-align: left;
 }
@@ -223,7 +193,6 @@ table.profile_chapter
 table.profile_chapter tr th,td
 {
     font-size: 1em;
-    font-family: "URW Gothic L", "Euphemia", "Calibri", "Arial";
     text-align: left;
     margin: 0px;
     padding: 8px;
@@ -252,14 +221,12 @@ input
 {
     color: #006699;
     font-size: 1em;
-    font-family: "URW Gothic L", "Euphemia", "Calibri", "Arial";
     text-align: left;
 }
 
 input.button
 {
     color: #000033;
-    font-family: "Corbel", "FreeSans", "Calibri", "Arial";
     text-align: center;
 }
 
@@ -269,11 +236,10 @@ ul.page_navigation
 {
     float: right;
     width: auto;
-    border: #99CCFF solid 1px;
-    margin-left: 16px;
-    margin-right: 32px;
-    margin-top: 2px;
-    margin-bottom: 64px;
+    border: black solid 2px;
+    padding: 1em;
+    margin-left: 1em;
+    margin-bottom: 1em;
 }
 
 ul.page_navigation li
@@ -286,25 +252,5 @@ ul.page_navigation li
 
 ul.page_navigation li a
 {
-    font-size: 1em;
-    font-family: "Corbel", "FreeSans", "Calibri", "Arial";
-    color: #99CCFF;
-}
-
-ul.page_navigation li a:visited
-{
-    color: #009999;
-    text-decoration: none;
-}
-
-ul.page_navigation li a:hover
-{
-    color: #33CCCC;
-    text-decoration: underline;
-}
-
-ul.page_navigation li a:active
-{
-    color: #33CCCC;
-    text-decoration: none;
+    color: grey;
 }

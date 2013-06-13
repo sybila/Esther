@@ -8,7 +8,7 @@
         <title>Esther profile edit</title>
     </head>
     <body>
-        <h2>Edit Profile</h2>
+        <h1 class="section">Edit Profile</h1>
         
         <c:if test="${not empty error}">
             <div id="error">

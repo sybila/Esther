@@ -7,7 +7,7 @@
         <title>Esther profile edit</title>
     </head>
     <body>
-        <h2>Profile Updated</h2>
+        <h1 class="section">Profile Updated</h1>
         
         <p>
             Your profile has been successfully updated!

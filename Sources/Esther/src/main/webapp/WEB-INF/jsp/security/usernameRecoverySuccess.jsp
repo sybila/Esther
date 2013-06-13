@@ -7,7 +7,7 @@
         <title>Esther username recovery</title>
     </head>
     <body>
-        <h2>Username Recovery</h2>
+        <h1 class="section">Username Recovery</h1>
         
         <p>
             Your username has been successfully sent to ${email}.

@@ -6,7 +6,7 @@
         <title>Esther Logout</title>
     </head>
     <body>
-        <h2>Log out</h2>
+        <h1 class="section">Log out</h1>
         <p>
             Logged out successfully.
         </p>

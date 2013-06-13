@@ -7,7 +7,7 @@
         <title>Esther registration</title>
     </head>
     <body>
-        <h2>Registration Successful</h2>
+        <h1 class="section">Registration Successful</h1>
         
         <p>
             Use the confirmation link we sent to ${email} to activate your account.

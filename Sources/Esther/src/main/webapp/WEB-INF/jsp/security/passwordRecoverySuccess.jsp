@@ -7,7 +7,7 @@
         <title>Esther password recovery</title>
     </head>
     <body>
-        <h2>Password Recovery</h2>
+        <h1 class="section">Password Recovery</h1>
         
         <p>
             Your new password has been successfully sent to ${email}.

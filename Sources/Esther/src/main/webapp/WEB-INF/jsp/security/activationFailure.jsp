@@ -7,7 +7,7 @@
         <title>Esther registration</title>
     </head>
     <body>
-        <h2>Activation failed</h2>
+        <h1 class="section">Activation failed</h1>
         
         <p>
             Oops! Something went wrong. </br>

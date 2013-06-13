@@ -7,7 +7,7 @@
         <title>Esther password change</title>
     </head>
     <body>
-        <h2>Password changed</h2>
+        <h1 class="section">Password changed</h1>
         
         <p>
             Your password has been successfully updated!

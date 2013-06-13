@@ -8,7 +8,7 @@
         <title>Esther Profile</title>
     </head>
     <body>
-        <h2><sec:authentication property="principal.username" />'s Profile</h2>
+        <h1 class="section"><sec:authentication property="principal.username" />'s Profile</h1>
         <table class="profile_chapter">
             <tr><th>Core information<a href="/Profile/Edit/Core">edit</a></th></tr>
             <tr><td>Username: <sec:authentication property="principal.username" /></td></tr>

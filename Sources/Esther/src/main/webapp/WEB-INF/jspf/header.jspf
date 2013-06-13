@@ -2,20 +2,24 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ page pageEncoding="UTF-8" %>
 <div id="header">
-    <h1>Esther</h1>
-    <p style="float: right;">
-        <sec:authorize access="isAuthenticated()">
-            Logged in as <a href="/Profile"><sec:authentication property="principal.username" /></a>
-            , <a href="<c:url value="/j_spring_security_logout"/>">log out</a>
-        </sec:authorize>
-        <sec:authorize access="isAnonymous()">
-            <a href="/Login">Log in</a>, or create a <a href="/Registration">new account</a>
-        </sec:authorize>
-    </p>
+    <img src="../../resources/images/logo.png" alt="Esther logo" />
 </div>
 
-<ul id="menu" style="pointer-events: none;">
+<ul id="menu" style="pointer-events: none; display: inline;">
     <li style="pointer-events: auto;"><a href="/Home">Home</a></li>
     <li style="pointer-events: auto;"><a href="/Analysis">Analyze</a></li>
     <li style="pointer-events: auto;"><a href="/About">About</a></li>
+    <li style="float: right;">
+
+    </li>
 </ul>
+
+<div style="float: right;">
+    <sec:authorize access="isAnonymous()">
+        <a href="/Login">LOG IN</a> / <a href="/Registration">REGISTER</a>
+    </sec:authorize>
+    <sec:authorize access="isAuthenticated()">
+        <a href="/Profile"><sec:authentication property="principal.username" /></a> - <a href="<c:url value="/j_spring_security_logout"/>">LOG OUT</a>
+    </sec:authorize>
+</div>
+

@@ -14,7 +14,7 @@
         <title>Esther registration</title>
     </head>
     <body>
-        <h2>New User</h2>
+        <h1 class="section">New User</h1>
         
         <c:if test="${not empty error}">
             <div id="error">

@@ -7,7 +7,7 @@
         <title>Esther log in</title>
     </head>
     <body onload="document.form.j_username.focus();">
-        <h2>Log in</h2>
+        <h1 class="section">Log in</h1>
 
         <c:if test="${not empty error}">
             <div id="error">

@@ -7,7 +7,7 @@
         <title>Esther registration</title>
     </head>
     <body>
-        <h2>Account activated</h2>
+        <h1 class="section">Account activated</h1>
         
         <p>
             Congratulations! Your Esther account has been successfully activated.

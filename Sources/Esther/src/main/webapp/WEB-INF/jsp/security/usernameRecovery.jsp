@@ -7,7 +7,7 @@
         <title>Esther username recovery</title>
     </head>
     <body>
-        <h2>Username Recovery</h2>
+        <h1 class="section">Username Recovery</h1>
         
         <c:if test="${not empty error}">
             <div id="error">

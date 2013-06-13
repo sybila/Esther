@@ -421,8 +421,8 @@ public class AccountController
                     Emailer emailer = new Emailer(emailAddress, emailHost);
                     emailer.setSignature(estherSignature);
                     
-                    emailer.sendMail(newUser.getEmail(), "Esther account activation", ("<h2>Welcome " +
-                        newUser.getUsername() + "!</h2><p>Click the link below to complete the registration.</p>" +
+                    emailer.sendMail(newUser.getEmail(), "Esther account activation", ("<h1 class=\"section\">Welcome " +
+                        newUser.getUsername() + "!</h1><p>Click the link below to complete the registration.</p>" +
                         "<p>" + estherURL + "Activate?user=" + id + "&token=" + token + "</p>"));
                     
                     logger.log(Level.INFO, ("Succesfuly sent activation e-mail to: " + newUser.getEmail()));
@@ -517,8 +517,8 @@ public class AccountController
                 Emailer emailer = new Emailer(emailAddress, emailHost);
                 emailer.setSignature(estherSignature);
 
-                emailer.sendMail(user.getEmail(), "Esther account activation", ("<h2>Welcome " +
-                    user.getUsername() + "!</h2><p>Click the link below to complete the registration.</p>" +
+                emailer.sendMail(user.getEmail(), "Esther account activation", ("<h1 class=\"section\">Welcome " +
+                    user.getUsername() + "!</h1><p>Click the link below to complete the registration.</p>" +
                     "<p>" + estherURL + "Activate?user=" + id + "&token=" + token + "</p>"));
 
                 logger.log(Level.INFO, ("Succesfuly sent activation e-mail to: " + user.getEmail()));
@@ -583,7 +583,7 @@ public class AccountController
                     Emailer emailer = new Emailer(emailAddress, emailHost);
                     emailer.setSignature(estherSignature);
                     
-                    emailer.sendMail(user.getEmail(), "Esther username recovery", ("<h2>Username recovery</h2>" +
+                    emailer.sendMail(user.getEmail(), "Esther username recovery", ("<h1 class=\"section\">Username recovery</h1>" +
                         "<p>Your username is " + user.getUsername() + "</p>" +
                         "<p>If you're not the one who asked for this information please ignore this e-mail and allow us to apologize for the inconvenience caused.</p>"));
                     
@@ -682,7 +682,7 @@ public class AccountController
                 Emailer emailer = new Emailer(emailAddress, emailHost);
                 emailer.setSignature(estherSignature);
                 
-                emailer.sendMail(user.getEmail(), "Esther password recovery", ("<h2>Password recovery</h2>" +
+                emailer.sendMail(user.getEmail(), "Esther password recovery", ("<h1 class=\"section\">Password recovery</h1>" +
                     "<p>Hello " + user.getUsername() + "!</br>" +
                     "Your new password is: " + user.getPassword() + "</p>" +
                     "<p>If you're not the one who asked for password recovery we're sorry for the inconvenience caused.</p>"));

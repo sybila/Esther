@@ -9,9 +9,7 @@
     <body>
         <h1 class="section">About</h1>
         <ul class="page_navigation">
-            <p>
-                Page navigation
-            </p>
+            <h1 class="toc">  Page navigation </h1>
             <li>
                 <a href="#Esther">What's Esther?</a>
             </li>

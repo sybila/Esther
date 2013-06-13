@@ -19,23 +19,16 @@ body
     color: white;
 }
 
-a:link
+a:link, a:visited
 {
     color: #999999;
     text-decoration: none;
 }
-
 
 a:hover
 {
     color: #999999;
     text-decoration: underline;
-}
-
-a:visited
-{
-    color: #999999;
-    text-decoration: none;
 }
 
 a:active
@@ -49,15 +42,6 @@ p
 {
     color: white;
     font-size: 1.1em;
-    margin-bottom: 32px;
-}
-
-header,
-footer,
-nav,
-section
-{
-    display: block;
 }
 
 div#header {
@@ -80,6 +64,12 @@ h1.section {
    padding: 0.3em 0.3em 0.12em 0.6em; /* Font is in capitals, no need for bottom line. */
 }
 
+h1.toc {
+  font-size: 1.2em;  
+  color: white;
+  margin-bottom: 1.0em;
+}
+
 h2.subsection
 {
     font-size: 1.5em;
@@ -98,22 +88,12 @@ footer {
 
 footer img
 {
-    margin: 8px;
+    margin-top: 0.5em;
 }
 
 #header 
 {
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 4px;
-    margin-top: 4px;
-}
-
-#header p
-{
-    color: #CCCCFF;
-    font-size: 1em;
-    margin: 4px 64px 32px 4px;
+    margin: auto;
 }
 
 /* LAYOUT */
@@ -138,28 +118,16 @@ ul#menu
 
 ul#menu li
 {
+    color: grey;
     display: inline;
 }
 
 ul#menu li a
 {
     font-size: 1.6em;
-    font-weight: bolder;
+    font-weight: bold;
     color: grey;
-    border-radius: 4px 4px 0 0;
-    -webkit-border-radius: 4px 4px 0 0;
-    -moz-border-radius: 4px 4px 0 0;
-    padding: 0px 16px 4px 16px;
-}
-
-ul#menu li a:hover
-{
-    color: grey;
-}
-
-ul#menu li a:active
-{
-    color: grey;
+    margin-left: 16px;
 }
 
 /* ERROR MESSAGES */
@@ -171,49 +139,7 @@ ul#menu li a:active
     margin: 8px 16px 8px 16px;
 }
 
-/* TABLES */
 
-table tr th
-{
-    color: #CCCCFF;
-    font-size: 1em;
-    margin: 4px;
-    text-align: left;
-}
-
-table.profile_chapter
-{
-    border-collapse: collapse;
-    width: 864px;
-    margin: 8px;
-    margin-left: 32px;
-    margin-right: 32px;
-}
-
-table.profile_chapter tr th,td
-{
-    font-size: 1em;
-    text-align: left;
-    margin: 0px;
-    padding: 8px;
-}
-
-table.profile_chapter tr th
-{
-    background: #000000;
-    border: 1px solid #003366;
-}
-
-table.profile_chapter tr th a
-{
-    float: right;
-}
-
-table.profile_chapter tr td
-{
-    background: #666666;
-    color: #240044;
-}
 
 /* INPUT CONTROLS */
 
@@ -234,23 +160,57 @@ input.button
 
 ul.page_navigation
 {
+    color:grey;
     float: right;
     width: auto;
     border: black solid 2px;
-    padding: 1em;
-    margin-left: 1em;
-    margin-bottom: 1em;
+    padding: 1.5em;
+    margin-left: 1.5em;
+    margin-bottom: 1.5em;
 }
 
 ul.page_navigation li
 {
-    margin-right: 32px;
-    margin-left: 16px;
-    margin-bottom: 4px;
     list-style: none;
 }
 
-ul.page_navigation li a
+/* TABLES */
+
+table.profile_chapter
+{
+    width: 100%;
+    margin: auto;
+    border: black solid 1px;
+        margin-bottom: 1em;
+}
+
+table tr th
 {
     color: grey;
+    font-size: 1.3em;
+    margin: 4px;
+    text-align: left;
+    text-transform:uppercase;
+    border: black solid 1px;
+
+}
+
+table.profile_chapter td
+{
+    font-size: 1em;
+    text-align: left;
+    padding-left: 2em;
+    padding-right: 0.5em;
+    border: black solid 1px;
+}
+
+table.profile_chapter th
+{
+    padding: 0.5em;
+}
+
+table.profile_chapter a
+{
+    text-transform:lowercase;
+    float: right;
 }

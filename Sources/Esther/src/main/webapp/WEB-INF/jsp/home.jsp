@@ -9,47 +9,34 @@
     <body>
         <h1 class="section">Home</h1>
         <p>
-            Welcome to Esther, the parameter estimator for discrete gene regulatory networks.
+            Welcome to the Esther web-service.
         </p>
         <p>
-            Do you have a beautiful gene regulatory network but no parameters for the interactions?</br>
-            Then Esther is for you!
-        </p>
+            Esther is an interface to a suite of tools for discrete simulation a reverse-engineering of gene regulatory and signal transduction networks. <br />
+            Currently Esther allows for conduction of the following tasks:
+        <ul>
+            <li style="pointer-events: auto;">Creating a regulation or signal transduction model.</li>
+            <li style="pointer-events: auto;">Partial / full specification of kinetic parameters.</li>
+            <li style="pointer-events: auto;">Automated parameter filtering by edge constraints and/or LTL formulae.</li>
+            <li style="pointer-events: auto;">Comparison of parametrized models.</li>
+            <li style="pointer-events: auto;">Manual parameter filtering.</li>
+            <li style="pointer-events: auto;">Visualization of the dynamics.</li>
+            <li style="pointer-events: auto;">File storage and management, file transfer.</li>            
+        </ul>
+    </p>
+    <p>
+        For a more thorough description of the platform please refer to the <a href="/About">Guide page</a>.
+    </p>
+    <sec:authorize access="isAnonymous()">
         <p>
-            Do you have none? Worry not!</br>
-            Esther contains a model editor that makes it all too easy to create a network of your own!
+            To access the tool-set and also obtain a server-side storage and computational capacity, 
+            please <a href="/Registration">register</a>. 
+            An e-mail with an activation link for your account will be sent to you within 24 hours.
         </p>
-        <p>
-            So what is it that Esther does?</br>
-            Well, basically Esther provides you with a set of tools, including a powerful
-            coloured model checker <a href="/About#Parsybone">Parsybone</a>,
-            that you can use to analyse your model and determine the optimal parametrizations.
-        </p>
-        <p>
-            How is this done?</br>
-            First, you upload your model to Esther or create a new model using our model editor.</br>
-            Next step is to specify the behaviour you are looking for.
-            I mean, you usually make a model to observe some behaviour in it.
-            (Just looking at the interaction graph doesn't make it all that fun, eh?)</br>
-            Well, with a model and an hypothesis to check you can generate all the acceptable parametrizations.
-            And what's more! The parametrizations come ranked by several criteria.
-            All that's left is to filter them or even visualise them and voila!
-            You have just reverse engineered parameters for you model!</br>
-            If you want to learn more about parameter evaluation visit our <a href="/About">About</a> page.
-        </p>
-        <sec:authorize access="isAnonymous()">
-            <p>
-                You don't have an account yet?</br>
-                Don't let your models wait and <a href="/Registration">register now!</a> Completely free of charge!</br>
-                We even give you a free server-side storage space for your models and analyses.
-            </p>
-        </sec:authorize>
-        <p>
-            Esther was developed at Systems Biology Laboratory (<a href="http://sybila.fi.muni.cz">SyBiLa</a>)
-            of Masaryk University, Brno, Czech Republic.</br>
-            Esther is distributed under <a href="http://www.gnu.org/licenses/gpl.html">GNU general public license</a>
-            and all the source codes and documentation are available at
-            <a href="https://github.com/sybila/Esther.git">GitHub</a>.
-        </p>
-    </body>
+    </sec:authorize>
+    <p>
+        Esther is being developed in collaboration of members of the <a href="http://sybila.fi.muni.cz">Systems Biology Laboratory</a> of Masaryk University and the <a href="http://www.mi.fu-berlin.de/en/math/groups/dibimath/index.html">Discrete Biomathematics group</a> of Freie Universität of Berlin. <br />
+        The source code is distributed under <a href="http://www.gnu.org/licenses/gpl.html">GNU general public license v3</a> and is available on <a href="https://github.com/sybila/Esther.git">GitHub</a>.
+    </p>
+</body>
 </html>

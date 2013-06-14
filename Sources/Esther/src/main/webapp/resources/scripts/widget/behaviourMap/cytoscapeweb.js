@@ -63,7 +63,7 @@
      * &lt;body&gt;
      * 
      * &lt;h1&gt;Sample&lt;/h1&gt;
-     * &lt;div id="cytoWebContent" style="width: 600px;height: 400px;"&gt;&lt;/div&gt;
+     * &lt;div id="cytoWebContent" style="width: 800px;height: 400px;"&gt;&lt;/div&gt;
      * 
      * &lt;script type="text/javascript"&gt;
      *     var options = { swfPath: "path/to/swf/CytoscapeWeb",

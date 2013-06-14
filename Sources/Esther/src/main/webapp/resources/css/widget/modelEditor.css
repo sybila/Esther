@@ -2,8 +2,8 @@
 
 #widget textarea
 {
-    height: 480px;
-    width: 90%;
-    margin-left: 5%;
+    min-height: 480px;
+    width: 98%;
+    margin: 0% 1%;
     resize: none;
 }

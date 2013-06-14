@@ -2,17 +2,21 @@
 
 #widget DIV.cytoscape
 {
-    height: 380px;
-    width: 712px;
-    margin: 8px;
+    min-height: 350px;
+    width: 96%;
+    margin: 0% 2%;
+    padding: 0;
 }
 
 /* GRAPH INFORMATION */
 
 #widget #graph_information
 {
-    height: 92px;
-    width: 712px;
-    margin: 0px 8px 8px 8px;
+    background: #EEEEEE;
+    min-height: 150px;
+    width: 96%;
+    margin: auto;
     overflow: scroll;
+    margin: 0% 2%;
+    padding: 0;
 }

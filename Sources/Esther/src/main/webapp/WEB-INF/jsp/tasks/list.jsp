@@ -1,7 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
 
-<h7>My Tasks</h7>
+<h2 class="widget">My Tasks</h2>
 <br/>
 <input style="float: right;" class="button" type="Submit" value="Refresh" name="refresh"/>
 <input style="float: right;" class="button" type="Submit" value="Cancel All" name="cancelAll"/>

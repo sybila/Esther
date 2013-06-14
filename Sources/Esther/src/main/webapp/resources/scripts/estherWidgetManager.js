@@ -273,7 +273,7 @@ function openWidget(fileRef)
     {
         if (fileID == 'startpage')
         {
-            $(tab).append('<h1>Welcome to the Esther interface</h1>' +
+            $(tab).append('<h2 class="widget">Welcome to the Esther interface</h2>' +
                 '<p>If you are new to Esther, you may want to get more knowledge from our <a href="/Esther/Guide">Guide</a>.</p>' +
                 '<p>To create a new model, either copy an example in the public file on the left or create a ' +
                 '<a href="javascript:newModel()">new empty model</a>.</p></div>');
@@ -351,7 +351,7 @@ function createTab(id, name)
     var tabNum = ($('#widget #tabs LI').length + 1);
     
     $('#widget #tabs').append('<li class="tmp" file="' + id + '"><a href="#tab_' + tabNum + '">' + name + '</a>' +
-        '<img height="10" style="cursor: pointer;" src="/Esther/resources/images/x_button.png" /></li>');
+        '<img height="10" style="cursor: pointer;" src="resources/images/x_button.png" /></li>');
     $('#widget').append('<div style="position: relative;" id="tab_' + tabNum + '"></div>');
     
     $('#widget').tabs('refresh');

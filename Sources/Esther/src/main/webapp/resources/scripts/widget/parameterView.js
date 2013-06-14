@@ -95,7 +95,7 @@ if(jQuery) (function($)
                             context.find('#constraint_type option:selected').text() + ' ' +
                             context.find('#constraint_value').val() +
                             context.find('#new_constraint #suffix').text() +
-                            '<img class="cancel_constraint" src="/Esther/resources/images/x_button.png" /></p>');
+                            '<img class="cancel_constraint" src="/resources/images/x_button.png" /></p>');
 
                     context.find('#constraint_container #' + id + ' .cancel_constraint').click(function()
                         {

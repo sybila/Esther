@@ -5,7 +5,7 @@
     background: #FFFFFF;
     border: #CCCCCC 2px inset;
     float: left;
-    width: 192px;
+    width: 15%;
     height: 640px;
     overflow: scroll;
 }
@@ -15,7 +15,6 @@ ul.estherFileSystem
     color: #000000;
     font-size: 12px;
     line-height: 18px;
-    font-family: "Verdana", "Sans-Serif", "Calibri", "Arial";
     margin: 0px;
     padding: 0px;
 }
@@ -39,7 +38,7 @@ ul.estherFileSystem a
 
 ul.estherFileSystem a:hover
 {
-    background: #CCFFFF;
+    background: #EEEEEE;
 }
 
 /* FILE MENU */
@@ -51,14 +50,14 @@ div.fileMenu
     color: #000000;
     font-size: 12px;
     line-height: 18px;
-    font-family: "Verdana", "Sans-Serif", "Calibri", "Arial";
     background: #EEEEEE;
-    border: 1px solid #009999;
+    border: 1px solid black;
     padding: 2px;
 }
 
 div.fileMenu a
 {
+    color: #000000;
     margin: 4px;
 }
 

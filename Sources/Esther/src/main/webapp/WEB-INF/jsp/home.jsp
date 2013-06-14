@@ -12,7 +12,8 @@
             Welcome to the Esther web-service.
         </p>
         <p>
-            Esther is an interface to a suite of tools for discrete simulation a reverse-engineering of gene regulatory and signal transduction networks. <br />
+            Esther is an interface to a suite of tools for discrete simulation a reverse-engineering of gene regulatory and signal transduction networks. 
+            For modeling we employ the framework of asynchronous boolean or multi-valued (commonly referred to as Thomas or Qualitative) networks.
             Currently Esther allows for conduction of the following tasks:
         <ul>
             <li style="pointer-events: auto;">Creating a regulation or signal transduction model.</li>
@@ -25,7 +26,8 @@
         </ul>
     </p>
     <p>
-        For a more thorough description of the platform please refer to the <a href="/Guide">Guide page</a>.
+        For a more thorough description of the platform please refer to the <a href="/Guide">Guide page</a>. 
+        The theoretical background of the computation is described in <a href="https://is.muni.cz/th/325017/fi_m/thesis_streck.pdf">this pdf</a>. 
     </p>
     <sec:authorize access="isAnonymous()">
         <p>

@@ -10,12 +10,16 @@
     margin: auto;
 }
 
+#widget h1 {
+    color: #000000;
+    margin: 20px 0px 10px 8px;
+}
+
 #widget p
 {
     color: #000000;
-    font-size: 12px;
+    font-size: 14px;
     line-height: 18px;
-    font-family: "Verdana", "Sans-Serif", "Calibri", "Arial";
     margin: 4px 8px 4px 8px;
 }
 
@@ -24,13 +28,11 @@ h2.widget
     color: #666666;
     line-height: 1.8em;
     font-size: 1.2em;
-    font-family: "Verdana", "Sans-Serif", "Calibri", "Arial";
     padding-left: 5%;
 }
 
 #widget input
 {
-    font-family: "Verdana", "Sans-Serif", "Calibri", "Arial";
     margin: 16px 8px 8px 16px;
 }
 
@@ -41,7 +43,6 @@ div#widget div.info p
     color: #000000;
     font-size: 14px;
     line-height: 20px;
-    font-family: "Verdana", "Sans-Serif", "Calibri", "Arial";
     margin: 8px;
     padding: 8px;
 }
@@ -65,7 +66,6 @@ div#widget div.info p
 
 #widget table tr tr, td
 {
-    font-family: "Verdana", "Sans-Serif", "Calibri", "Arial";
     margin: 0px;
 }
 
@@ -146,7 +146,6 @@ div#widget div.info p
     background: #FFFFFF;
     line-height: 16px;
     font-size: 14px;
-    font-family: "Verdana", "Sans-Serif", "Calibri", "Arial";
     color: #000000;
     cursor: pointer;
     margin-right: 4px;
@@ -222,7 +221,6 @@ div.task table tr td input
 {
     padding: 0px;
     margin: 0px;
-    font-family: "Verdana", "Sans-Serif", "Calibri", "Arial";
     font-size: 12px;
 }
 

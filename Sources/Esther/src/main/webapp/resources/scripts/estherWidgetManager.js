@@ -273,10 +273,10 @@ function openWidget(fileRef)
     {
         if (fileID == 'startpage')
         {
-            $(tab).append('<div class="info"><h7>Welcome to the analysis screen!</h7>' +
-                '<p>If this is your first time visiting you might want to try our <a href="/Esther/Guide#Tutorial">Getting Started Tutorial</a>.</p>' +
-                '<p>Or you may just select one of the existing files to the left or ' +
-                '<a href="javascript:newModel()">create a new model</a> right now!</p></div>');
+            $(tab).append('<h1>Welcome to the Esther interface</h1>' +
+                '<p>If you are new to Esther, you may want to get more knowledge from our <a href="/Esther/Guide">Guide</a>.</p>' +
+                '<p>To create a new model, either copy an example in the public file on the left or create a ' +
+                '<a href="javascript:newModel()">new empty model</a>.</p></div>');
         }
         else if (fileID == 'tasklist')
         {

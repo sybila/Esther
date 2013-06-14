@@ -88,7 +88,7 @@ h2.subsection
 
 h3.subsubsection
 {
-    font-size: 1.2em;
+    font-size: 1.1em;
     color: #999999;
 }
 
@@ -174,7 +174,7 @@ ul.page_navigation
 
 ul.page_navigation li
 {
-    list-style: none;
+    margin-left: 1.5em;
 }
 
 /* TABLES */

@@ -3,21 +3,32 @@ root
     display: block;
 }
 
-/* GENERAL */
-
 html
 {
     min-height: 100%;
     font-family: "Estrangelo Edessa", sans-serif;
 }
 
+
 body
 {
-    width: 70%;
+    min-width: 600px;
+    width: 80%;
     background: #000000;
     margin: auto;
     color: white;
 }
+
+#page
+{
+    background: #333333;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 16px;
+    min-height:600px;
+}
+
+/* LINKS */
 
 a:link, a:visited
 {
@@ -37,19 +48,14 @@ a:active
     text-decoration: none;
 }
 
+/* TEXT STRUCTURE */
 
-p
-{
+p {
     color: white;
     font-size: 1.1em;
     margin-bottom: 0.3em;
 }
 
-div#header {
-    padding: 1em;
-}
-
-/* HEADERS AND FOOTERS */
 h1,h2,h3 {
     text-transform:uppercase;
     font-weight: bold;
@@ -73,7 +79,7 @@ h1.toc {
 
 h2.subsection
 {
-    font-size: 1.5em;
+    font-size: 1.4em;
     color: #999999;
 }
 
@@ -83,6 +89,7 @@ h3.subsubsection
     color: #999999;
 }
 
+/* HEADERS AND FOOTERS */
 footer {
     float:right;
 }
@@ -92,19 +99,19 @@ footer img
     margin-top: 0.5em;
 }
 
+
+a.logo {
+    padding-left: 1em; 
+    text-decoration: none;
+}
+
 #header 
 {
     margin: auto;
 }
 
-/* LAYOUT */
-
-#page
-{
-    background: #333333;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 16px;
+div#header {
+    padding: 1em;
 }
 
 /* TABS */
@@ -141,20 +148,12 @@ ul#menu li a
 }
 
 
-
 /* INPUT CONTROLS */
 
 input
 {
-    color: #006699;
     font-size: 1em;
     text-align: left;
-}
-
-input.button
-{
-    color: #000033;
-    text-align: center;
 }
 
 /* PAGE NAVIGATION */
@@ -218,9 +217,4 @@ table.profile_chapter a
 {
     text-transform:lowercase;
     float: right;
-}
-
-a.logo {
-    padding-left: 1em; 
-    text-decoration: none;
 }

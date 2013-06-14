@@ -54,15 +54,15 @@ public class HomeController
     }
     
     /**
-     * Handler method for About page.
+     * Handler method for Guide page.
      * 
      * @param map The map of UI properties.
-     * @return About page.
+     * @return Guide page.
      */
-    @RequestMapping(value = "/About", method = RequestMethod.GET)
-    public String getAboutPage(ModelMap map)
+    @RequestMapping(value = "/Guide", method = RequestMethod.GET)
+    public String getGuidePage(ModelMap map)
     {
-        map.addAttribute("page", "about");
+        map.addAttribute("page", "guide");
         
         return "frontpage";
     }

@@ -274,7 +274,7 @@ function openWidget(fileRef)
         if (fileID == 'startpage')
         {
             $(tab).append('<div class="info"><h7>Welcome to the analysis screen!</h7>' +
-                '<p>If this is your first time visiting you might want to try our <a href="/Esther/About#Tutorial">Getting Started Tutorial</a>.</p>' +
+                '<p>If this is your first time visiting you might want to try our <a href="/Esther/Guide#Tutorial">Getting Started Tutorial</a>.</p>' +
                 '<p>Or you may just select one of the existing files to the left or ' +
                 '<a href="javascript:newModel()">create a new model</a> right now!</p></div>');
         }

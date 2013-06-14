@@ -4,10 +4,10 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Esther About</title>
+        <title>Esther Guide</title>
     </head>
     <body>
-        <h1 class="section">About</h1>
+        <h1 class="section">Guide</h1>
         <ul class="page_navigation">
             <h1 class="toc">  Page navigation </h1>
             <li>

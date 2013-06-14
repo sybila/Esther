@@ -25,7 +25,7 @@
         </ul>
     </p>
     <p>
-        For a more thorough description of the platform please refer to the <a href="/About">Guide page</a>.
+        For a more thorough description of the platform please refer to the <a href="/Guide">Guide page</a>.
     </p>
     <sec:authorize access="isAnonymous()">
         <p>

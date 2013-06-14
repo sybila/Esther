@@ -20,7 +20,7 @@
         <intercept-url pattern="/LoginFailure" access="permitAll" />
         <intercept-url pattern="/Logout" access="permitAll" />
         <intercept-url pattern="/Recover/*" access="permitAll" />
-        <intercept-url pattern="/About" access="permitAll" />
+        <intercept-url pattern="/Guide" access="permitAll" />
         <intercept-url pattern="/Profile" access="isAuthenticated()" />
         <intercept-url pattern="/Profile/Edit/*" access="isAuthenticated()" />
         <intercept-url pattern="/Analysis" access="isAuthenticated()" />

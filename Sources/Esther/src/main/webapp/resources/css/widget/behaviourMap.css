@@ -2,10 +2,11 @@
 
 #widget DIV.cytoscape
 {
+    height: 350px;
     min-height: 350px;
     width: 96%;
     margin: 0% 2%;
-    padding: 0;
+    padding: 0px;
 }
 
 /* GRAPH INFORMATION */
@@ -15,8 +16,7 @@
     background: #EEEEEE;
     min-height: 150px;
     width: 96%;
-    margin: auto;
     overflow: scroll;
     margin: 0% 2%;
-    padding: 0;
+    padding: 0px;
 }

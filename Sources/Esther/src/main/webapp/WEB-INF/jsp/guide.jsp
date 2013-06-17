@@ -46,14 +46,14 @@
             A model is a multi-valued, multigraph described using our XML-based language DBM (a visual environment is currently being developed).
         </p>
         <p class="par">
-            If you are not familiar with the framework of discrete regulatory models, you can get a quick idea in our <a href src="/Esther/resources/pdf/" >introductory PDF</a> to the topic. 
+            If you are not familiar with the framework of discrete regulatory models, you can get a quick idea in our <a href="/resources/pdf/Regul_intro.pdf" >introductory PDF</a> to the topic. 
             For a more thorough description we can recommend for example the article <a href="http://www.irccyn.fr/franck/bib/ps-pdf-files/bioconcur-entcs-07.pdf">Semantics of Biological Regulatory Networks</a>.
         </p>
         <p class="par">  
             DBM is built over XML, so if you are familiar with XML, you should be able to get the core ideas very quickly.
             For a swift overview of how the model works, you can see the <i>example_model.dbm</i> model in the Public folder in your file tree. 
             The model is commented and provides all the necessary knowledge for understanding of how to create a model on your own. 
-            In case of deeper interest, we also provide a complete and formal description of the modeling language in <a href="/Esther/resources/pdf/DBM_manual.pdf">this PDF manual</a>.
+            In case of deeper interest, we also provide a complete and formal description of the modeling language in <a href="/resources/pdf/DBM_manual.pdf">this PDF manual</a>.
         </p>
 
         <p class="par">

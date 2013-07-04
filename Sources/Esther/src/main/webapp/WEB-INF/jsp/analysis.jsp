@@ -16,6 +16,9 @@
         <script type="text/javascript" src="<c:url value="/resources/scripts/AC_OETags.js"/>"></script>
         <script type="text/javascript" src="<c:url value="/resources/scripts/estherWidgetManager.js"/>"></script>
         <script type="text/javascript" src="<c:url value="/resources/scripts/estherFileSystem.js"/>"></script>
+	<c:forEach items="${global_js}" var="script">
+		<script type="text/javascript" src="<c:url value="/resources/scripts/widget/${script}.js"/>"></script>
+	</c:forEach>
         <script type="text/javascript">
             $(document).ready( function() {
                 $('#filesystembrowser').loadFileSystem();

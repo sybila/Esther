@@ -103,6 +103,12 @@ public class ParameterViewWidget implements EstherWidget
         
         return false;
     }
+    
+    @Override
+    public String[] globalJavascripts()
+    {
+        return new String[] { "parameterView" };
+    }
 
     @Override
     public String startWidget(ModelMap map, Long id, Long parent)

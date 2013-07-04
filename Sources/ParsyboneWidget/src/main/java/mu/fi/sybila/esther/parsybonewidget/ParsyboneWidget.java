@@ -34,6 +34,12 @@ public class ParsyboneWidget implements EstherWidget
     }
 
     @Override
+    public String[] globalJavascripts()
+    {
+        return new String[] { };
+    }
+
+    @Override
     public String startWidget(ModelMap map, Long id, Long parent)
     {
         return "widget/unknown";

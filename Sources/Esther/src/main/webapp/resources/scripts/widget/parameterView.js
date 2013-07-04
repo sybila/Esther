@@ -28,6 +28,28 @@ if(jQuery) (function($)
     {        
         initParameterView: function()
         {
+            function writeFilter(context)
+            {
+                var file = context.find('#filter_controls').attr('filter');
+                var data = encodeConstraints(context.find('#constraint_container p'));
+
+                $.post('File/Write', { file: file, data: data }, function(data)
+                    {
+                        if (data.split('=')[0] == 'LIMIT_REACHED')
+                        {
+                            rescueFile(file, data.split('=')[1]);
+                        }
+                        else if (data.split('=')[0] == 'ERROR')
+                        {
+                            alert('Error: ' + data.split('=')[1]);
+                        }
+                        else
+                        {
+                            context.find('#constraint_container').removeClass('unsaved');
+                        }
+                    });
+            }
+            
             var context = $(this);
             
             context.find('#parameter_list').tablesorter();
@@ -128,7 +150,7 @@ if(jQuery) (function($)
                                     else
                                     {
                                         context.find('#filter_controls').attr('filter', data);
-                                        file = data;
+                                        writeFilter(context);
                                     }
                                 });
                         }
@@ -137,24 +159,10 @@ if(jQuery) (function($)
                             return;
                         }
                     }
-                    
-                    var data = encodeConstraints(context.find('#constraint_container p'));
-
-                    $.post('File/Write', { file: file, data: data }, function(data)
-                        {
-                            if (data.split('=')[0] == 'LIMIT_REACHED')
-                            {
-                                rescueFile(file, data.split('=')[1]);
-                            }
-                            else if (data.split('=')[0] == 'ERROR')
-                            {
-                                alert('Error: ' + data.split('=')[1]);
-                            }
-                            else
-                            {
-                                context.find('#constraint_container').removeClass('unsaved');
-                            }
-                        });
+                    else
+                    {
+                        writeFilter(context);
+                    }
                 });
 
             context.find('#applyButton').click(function()

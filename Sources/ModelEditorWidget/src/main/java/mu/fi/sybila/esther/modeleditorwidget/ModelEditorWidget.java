@@ -59,6 +59,12 @@ public class ModelEditorWidget implements EstherWidget
     }
 
     @Override
+    public String[] globalJavascripts()
+    {
+        return new String[] { "modelEditor" };
+    }
+    
+    @Override
     public String startWidget(ModelMap map, Long id, Long parent)
     {
         if (parsybonePresent)

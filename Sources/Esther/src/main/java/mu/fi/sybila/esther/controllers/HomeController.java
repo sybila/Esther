@@ -1,5 +1,10 @@
 package mu.fi.sybila.esther.controllers;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import javax.annotation.Resource;
+import mu.fi.sybila.esther.heart.widget.EstherWidget;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class HomeController
 {
+    @Resource
+    private List<EstherWidget> widgetList;
     
     /**
      * Handler method for unrecognised request.
@@ -48,6 +55,15 @@ public class HomeController
     @RequestMapping(value = "/Analysis", method = RequestMethod.GET)
     public String getAnalysisPage(ModelMap map)
     {
+        List<String> globalJavascripts = new ArrayList<>();
+        
+        for (EstherWidget widget : widgetList)
+        {
+            globalJavascripts.addAll(Arrays.asList(widget.globalJavascripts()));
+        }
+        
+        map.addAttribute("global_js", globalJavascripts);
+        
         map.addAttribute("page", "analysis");
         
         return "frontpage";

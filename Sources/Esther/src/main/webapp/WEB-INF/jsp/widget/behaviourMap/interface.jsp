@@ -3,8 +3,6 @@
 
 <head>
     <link rel="stylesheet" href="<c:url value="/resources/css/widget/behaviourMap.css"/>" type="text/css">
-    <script type="text/javascript" src="<c:url value="/resources/scripts/widget/behaviourMap/cytoscapeweb.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/resources/scripts/widget/behaviourMap/interface.js"/>"></script>
 </head>
 
 <div id="widget_starter" init_function="initBehaviourMap" file="${file}" />

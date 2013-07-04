@@ -42,6 +42,13 @@ public interface EstherWidget
     public String[] allowedChildren(String type);
     
     /**
+     * Specifies the JavaScript files required by this widget that are to be loaded once only.
+     * 
+     * @return List of global JavaScript files that are to be shared between all instances of the widget instead of re-imported.
+     */
+    public String[] globalJavascripts();
+    
+    /**
      * Opens the given file in the widget.
      * 
      * @param map The map of UI properties.

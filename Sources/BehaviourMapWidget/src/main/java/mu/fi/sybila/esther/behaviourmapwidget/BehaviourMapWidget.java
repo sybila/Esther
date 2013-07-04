@@ -39,6 +39,12 @@ public class BehaviourMapWidget implements EstherWidget
     }
 
     @Override
+    public String[] globalJavascripts()
+    {
+        return new String[] { "behaviourMap/interface", "behaviourMap/cytoscapeweb" };
+    }
+
+    @Override
     public String startWidget(ModelMap map, Long id, Long parent)
     {
         map.addAttribute("file", id);

@@ -1,5 +1,10 @@
 Esther
 ======
+Esther is available at: http://esther.fi.muni.cz .
+
+open-source 2012-2013, licensed as GNU GPL v3
+Systems Biology Laboratory of Masaryk University, Brno ( http://sybila.fi.muni.cz )
+Discrete Biomathematics, Freie Universitat, Berlin ( http://www.mi.fu-berlin.de/en/math/groups/dibimath )
 
 This repository contains the source codes and documentation of Esther,
 a common web interface for parameter identification, classification and evaluation.

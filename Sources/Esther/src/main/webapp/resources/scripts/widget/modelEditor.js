@@ -18,9 +18,38 @@ if(jQuery) (function($)
                         });
                 });
 
-            context.find('#parsybone_button').click(function()
+            context.find('#parsybone_button').click(function(e)
                 {
-                    $.post('Widget/Parsybone', { file: context.find('#parsybone_button').attr('file_id')}, function(data)
+                    e.preventDefault();
+
+                    if ($(this).hasClass('open'))
+                    {
+                        $(this).text('Parsybone \u25b2');
+                        $(this).removeClass('open');
+                        $(this).addClass('closed');
+
+                        context.find('#parsybone_controls').hide('slide', { direction: 'down' }, 640);
+                    }
+                    else if ($(this).hasClass('closed'))
+                    {
+                        $(this).text('Parsybone \u25bc');
+                        $(this).removeClass('closed');
+                        $(this).addClass('open');
+
+                        context.find('#parsybone_controls').show('slide', { direction: 'down' }, 640);
+                    }
+                });
+
+            context.find('#parsybone_hide').click(function()
+                {
+                    $(document).find('#widget #parsybone').trigger('click');
+                });
+
+            context.find('#parsybone_controls FORM#parsybone_options').submit(function()
+                {
+                    $('DIV.fileMenu FORM#parsybone_options').ajaxSubmit({
+                        data: { file: context.find('#parsybone_button').attr('file_id') },
+                        success: function(data)
                         {
                             if (data.split('=')[0] == 'LIMIT_REACHED')
                             {
@@ -37,7 +66,10 @@ if(jQuery) (function($)
 
                                 $('#widget INPUT[name=refresh]').trigger('click');
                             }
-                        });
+                        }
+                    });
+                    
+                    return false;
                 });
         }
     });

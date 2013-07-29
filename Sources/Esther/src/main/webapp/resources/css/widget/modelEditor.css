@@ -7,3 +7,27 @@
     margin: 0% 1%;
     resize: none;
 }
+
+/* PARSYBONE CONTROLS */
+
+#widget #parsybone_controls
+{
+    position: absolute;
+    z-index: 1000;
+    width: 90%;
+    height: 320px;
+    right: 8px;
+    bottom: 28px;
+    background: #EEEEEE;
+    border: 1px solid #999999;
+    border-bottom: 0px;
+}
+
+#widget #parsybone_hide
+{
+    float: right;
+    height: 16px;
+    width: 16px;
+    margin: 8px;
+    cursor: pointer;
+}

@@ -2,6 +2,8 @@ package mu.fi.sybila.esther.parsybonewidget.controllers;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
@@ -94,7 +96,9 @@ public class ParsyboneController
      */
     @RequestMapping(value = "/Widget/Parsybone", method = RequestMethod.POST)
     @ResponseBody
-    public String runParsybone(@RequestParam("file") Long id)
+    public String runParsybone(@RequestParam("file") Long id,
+        @RequestParam(value="compute_robustness", required=false) Boolean robustness,
+        @RequestParam(value="compute_witnesses", required=false) Boolean witnesses)
     {
         if (id == null)
         {
@@ -127,9 +131,25 @@ public class ParsyboneController
 
             Task task = Task.newTask(user.getId(), file.getId(), resultID, "Parsybone");
 
-            Long taskId = taskManager.createTask(task, new String[] { parsyboneLocation,
-                    fileSystemManager.getSystemFileById(file.getId()).getAbsolutePath(),
-                    "-vrW", "--data", result.getAbsolutePath() });
+            List<String> taskArgs = new ArrayList<>();
+            
+            taskArgs.add(parsyboneLocation);
+            taskArgs.add(fileSystemManager.getSystemFileById(file.getId()).getAbsolutePath());
+            taskArgs.add("-v");
+            taskArgs.add("--data");
+            taskArgs.add(result.getAbsolutePath());
+            
+            if ((robustness != null) && robustness.booleanValue())
+            {
+                taskArgs.add("-r");
+            }
+            
+            if ((witnesses != null) && witnesses.booleanValue())
+            {
+                taskArgs.add("-W");
+            }
+            
+            Long taskId = taskManager.createTask(task, taskArgs.toArray(new String[] { }));
 
             return taskId.toString();
         }

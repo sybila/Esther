@@ -36,6 +36,15 @@ h2.widget
     margin: 16px 8px 8px 16px;
 }
 
+#widget a.expandable
+{
+    font-size: 14px;
+    line-height: 20px;
+    padding-left: 4px;
+    padding-right: 4px;
+    margin: 16px;
+}
+
 /* INFO PAGE */
 
 div#widget div.info p

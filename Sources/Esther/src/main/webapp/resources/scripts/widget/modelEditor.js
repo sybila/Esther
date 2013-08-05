@@ -42,7 +42,7 @@ if(jQuery) (function($)
 
             context.find('#parsybone_hide').click(function()
                 {
-                    $(document).find('#widget #parsybone').trigger('click');
+                    $(document).find('#widget #parsybone_button').trigger('click');
                 });
 
             context.find('#parsybone_controls FORM#parsybone_options').submit(function()

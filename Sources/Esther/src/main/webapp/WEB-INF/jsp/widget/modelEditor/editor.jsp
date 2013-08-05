@@ -21,10 +21,10 @@
         <img id="parsybone_hide" src="<c:url value="/resources/images/hide_button.png" />" />
         <form id="parsybone_options" name="form" action="<c:url value='Widget/Parsybone' />" method="POST">
             <p>
-                <input type="checkbox" name="compute_robustness" checked="checked"/>
+                <label><input type="checkbox" name="compute_robustness" checked="checked"/> Calculate Robustness</label>
             </p>
             <p>
-                <input type="checkbox" name="compute_witnesses" checked="checked"/>
+                <label><input type="checkbox" name="compute_witnesses" checked="checked"/> Compute Witnesses</label>
             </p>
             <p>
                 <input class="button" type="Submit" value="Parsybone" name="submit"/>

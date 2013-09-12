@@ -47,8 +47,8 @@ if(jQuery) (function($)
 
             context.find('#parsybone_controls FORM#parsybone_options').submit(function()
                 {
-                    $('DIV.fileMenu FORM#parsybone_options').ajaxSubmit({
-                        data: { file: context.find('#parsybone_button').attr('file_id') },
+                    $('#parsybone_controls FORM#parsybone_options').ajaxSubmit({
+                        data: { file: context.find('#save_button').attr('file_id') },
                         success: function(data)
                         {
                             if (data.split('=')[0] == 'LIMIT_REACHED')

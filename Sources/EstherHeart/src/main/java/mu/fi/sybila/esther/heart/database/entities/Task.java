@@ -10,7 +10,8 @@ import java.io.IOException;
 public class Task
 {
     private Long id;
-    private Long file;
+    private Long model;
+    private Long property;
     private Long owner;
     private Long result;
     
@@ -43,14 +44,24 @@ public class Task
         this.id = id;
     }
 
-    public Long getFile()
+    public Long getModel()
     {
-        return file;
+        return model;
     }
 
-    public void setFile(Long file)
+    public void setModel(Long file)
     {
-        this.file = file;
+        this.model = file;
+    }
+
+    public Long getProperty()
+    {
+        return property;
+    }
+
+    public void setProperty(Long file)
+    {
+        this.property = file;
     }
 
     public Long getOwner()
@@ -240,12 +251,13 @@ public class Task
         }
     }
     
-    public static Task newTask(Long owner, Long file, Long result, String type)
+    public static Task newTask(Long owner, Long model, Long property, Long result, String type)
     {
         Task task = new Task();
         
         task.setOwner(owner);
-        task.setFile(file);
+        task.setModel(model);
+        task.setProperty(property);
         task.setResult(result);
         task.setType(type);
         task.setActive(true);
@@ -256,6 +268,7 @@ public class Task
     @Override
     public String toString()
     {
-        return "Task ID: " + id + ", on file ID: " + file + ", executed by user ID: " + owner + '.';
+        return "Task ID: " + id + ", on Model ID: " + model + ", with Property ID: " + property +
+                ", executed by user ID: " + owner + '.';
     }
 }

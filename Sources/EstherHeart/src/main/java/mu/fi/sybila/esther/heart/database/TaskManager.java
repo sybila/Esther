@@ -71,8 +71,8 @@ public class TaskManager
             throw new IllegalArgumentException("Task already has ID.");
         }
         
-        if ((task.getFile() == null) || (task.getOwner() == null) || (task.getActive() == null) ||
-            (task.getType() == null) || (task.getResult() == null))
+        if ((task.getModel() == null) || (task.getProperty() == null) || (task.getOwner() == null) ||
+            (task.getActive() == null) || (task.getType() == null) || (task.getResult() == null))
         {
             throw new IllegalArgumentException("Task misses required attributes.");
         }
@@ -84,17 +84,18 @@ public class TaskManager
         {
             connection = dataSource.getConnection();
             statement = connection
-                .prepareStatement("INSERT INTO TASKS (file, owner, result, type, active, progress, error, information) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                .prepareStatement("INSERT INTO TASKS (model, property, owner, result, type, active, progress, error, information) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     Statement.RETURN_GENERATED_KEYS);
             
-            statement.setLong(1, task.getFile());
-            statement.setLong(2, task.getOwner());
-            statement.setLong(3, task.getResult());
-            statement.setString(4, task.getType());
-            statement.setBoolean(5, task.getActive());
-            statement.setInt(6, 0);
-            statement.setString(7, null);
+            statement.setLong(1, task.getModel());
+            statement.setLong(2, task.getProperty());
+            statement.setLong(3, task.getOwner());
+            statement.setLong(4, task.getResult());
+            statement.setString(5, task.getType());
+            statement.setBoolean(6, task.getActive());
+            statement.setString(7, "0%");
             statement.setString(8, null);
+            statement.setString(9, null);
             
             statement.executeUpdate();
             
@@ -182,8 +183,8 @@ public class TaskManager
             throw new IllegalArgumentException("Cannot update Task with NULL ID.");
         }
         
-        if ((task.getFile() == null) || (task.getOwner() == null) || (task.getActive() == null) ||
-            (task.getType() == null) || (task.getResult() == null))
+        if ((task.getModel() == null) || (task.getProperty() == null) || (task.getOwner() == null) ||
+            (task.getActive() == null) || (task.getType() == null) || (task.getResult() == null))
         {
             throw new IllegalArgumentException("Task misses required attributes.");
         }
@@ -195,17 +196,18 @@ public class TaskManager
         {
             connection = dataSource.getConnection();
             statement = connection
-                .prepareStatement("UPDATE TASKS SET file=?, owner=?, result=?, type=?, active=?, progress=?, error=?, information=? WHERE id=?");
+                .prepareStatement("UPDATE TASKS SET model=?, property=?, owner=?, result=?, type=?, active=?, progress=?, error=?, information=? WHERE id=?");
             
-            statement.setLong(1, task.getFile());
-            statement.setLong(2, task.getOwner());
-            statement.setLong(3, task.getResult());
-            statement.setString(4, task.getType());
-            statement.setBoolean(5, task.getActive());
-            statement.setString(6, task.getProgress());
-            statement.setString(7, task.getError());
-            statement.setString(8, task.getInformation());
-            statement.setLong(9, task.getId());
+            statement.setLong(1, task.getModel());
+            statement.setLong(2, task.getProperty());
+            statement.setLong(3, task.getOwner());
+            statement.setLong(4, task.getResult());
+            statement.setString(5, task.getType());
+            statement.setBoolean(6, task.getActive());
+            statement.setString(7, task.getProgress());
+            statement.setString(8, task.getError());
+            statement.setString(9, task.getInformation());
+            statement.setLong(10, task.getId());
             
             statement.executeUpdate();
             
@@ -334,7 +336,8 @@ public class TaskManager
 
         task.setId(resultSet.getLong("id"));
         task.setOwner(resultSet.getLong("owner"));
-        task.setFile(resultSet.getLong("file"));
+        task.setModel(resultSet.getLong("model"));
+        task.setProperty(resultSet.getLong("property"));
         task.setType(resultSet.getString("type"));
         task.setActive(resultSet.getBoolean("active"));
         task.setResult(resultSet.getLong("result"));

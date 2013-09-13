@@ -17,6 +17,29 @@ if(jQuery) (function($)
                             }
                         });
                 });
+                
+            context.find('#new_property_button').click(function()
+                {
+                    var name;
+                    var parent_id = context.find('#save_button').attr('file_id');
+                    
+                    if (((name = prompt('Enter property name: ', '')) != null) && (name != ''))
+                    {
+                        $.post('File/Create', { name: name, type: 'ppf', parents: [ parent_id ] }, function(data)
+                            {
+                                if (data.split('=')[0] == 'ERROR')
+                                {
+                                    alert('Error creating new prperty file: ' + data.split('=')[1]);
+                                }
+                                else
+                                {
+                                    appendFileEntries(parent_id, data, (name + '.ppf'), ('file private ppf'), $('UL.estherFileSystem LI#privateFolder'));
+                                    
+                                    openWidget(data, (name + '.ppf'), 'ppf', parent_id);
+                                }
+                            });
+                    }
+                })
 
             context.find('#parsybone_button').click(function(e)
                 {
@@ -48,7 +71,11 @@ if(jQuery) (function($)
             context.find('#parsybone_controls FORM#parsybone_options').submit(function()
                 {
                     $('#parsybone_controls FORM#parsybone_options').ajaxSubmit({
-                        data: { file: context.find('#save_button').attr('file_id') },
+                        data:
+                        { 
+                            model: context.find('#save_button').attr('model_id'),
+                            property: context.find('#save_button').attr('file_id')
+                        },
                         success: function(data)
                         {
                             if (data.split('=')[0] == 'LIMIT_REACHED')
@@ -62,7 +89,7 @@ if(jQuery) (function($)
                             }
                             else
                             {
-                                openWidget('tasklist');
+                                openWidget('tasklist', 'Task List', null, null);
 
                                 $('#widget INPUT[name=refresh]').trigger('click');
                             }

@@ -39,7 +39,7 @@ public class ModelEditorWidget implements EstherWidget
     @Override
     public boolean opensFile(String type)
     {
-        if ((type != null) && type.equals("dbm"))
+        if ((type != null) && (type.equals("pmf") || type.equals("ppf")))
         {
             return true;
         }
@@ -52,7 +52,14 @@ public class ModelEditorWidget implements EstherWidget
     {
         if (opensFile(type))
         {
-            return new String[] { "sqlite" };
+            if (type.equals("pmf"))
+            {
+                return new String[] { "ppf" };
+            }
+            else
+            {
+                return new String[] { "sqlite" };
+            }
         }
         
         return new String[] { };
@@ -78,7 +85,17 @@ public class ModelEditorWidget implements EstherWidget
             
             if (!data.startsWith("ERROR"))
             {
-                map.addAttribute("model", data);
+                if (parent == null)
+                {
+                    map.addAttribute("content", "model");
+                }
+                else
+                {
+                    map.addAttribute("content", "property");
+                    map.addAttribute("model", parent);
+                }
+                
+                map.addAttribute("data", data);
                 map.addAttribute("file", id);
 
                 return "widget/modelEditor/editor";

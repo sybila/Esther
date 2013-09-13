@@ -45,7 +45,7 @@ if(jQuery) (function($)
                             {
                                 if (task.attr('status') == 'ready')
                                 {
-                                    if (!confirm('Are you sure you want to cancel this task? You will be unable to acess the result once cancelled.'))
+                                    if (!confirm('Are you sure you want to cancel this task? You will be unable to access the result once cancelled.'))
                                     {
                                         return;
                                     }
@@ -77,7 +77,7 @@ if(jQuery) (function($)
                                         }
                                         else
                                         {
-                                            appendFileEntries(task.attr('file_id'), task.attr('result_id'),
+                                            appendFileEntries(task.attr('property_id'), task.attr('result_id'),
                                                 data, ('file private ' + data.split('.')[1]), $(document));
 
                                             context.find('INPUT[name=refresh]').trigger('click');
@@ -196,7 +196,7 @@ function newModel()
 
     if (((name = prompt('Enter model name: ', '')) != null) && (name != ''))
     {
-        $.post('File/Create', { name: name, type: 'dbm' }, function(data)
+        $.post('File/Create', { name: name, type: 'pmf' }, function(data)
             {
                 if (data.split('=')[0] == 'ERROR')
                 {
@@ -204,7 +204,7 @@ function newModel()
                 }
                 else
                 {
-                    appendFileEntries(null, data, (name + '.dbm'), ('file private dbm'), $('UL.estherFileSystem LI#privateFolder'));
+                    appendFileEntries(null, data, (name + '.pmf'), ('file private pmf'), $('UL.estherFileSystem LI#privateFolder'));
                 }
             });
     }
@@ -215,36 +215,13 @@ function closeWidget(file_id)
     closeTab($('#widget #tabs LI[file=' + file_id + ']'));
 }
 
-function openWidget(fileRef)
-{    
+function openWidget(fileID, fileName, fileType, parent)
+{
     if (timeoutID != null)
     {
         window.clearTimeout(timeoutID);
         
         timeoutID = null;
-    }
-    
-    var fileID;
-    var tabName;
-    
-    var clss = null;
-    
-    if (fileRef == 'startpage')
-    {
-        fileID = 'startpage';
-        tabName = 'Start Page';
-    }
-    else if (fileRef == 'tasklist')
-    {
-        fileID = 'tasklist';
-        tabName = 'My Tasks';
-    }
-    else
-    {
-        fileID = fileRef.attr('file_id');
-        tabName = fileRef.html();
-        
-        clss = fileRef.parent().attr('class').split(/\s+/);
     }
     
     var tabs = $('#widget #tabs').find('LI');
@@ -266,10 +243,10 @@ function openWidget(fileRef)
             }
         }
     }
-        
-    var tab = createTab(fileID, tabName);
     
-    if (clss == null)
+    var tab = createTab(fileID, fileName);
+    
+    if (fileType == null)
     {
         if (fileID == 'startpage')
         {
@@ -287,62 +264,48 @@ function openWidget(fileRef)
         
         return;
     }
-    
-    for (var i = 0; i < clss.length; i++)
-    {
-        var cls = clss[i];
-        
-        if ((cls == 'public') || (cls == 'private') || (cls == 'expanded') || (cls == 'file'))
-            continue;
 
-        $(tab).empty();
-        
-        var parent = fileRef.parent().parent().parent().find('A').attr('file_id');
-        
-        $.get('Widget/Start', { file: fileID, type: cls, parent: parent }, function(data)
+    $(tab).empty();
+    
+    $.get('Widget/Start', { file: fileID, type: fileType, parent: parent }, function(data)
+        {
+            $(tab).append(data);
+
+            var widget_starter = $(tab).find('div#widget_starter');
+
+            if ((widget_starter != null) && (widget_starter.length > 0))
             {
-                $(tab).append(data);
-                
-                var widget_starter = $(tab).find('div#widget_starter');
-                
-                if ((widget_starter != null) && (widget_starter.length > 0))
-                {
-                    $(tab)[widget_starter.attr('init_function')]();
-                }
-            });
+                $(tab)[widget_starter.attr('init_function')]();
+            }
+        });
+}
+
+function openWidgetFromRef(fileRef)
+{   
+    if (fileRef == 'startpage')
+    {
+        openWidget(fileRef, "Start Page", null, null);
+    }
+    else if (fileRef == 'tasklist')
+    {
+        openWidget(fileRef, "Task List", null, null);
+    }
+    else
+    {
+        var clss = fileRef.parent().attr('class').split(/\s+/);
+        var cls = null;
         
-//        switch (cls)
-//        {
-//            case "dbm":
-//            {
-//                $(tab).openInteractionGraph(fileID);
-//                break;
-//            }
-//            case "sqlite":
-//            {
-//                $(tab).openParameterView(fileID);
-//                break;
-//            }
-//            case "filter":
-//            {
-//                var source;
-//
-//                source = fileRef.parent().parent().parent().find('A').attr('file_id');
-//
-//                $(tab).openParameterView(source, fileID);
-//                break;
-//            }
-//            case "xgmml":
-//            {
-//                $(tab).openBehaviourMap(fileID);
-//                break;
-//            }
-//            default:
-//            {
-//                alert('No widget found for file of type: ' + cls);
-//                break;
-//            }
-//        }
+        for (var i = 0; i < clss.length; i++)
+        {
+            if ((clss[i] == 'public') || (clss[i] == 'private') || (clss[i] == 'expanded') || (clss[i] == 'file'))
+            {
+                continue;
+            }
+            
+            cls = clss[i];
+        }
+        
+        openWidget(fileRef.attr('file_id'), fileRef.html(), cls, fileRef.parent().parent().parent().find('A').attr('file_id'));
     }
 }
 

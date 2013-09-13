@@ -53,7 +53,7 @@ function bindFiles(f)
 
             if ($(this).parent().hasClass('unexpandable'))
             {
-                openWidget($(this).parent().attr('id'));
+                openWidgetFromRef($(this).parent().attr('id'));
             }
             else
             {
@@ -121,7 +121,7 @@ function bindFiles(f)
 
                 if ($(this).parent().hasClass('file'))
                 {
-                    openWidget($(this));
+                    openWidgetFromRef($(this));
                 }
             }
             return false;

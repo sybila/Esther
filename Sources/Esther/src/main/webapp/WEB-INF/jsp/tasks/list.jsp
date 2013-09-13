@@ -8,7 +8,7 @@
 
 <div class="viewpoint">
 <c:forEach items="${tasks}" var="task">
-    <div class="task" status="<c:choose><c:when test="${!empty task.error}">errored</c:when><c:when test="${task.finished && !task.active}">completed</c:when><c:when test="${task.finished && task.active}">ready</c:when><c:when test="${!task.finished && task.active}">running</c:when></c:choose>" task_id="${task.id}" file_id="${task.file}" result_id="${task.result}">
+    <div class="task" status="<c:choose><c:when test="${!empty task.error}">errored</c:when><c:when test="${task.finished && !task.active}">completed</c:when><c:when test="${task.finished && task.active}">ready</c:when><c:when test="${!task.finished && task.active}">running</c:when></c:choose>" task_id="${task.id}" model_id="${task.model}" property_id="${task.property}" result_id="${task.result}">
         <table>
             <tr>
                 <th>${task.type} : ${task.progress}</th>

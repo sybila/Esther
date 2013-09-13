@@ -96,20 +96,26 @@ public class ParsyboneController
      */
     @RequestMapping(value = "/Widget/Parsybone", method = RequestMethod.POST)
     @ResponseBody
-    public String runParsybone(@RequestParam("file") Long id,
+    public String runParsybone(@RequestParam("model") Long model_id, @RequestParam("property") Long property_id,
         @RequestParam(value="compute_robustness", required=false) Boolean robustness,
         @RequestParam(value="compute_witnesses", required=false) Boolean witnesses)
     {
-        if (id == null)
+        if ((model_id == null) || (property_id == null))
         {
             return "ERROR=Invalid data specified.";
         }
         
-        EstherFile file = fileSystemManager.getFileById(id);
+        EstherFile model = fileSystemManager.getFileById(model_id);
+        EstherFile property = fileSystemManager.getFileById(property_id);
         
-        if (file == null)
+        if (model == null)
         {
-            return "ERROR=File not found.";
+            return "ERROR=Model file not found.";
+        }
+        
+        if (property == null)
+        {
+            return "ERROR=Property file not found.";
         }
         
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -124,17 +130,18 @@ public class ParsyboneController
                 return "LIMIT_REACHED=" + maxTasks;
             }
 
-            Long resultID = Long.parseLong(fileSystemController.createFile(file.getName(),
-                "sqlite", new Long[] { file.getId() }, true));
+            Long resultID = Long.parseLong(fileSystemController.createFile(property.getName(),
+                "sqlite", new Long[] { property.getId() }, true));
 
             File result = fileSystemManager.getSystemFileById(resultID);
 
-            Task task = Task.newTask(user.getId(), file.getId(), resultID, "Parsybone");
+            Task task = Task.newTask(user.getId(), model.getId(), property.getId(), resultID, "Parsybone");
 
             List<String> taskArgs = new ArrayList<>();
             
             taskArgs.add(parsyboneLocation);
-            taskArgs.add(fileSystemManager.getSystemFileById(file.getId()).getAbsolutePath());
+            taskArgs.add(fileSystemManager.getSystemFileById(model.getId()).getAbsolutePath());
+            taskArgs.add(fileSystemManager.getSystemFileById(property.getId()).getAbsolutePath());
             taskArgs.add("-v");
             taskArgs.add("--data");
             taskArgs.add(result.getAbsolutePath());

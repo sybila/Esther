@@ -30,9 +30,9 @@ public class SQLiteManager
      * @return List of rows in form of maps of column name and contents.
      * @throws SQLiteException If reading the database fails.
      */
-    public List<Map<String, Object>> generateRows(File file, ParameterFilter filter, Map<String, String> contextMasks) throws SQLiteException
+    public List<Map<Integer, Object>> generateRows(File file, ParameterFilter filter, Map<String, String> contextMasks, Map<Integer, String> columnNames) throws SQLiteException
     {
-        List<Map<String, Object>> rows = new ArrayList<>();
+        List<Map<Integer, Object>> rows = new ArrayList<>();
         
         Connection connection = null;
         PreparedStatement statement = null;
@@ -56,16 +56,18 @@ public class SQLiteManager
                     {
                         contextMasks.put(columnName, transformColumnName(columnName, connection));
                     }
+                    
+                    columnNames.put(i, transformColumnName(columnName, connection));
                 }
             }
             
             while (resultSet.next())
             {
-                Map<String, Object> cells = new LinkedHashMap<>();
+                Map<Integer, Object> cells = new LinkedHashMap<>();
 
                 for (int i = 1; i <= tableData.getColumnCount(); i++)
                 {
-                    cells.put(transformColumnName(tableData.getColumnName(i), connection), resultSet.getObject(i));
+                    cells.put(i, resultSet.getObject(i));
                 }
 
                 rows.add(cells);

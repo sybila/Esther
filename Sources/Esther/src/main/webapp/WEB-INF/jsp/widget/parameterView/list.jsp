@@ -3,8 +3,8 @@
 <table class="list" id="parameter_list">
     <thead>
         <tr>
-        <c:forEach items="${rows[0]}" var="column">
-            <th><c:out value="${column.key}" /></th>
+        <c:forEach items="${column_names}" var="column">
+            <th class="col_${column.key}"><c:out value="${column.value}" /></th>
         </c:forEach>
         </tr>
     </thead>
@@ -12,7 +12,7 @@
     <c:forEach items="${rows}" var="cells">
         <tr>
         <c:forEach items="${cells}" var="cell">
-            <td><c:out value="${cell.value}" /></td>
+            <td class="col_${cell.key}"><c:out value="${cell.value}" /></td>
         </c:forEach>
         </tr>
     </c:forEach>

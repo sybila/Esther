@@ -150,8 +150,10 @@ public class ParameterViewWidget implements EstherWidget
                 map.addAttribute("filter", filterId);
             }
             
-            List<Map<String, Object>> rows = sqliteManager.generateRows(fileSystemManager.getSystemFileById(fileId), filter, contextMasks);
-
+            Map<Integer, String> columnNames = new HashMap<>();
+            
+            List<Map<Integer, Object>> rows = sqliteManager.generateRows(fileSystemManager.getSystemFileById(fileId), filter, contextMasks, columnNames);
+            
             if (filterId != null)
             {
                 for (int i = 1; i <= filter.getFilter().length; i++)
@@ -181,6 +183,7 @@ public class ParameterViewWidget implements EstherWidget
             }
 
             map.addAttribute("context_masks", contextMasks);
+            map.addAttribute("column_names", columnNames);
             map.addAttribute("rows", rows);
 
             return "widget/parameterView/view";

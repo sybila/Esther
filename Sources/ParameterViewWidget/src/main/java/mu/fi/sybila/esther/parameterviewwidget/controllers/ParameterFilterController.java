@@ -2,6 +2,7 @@ package mu.fi.sybila.esther.parameterviewwidget.controllers;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -86,11 +87,13 @@ public class ParameterFilterController
         
         File file = fileSystemManager.getSystemFileById(id);
         
-        List<Map<String, Object>> rows;
+        List<Map<Integer, Object>> rows;
+
+        Map<Integer, String> columnNames = new HashMap<>();
         
         try
-        {
-            rows = sqliteManager.generateRows(file, (filter.isEmpty() ? null : new ParameterFilter(filter)), null);
+        {    
+            rows = sqliteManager.generateRows(file, (filter.isEmpty() ? null : new ParameterFilter(filter)), null, columnNames);
         }
         catch (SQLiteException e)
         {
@@ -99,6 +102,7 @@ public class ParameterFilterController
             return null;
         }
     
+        map.addAttribute("column_names", columnNames);
         map.addAttribute("rows", rows);
         
         return "widget/parameterView/list";

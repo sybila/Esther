@@ -6,9 +6,9 @@
     z-index: 1000;
     width: 90%;
     height: 320px;
-    right: 8px;
-    bottom: 28px;
-    background: #EEEEEE;
+    right: 9px;
+    bottom: 24px;
+    background: #FFFFFF;
     border: 1px solid #999999;
     border-bottom: 0px;
 }
@@ -61,4 +61,39 @@
     margin-left: 4px;
     margin-right: 4px;
     cursor: pointer;
+}
+
+/* COLUMN OPTIONS */
+
+#widget #column_options
+{
+    position: absolute;
+    z-index: 1000;
+    width: 90%;
+    height: 240px;
+    right: 9px;
+    top: 32px;
+    background: #FFFFFF;
+    border: 1px solid #999999;
+    border-top: 0px;
+}
+
+#widget #column_options_hide
+{
+    float: right;
+    height: 16px;
+    width: 16px;
+    margin: 8px;
+    cursor: pointer;
+}
+
+#widget #column_options LABEL.column_checker
+{
+    font-size: 12px;
+}
+
+#widget #column_options LABEL.column_checker INPUT
+{
+    margin: 0px;
+    padding: 0px;
 }

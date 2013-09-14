@@ -7,7 +7,28 @@
 
 <div id="widget_starter" init_function="initParameterView" />
 
-<h2 class="widget">Parameters:</h2>
+<h2 style="float: left" class="widget">Parameters:</h2>
+
+<p style="text-align: right; padding-right: 64px;">
+    <a id="column_options_button" class="expandable closed" href="#">Display Options ▼</a>
+</p>
+
+<div id="column_options" style="display: none;">
+    <p style="float: left;">Select columns to display:</p>
+    <p style="text-align: right; padding-right: 32px">
+        <a id="all_columns" href="#">select all</a> / <a id="no_columns" href="#">select none</a>
+    </p>
+    <div id="column_list" class="container">
+        <c:forEach items="${column_names}" var="column">
+            <label class="column_checker">
+                <input column_num="${column.key}" type="checkbox" checked="checked" />
+                 <c:out value="${column.value}" />
+            </label></br>
+        </c:forEach>
+    </div>
+    <input id="column_apply_button" class="button" style="float: left;" type="Submit" value="Apply" name="submit"/>
+    <img id="column_options_hide" src="<c:url value="/resources/images/hide_up_button.png" />" />
+</div>
 
 <div class="viewpoint">
     <%@ include file="/WEB-INF/jsp/widget/parameterView/list.jsp" %>
@@ -16,7 +37,7 @@
 <c:if test="${not empty behaviourMapper}">
     <input style="float: left" id="behaviourMap" class="button" type="submit" value="Behaviour Map" name="submit" />
 </c:if>
-
+    
 <p style="text-align: right; padding-right: 64px;" >
     <a id="filter" class="expandable closed" href="#">Filter ▲</a>
 </p>

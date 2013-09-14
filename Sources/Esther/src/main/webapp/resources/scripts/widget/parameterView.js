@@ -1,8 +1,3 @@
-function initializeParameterView(context, data)
-{
-    
-}
-
 function encodeConstraints(constraints)
 {
     var data = '';
@@ -74,6 +69,68 @@ if(jQuery) (function($)
             context.find('#constraint_value').keyup(function()
                 {
                     context.find('#constraint_value').val(context.find('#constraint_value').val().replace(/[^0-9]/g,''));
+                });
+                
+            context.find('#column_options_button').click(function(e)
+                {
+                    e.preventDefault();
+                    
+                    if ($(this).hasClass('open'))
+                    {
+                        $(this).text('Display Options \u25bc');
+                        $(this).removeClass('open');
+                        $(this).addClass('closed');
+
+                        context.find('#column_options').hide('slide', { direction: 'up' }, 640);
+                    }
+                    else if ($(this).hasClass('closed'))
+                    {
+                        $(this).text('Display Options \u25b2');
+                        $(this).removeClass('closed');
+                        $(this).addClass('open');
+
+                        context.find('#column_options').show('slide', { direction: 'up' }, 640);
+                    }
+                });
+
+            context.find('#column_options_hide').click(function()
+                {
+                    $(document).find('#widget #column_options_button').trigger('click');
+                });
+                
+            context.find('#all_columns').click(function(e)
+                {
+                    e.preventDefault();
+                    
+                    context.find('#column_options LABEL.column_checker INPUT').prop('checked', true);
+                });
+                
+            context.find('#no_columns').click(function(e)
+                {
+                    e.preventDefault();
+                    
+                    context.find('#column_options LABEL.column_checker INPUT').prop('checked', false);
+                });
+                
+            context.find('#column_apply_button').click(function(e)
+                {
+                    var checkboxes = context.find('#column_options LABEL.column_checker INPUT');
+                    
+                    for (var i in checkboxes)
+                    {
+                        var num = $(checkboxes[i]).attr('column_num');
+                        
+                        if (checkboxes[i].checked)
+                        {
+                            $(document).find('#widget #parameter_list TD:nth-child(' +
+                                num + '),TH:nth-child(' + num + ')').show();
+                        }
+                        else
+                        {
+                            $(document).find('#widget #parameter_list TD:nth-child(' +
+                                num + '),TH:nth-child(' + num + ')').hide();
+                        }
+                    }
                 });
 
             context.find('#filter').click(function(e)

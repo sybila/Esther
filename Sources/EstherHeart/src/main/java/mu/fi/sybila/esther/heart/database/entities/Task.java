@@ -9,6 +9,15 @@ import java.io.IOException;
  */
 public class Task
 {
+    private static final String[] PARSYBONE_OPERATIONS =
+    {
+        "Testing edge constraints on partiall parametrizations",
+        "Creating transitions for state",
+        "Building automaton state",
+        "Building product state",
+        "Round"
+    };
+    
     private Long id;
     private Long model;
     private Long property;
@@ -196,31 +205,60 @@ public class Task
         
         process.getInputStream().read(buffer, 0, outputLength);
         
-        String[] lines = new String(buffer).split("\\*");
+        String[] lines = new String(buffer).split("[\n\r]");
         
         for (String line : lines)
         {
-            if (!line.isEmpty() && !line.trim().startsWith("Round"))
+            if (line.isEmpty())
+            {
+                continue;
+            }
+            
+            String trimmedLine = line.trim().substring(2).trim();
+            
+            if (line.trim().startsWith("*"))
             {
                 if (outputInformation == null)
                 {
-                    outputInformation = line.trim();
+                    outputInformation = trimmedLine;
                 }
                 else
                 {
-                    outputInformation += ("</BR>" + line.trim());
+                    outputInformation += ("</BR>" + trimmedLine);
                 }
             }
-        }
-        
-        for (int i = 1; i < lines.length; i++)
-        {
-            String line;
-            if ((line = lines[lines.length - i].trim()).startsWith("Round"))
+            else if (line.trim().startsWith("#"))
             {
-                String[] nums = line.substring(7, (line.length() - 1)).split("/");
-                progress = (((100 * Integer.parseInt(nums[0])) / Integer.parseInt(nums[1])) + "%");
-                break;
+                String[] parts = trimmedLine.split(":");
+                
+                String operation = parts[0].trim();
+                
+                StringBuilder progressBuilder = new StringBuilder();
+                
+                for (int i = 0; i < 5; i++)
+                {
+                    if (PARSYBONE_OPERATIONS[i].equals(operation))
+                    {
+                        progressBuilder.append("[");
+                        progressBuilder.append(i + 1);
+                        progressBuilder.append("/5] ");
+                        
+                        progressBuilder.append(operation);
+                        progressBuilder.append(": ");
+                        
+                        break;
+                    }
+                }
+                
+                String[] nums = parts[1].trim().split("/");
+                
+                int round = Integer.parseInt(nums[0]);
+                int total = Integer.parseInt(nums[1].substring(0, (nums[1].length() - 1)));
+                
+                progressBuilder.append((100 * round) / total);
+                progressBuilder.append("%");
+                
+                progress = progressBuilder.toString();
             }
         }
     }

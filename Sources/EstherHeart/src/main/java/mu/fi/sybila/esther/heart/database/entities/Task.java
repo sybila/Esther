@@ -33,6 +33,8 @@ public class Task
     private String errorMessage;
     private String outputInformation;
     
+    private String outputResidue;
+    
     /**
      * Default Task constructor.
      */
@@ -41,6 +43,8 @@ public class Task
         progress = "0%";
         errorMessage = null;
         outputInformation = null;
+        
+        outputResidue = null;
     }
 
     public Long getId()
@@ -132,6 +136,11 @@ public class Task
         }
     }
     
+    public boolean getSuccessful()
+    {
+        return (errorMessage == null);
+    }
+    
     public void setError(String error)
     {
         errorMessage = error;
@@ -193,25 +202,48 @@ public class Task
     }
     
     private void readOutput() throws IOException
-    {
-        int outputLength = process.getInputStream().available();
+    {   
+        byte[] buffer;
         
-        if (outputLength == 0)
+        synchronized(process)
         {
-            return;
+            int outputLength = process.getInputStream().available();
+        
+            if (outputLength == 0)
+            {
+                return;
+            }
+
+            buffer = new byte [outputLength];
+
+            process.getInputStream().read(buffer, 0, outputLength);
+        }
+                
+        String output = "";
+        
+        if (outputResidue != null)
+        {
+            output = outputResidue;
+            outputResidue = null;
         }
         
-        byte[] buffer = new byte [outputLength];
+        output = output.concat(new String(buffer));
         
-        process.getInputStream().read(buffer, 0, outputLength);
+        String[] lines = output.split("[\n\r]");
         
-        String[] lines = new String(buffer).split("[\n\r]");
+        String lastProgressLine = null;
         
         for (String line : lines)
         {
-            if (line.isEmpty())
+            if (line.trim().isEmpty())
             {
                 continue;
+            }
+            
+            if (!line.trim().endsWith("."))
+            {
+                outputResidue = line;
+                break;
             }
             
             String trimmedLine = line.trim().substring(2).trim();
@@ -229,37 +261,42 @@ public class Task
             }
             else if (line.trim().startsWith("#"))
             {
-                String[] parts = trimmedLine.split(":");
-                
-                String operation = parts[0].trim();
-                
-                StringBuilder progressBuilder = new StringBuilder();
-                
-                for (int i = 0; i < 5; i++)
-                {
-                    if (PARSYBONE_OPERATIONS[i].equals(operation))
-                    {
-                        progressBuilder.append("[");
-                        progressBuilder.append(i + 1);
-                        progressBuilder.append("/5] ");
-                        
-                        progressBuilder.append(operation);
-                        progressBuilder.append(": ");
-                        
-                        break;
-                    }
-                }
-                
-                String[] nums = parts[1].trim().split("/");
-                
-                int round = Integer.parseInt(nums[0]);
-                int total = Integer.parseInt(nums[1].substring(0, (nums[1].length() - 1)));
-                
-                progressBuilder.append((100 * round) / total);
-                progressBuilder.append("%");
-                
-                progress = progressBuilder.toString();
+                lastProgressLine = trimmedLine;
             }
+        }
+        
+        if (lastProgressLine != null)
+        {
+            String[] parts = lastProgressLine.split(":");
+                
+            String operation = parts[0].trim();
+
+            StringBuilder progressBuilder = new StringBuilder();
+
+            for (int i = 0; i < 5; i++)
+            {
+                if (PARSYBONE_OPERATIONS[i].equals(operation))
+                {
+                    progressBuilder.append("[");
+                    progressBuilder.append(i + 1);
+                    progressBuilder.append("/5] ");
+
+                    progressBuilder.append(operation);
+                    progressBuilder.append(": ");
+
+                    break;
+                }
+            }
+            
+            String[] nums = parts[1].trim().split("/");
+                    
+            int round = Integer.parseInt(nums[0]);
+            int total = Integer.parseInt(nums[1].substring(0, (nums[1].length() - 1)));
+
+            progressBuilder.append((100 * round) / total);
+            progressBuilder.append("%");
+                
+            progress = progressBuilder.toString();
         }
     }
     
@@ -279,6 +316,16 @@ public class Task
         readOutput();
         
         return outputInformation;
+    }
+    
+    public String getOutputResidue()
+    {
+        return outputResidue;
+    }
+    
+    public void setOutputResidue(String value)
+    {
+        outputResidue = value;
     }
     
     public void cancel()

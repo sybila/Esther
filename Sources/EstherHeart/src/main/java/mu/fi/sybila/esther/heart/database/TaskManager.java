@@ -84,7 +84,7 @@ public class TaskManager
         {
             connection = dataSource.getConnection();
             statement = connection
-                .prepareStatement("INSERT INTO TASKS (model, property, owner, result, type, active, progress, error, information) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                .prepareStatement("INSERT INTO TASKS (model, property, owner, result, type, active, progress, error, information, output_residue) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     Statement.RETURN_GENERATED_KEYS);
             
             statement.setLong(1, task.getModel());
@@ -96,6 +96,7 @@ public class TaskManager
             statement.setString(7, "0%");
             statement.setString(8, null);
             statement.setString(9, null);
+            statement.setString(10, null);
             
             statement.executeUpdate();
             
@@ -196,7 +197,7 @@ public class TaskManager
         {
             connection = dataSource.getConnection();
             statement = connection
-                .prepareStatement("UPDATE TASKS SET model=?, property=?, owner=?, result=?, type=?, active=?, progress=?, error=?, information=? WHERE id=?");
+                .prepareStatement("UPDATE TASKS SET model=?, property=?, owner=?, result=?, type=?, active=?, progress=?, error=?, information=?, output_residue=? WHERE id=?");
             
             statement.setLong(1, task.getModel());
             statement.setLong(2, task.getProperty());
@@ -207,7 +208,8 @@ public class TaskManager
             statement.setString(7, task.getProgress());
             statement.setString(8, task.getError());
             statement.setString(9, task.getInformation());
-            statement.setLong(10, task.getId());
+            statement.setString(10, task.getOutputResidue());
+            statement.setLong(11, task.getId());
             
             statement.executeUpdate();
             
@@ -344,6 +346,7 @@ public class TaskManager
         task.setProgress(resultSet.getString("progress"));
         task.setError(resultSet.getString("error"));
         task.setInformation(resultSet.getString("information"));
+        task.setOutputResidue(resultSet.getString("output_residue"));
         
         task.setProcess(tasks.get(task.getId()));
         

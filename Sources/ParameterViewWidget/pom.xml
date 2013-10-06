@@ -24,6 +24,7 @@
     </build>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <spring.mvc.version>3.1.1.RELEASE</spring.mvc.version>
     </properties>
 
     <dependencies>
@@ -41,6 +42,29 @@
             <groupId>mu.fi.sybila</groupId>
             <artifactId>esther-sqlite</artifactId>
             <version>1.0</version>
+        </dependency>
+
+	<!-- Spring MVC -->
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>${spring.mvc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.mvc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>${spring.mvc.version}</version>
+        </dependency>        
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring.mvc.version}</version>
         </dependency>
     </dependencies>
     

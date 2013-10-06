@@ -24,6 +24,7 @@
     </build>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <spring.mvc.version>3.1.1.RELEASE</spring.mvc.version>
     </properties>
 
     <dependencies>
@@ -42,14 +43,23 @@
             <artifactId>esther-sqlite</artifactId>
             <version>1.0</version>
         </dependency>
-                
-        <!-- Test Scope -->
-        
+
+	<!-- Spring MVC -->
+
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>3.8.1</version>
-            <scope>test</scope>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>${spring.mvc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.mvc.version}</version>
+        </dependency>     
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring.mvc.version}</version>
         </dependency>
     </dependencies>
     

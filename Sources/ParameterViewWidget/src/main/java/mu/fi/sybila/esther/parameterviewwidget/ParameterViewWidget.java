@@ -2,6 +2,7 @@ package mu.fi.sybila.esther.parameterviewwidget;
 
 import java.io.FileOutputStream;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -150,7 +151,7 @@ public class ParameterViewWidget implements EstherWidget
                 map.addAttribute("filter", filterId);
             }
             
-            Map<Integer, String> columnNames = new HashMap<>();
+            Map<Integer, String> columnNames = new LinkedHashMap<>();
             
             List<Map<Integer, Object>> rows = sqliteManager.generateRows(fileSystemManager.getSystemFileById(fileId), filter, contextMasks, columnNames);
             

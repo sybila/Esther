@@ -2,7 +2,7 @@ package mu.fi.sybila.esther.parameterviewwidget.controllers;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -89,7 +89,7 @@ public class ParameterFilterController
         
         List<Map<Integer, Object>> rows;
 
-        Map<Integer, String> columnNames = new HashMap<>();
+        Map<Integer, String> columnNames = new LinkedHashMap<>();
         
         try
         {    

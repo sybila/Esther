@@ -47,18 +47,15 @@ public class SQLiteManager
 
             ResultSetMetaData tableData = resultSet.getMetaData();
 
-            if (contextMasks != null)
+            for (int i = 1; i <= tableData.getColumnCount(); i++)
             {
-                for (int i = 1; i <= tableData.getColumnCount(); i++)
+                String columnName = tableData.getColumnName(i);
+                if (columnName.startsWith("K") && (contextMasks != null))
                 {
-                    String columnName = tableData.getColumnName(i);
-                    if (columnName.startsWith("K"))
-                    {
-                        contextMasks.put(columnName, transformColumnName(columnName, connection));
-                    }
-                    
-                    columnNames.put(i, transformColumnName(columnName, connection));
+                    contextMasks.put(columnName, transformColumnName(columnName, connection));
                 }
+
+                columnNames.put(i, transformColumnName(columnName, connection));
             }
             
             while (resultSet.next())

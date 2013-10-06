@@ -231,6 +231,8 @@ if(jQuery) (function($)
                             context.find('.viewpoint').empty().append(data);
 
                             context.find('#parameter_list').tablesorter();
+                    
+                            context.find('#column_apply_button').trigger('click');
                         });
 
                     $(document).find('#widget #filter').trigger('click');

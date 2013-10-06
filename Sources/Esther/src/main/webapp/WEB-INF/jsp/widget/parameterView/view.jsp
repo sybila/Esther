@@ -18,7 +18,7 @@
     <p style="text-align: right; padding-right: 32px">
         <a id="all_columns" href="#">select all</a> / <a id="no_columns" href="#">select none</a>
     </p>
-    <div id="column_list" class="container">
+    <div style="width: 98%; margin-left: 4px;" id="column_list" class="container">
         <c:forEach items="${column_names}" var="column">
             <label class="column_checker">
                 <input column_num="${column.key}" type="checkbox" checked="checked" />

@@ -28,6 +28,12 @@ repo_loc+="mvn_repo/"
 mkdir $repo_loc
 
 sed -i -e "s#<url>file:.*</url>#<url>file:$repo_loc</url>#" ./Sources/Esther/pom.xml
+sed -i -e "s#<url>file:.*</url>#<url>file:$repo_loc</url>#" ./Sources/EstherHeart/pom.xml
+sed -i -e "s#<url>file:.*</url>#<url>file:$repo_loc</url>#" ./Sources/ModelEditorWidget/pom.xml
+sed -i -e "s#<url>file:.*</url>#<url>file:$repo_loc</url>#" ./Sources/ParsyboneWidget/pom.xml
+sed -i -e "s#<url>file:.*</url>#<url>file:$repo_loc</url>#" ./Sources/ParameterViewWidget/pom.xml
+sed -i -e "s#<url>file:.*</url>#<url>file:$repo_loc</url>#" ./Sources/BehaviourMapWidget/pom.xml
+sed -i -e "s#<url>file:.*</url>#<url>file:$repo_loc</url>#" ./Sources/SQLiteManager/pom.xml
 
 echo "Maximum allowed storage space per user [in bytes]:"
 read max_storage

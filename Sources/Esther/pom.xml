@@ -289,7 +289,7 @@
                 </executions>
             </plugin>
             <plugin>
-		<groupId>org.codehaus.mojo</groupId>
+		<groupId>org.apache.tomcat.maven</groupId>
 		<artifactId>tomcat7-maven-plugin</artifactId>
 		<version>2.1</version>
 		<configuration>

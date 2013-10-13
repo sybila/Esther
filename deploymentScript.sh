@@ -95,4 +95,4 @@ mvn deploy:deploy-file -f Sources/BehaviourMapWidget/pom.xml \
 -Dversion=1.0 -Dfile=target/esther-behaviour_map_widget-1.0.jar \
 -Dpackaging=jar -DgeneratePom=true
 
-mvn tomcat:deploy -f Sources/Esther/pom.xml
+mvn tomcat7:deploy -f Sources/Esther/pom.xml

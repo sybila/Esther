@@ -9,7 +9,7 @@ import java.io.IOException;
  */
 public class Task
 {
-    private static final String[] PARSYBONE_OPERATIONS =
+    public static final String[] PARSYBONE_OPERATIONS =
     {
         "Testing edge constraints on partiall parametrizations",
         "Creating transitions for state",
@@ -25,15 +25,20 @@ public class Task
     private Long result;
     
     private String type;
+    
+    private Boolean finished;
     private Boolean active;
     
-    private Process process;
+    //private Process process;
     
     private String progress;
     private String errorMessage;
     private String outputInformation;
     
-    private String outputResidue;
+    //private String outputResidue;
+    
+    private String modelName;
+    private String propertyName;
     
     /**
      * Default Task constructor.
@@ -44,7 +49,10 @@ public class Task
         errorMessage = null;
         outputInformation = null;
         
-        outputResidue = null;
+        //outputResidue = null;
+        
+        modelName = null;
+        propertyName = null;
     }
 
     public Long getId()
@@ -117,23 +125,29 @@ public class Task
         this.type = type;
     }
     
-    public void setProcess(Process process)
-    {
-        this.process = process;
-    }
+//    public void setProcess(Process process)
+//    {
+//        this.process = process;
+//    }
     
     public boolean getFinished()
     {
-        try
-        {
-            process.exitValue();
-            
-            return true;
-        }
-        catch (IllegalThreadStateException e)
-        {
-            return false;
-        }
+        return finished;
+//        try
+//        {
+//            process.exitValue();
+//            
+//            return true;
+//        }
+//        catch (IllegalThreadStateException e)
+//        {
+//            return false;
+//        }
+    }
+    
+    public void setFinished(Boolean finished)
+    {
+        this.finished = finished;
     }
     
     public boolean getSuccessful()
@@ -148,26 +162,26 @@ public class Task
     
     public String getError() throws IOException
     {
-        if (errorMessage != null)
-        {
-            return errorMessage;
-        }
+//        if (errorMessage != null)
+//        {
+//            return errorMessage;
+//        }
         
         if (!getFinished())
         {
             return null;
         }
         
-        int errorLength;
-        if ((errorLength = process.getErrorStream().available()) <= 0)
-        {
-            return null;
-        }
-        
-        byte[] buffer = new byte[errorLength];
-        process.getErrorStream().read(buffer, 0, errorLength);
-        
-        errorMessage = new String(buffer).substring(1).trim();
+//        int errorLength;
+//        if ((errorLength = process.getErrorStream().available()) <= 0)
+//        {
+//            return null;
+//        }
+//        
+//        byte[] buffer = new byte[errorLength];
+//        process.getErrorStream().read(buffer, 0, errorLength);
+//        
+//        errorMessage = new String(buffer).substring(1).trim();
         
         return errorMessage;
     }
@@ -181,7 +195,7 @@ public class Task
     {
         if (getFinished())
         {
-            if (getError() != null)
+            if (!getSuccessful())
             {
                 return "Error";
             }
@@ -196,109 +210,109 @@ public class Task
             }
         }
         
-        readOutput();
+//        readOutput();
         
         return progress;
     }
     
-    private void readOutput() throws IOException
-    {   
-        byte[] buffer;
-        
-        synchronized(process)
-        {
-            int outputLength = process.getInputStream().available();
-        
-            if (outputLength == 0)
-            {
-                return;
-            }
-
-            buffer = new byte [outputLength];
-
-            process.getInputStream().read(buffer, 0, outputLength);
-        }
-                
-        String output = "";
-        
-        if (outputResidue != null)
-        {
-            output = outputResidue;
-            outputResidue = null;
-        }
-        
-        output = output.concat(new String(buffer));
-        
-        String[] lines = output.split("[\n\r]");
-        
-        String lastProgressLine = null;
-        
-        for (String line : lines)
-        {
-            if (line.trim().isEmpty())
-            {
-                continue;
-            }
-            
-            if (!line.trim().endsWith("."))
-            {
-                outputResidue = line;
-                break;
-            }
-            
-            String trimmedLine = line.trim().substring(2).trim();
-            
-            if (line.trim().startsWith("*"))
-            {
-                if (outputInformation == null)
-                {
-                    outputInformation = trimmedLine;
-                }
-                else
-                {
-                    outputInformation += ("</BR>" + trimmedLine);
-                }
-            }
-            else if (line.trim().startsWith("#"))
-            {
-                lastProgressLine = trimmedLine;
-            }
-        }
-        
-        if (lastProgressLine != null)
-        {
-            String[] parts = lastProgressLine.split(":");
-                
-            String operation = parts[0].trim();
-
-            StringBuilder progressBuilder = new StringBuilder();
-
-            for (int i = 0; i < 5; i++)
-            {
-                if (PARSYBONE_OPERATIONS[i].equals(operation))
-                {
-                    progressBuilder.append("[");
-                    progressBuilder.append(i + 1);
-                    progressBuilder.append("/5] ");
-
-                    progressBuilder.append(operation);
-                    progressBuilder.append(": ");
-
-                    break;
-                }
-            }
-            
-            String[] nums = parts[1].trim().split("/");
-                    
-            int round = Integer.parseInt(nums[0]);
-            int total = Integer.parseInt(nums[1].substring(0, (nums[1].length() - 1)));
-
-            progressBuilder.append((100 * round) / total);
-            progressBuilder.append("%");
-                
-            progress = progressBuilder.toString();
-        }
-    }
+//    private void readOutput() throws IOException
+//    {   
+//        byte[] buffer;
+//        
+//        synchronized(process)
+//        {
+//            int outputLength = process.getInputStream().available();
+//        
+//            if (outputLength == 0)
+//            {
+//                return;
+//            }
+//
+//            buffer = new byte [outputLength];
+//
+//            process.getInputStream().read(buffer, 0, outputLength);
+//        }
+//                
+//        String output = "";
+//        
+//        if (outputResidue != null)
+//        {
+//            output = outputResidue;
+//            outputResidue = null;
+//        }
+//        
+//        output = output.concat(new String(buffer));
+//        
+//        String[] lines = output.split("[\n\r]");
+//        
+//        String lastProgressLine = null;
+//        
+//        for (String line : lines)
+//        {
+//            if (line.trim().isEmpty())
+//            {
+//                continue;
+//            }
+//            
+//            if (!line.trim().endsWith("."))
+//            {
+//                outputResidue = line;
+//                break;
+//            }
+//            
+//            String trimmedLine = line.trim().substring(2).trim();
+//            
+//            if (line.trim().startsWith("*"))
+//            {
+//                if (outputInformation == null)
+//                {
+//                    outputInformation = trimmedLine;
+//                }
+//                else
+//                {
+//                    outputInformation += ("</BR>" + trimmedLine);
+//                }
+//            }
+//            else if (line.trim().startsWith("#"))
+//            {
+//                lastProgressLine = trimmedLine;
+//            }
+//        }
+//        
+//        if (lastProgressLine != null)
+//        {
+//            String[] parts = lastProgressLine.split(":");
+//                
+//            String operation = parts[0].trim();
+//
+//            StringBuilder progressBuilder = new StringBuilder();
+//
+//            for (int i = 0; i < 5; i++)
+//            {
+//                if (PARSYBONE_OPERATIONS[i].equals(operation))
+//                {
+//                    progressBuilder.append("[");
+//                    progressBuilder.append(i + 1);
+//                    progressBuilder.append("/5] ");
+//
+//                    progressBuilder.append(operation);
+//                    progressBuilder.append(": ");
+//
+//                    break;
+//                }
+//            }
+//            
+//            String[] nums = parts[1].trim().split("/");
+//                    
+//            int round = Integer.parseInt(nums[0]);
+//            int total = Integer.parseInt(nums[1].substring(0, (nums[1].length() - 1)));
+//
+//            progressBuilder.append((100 * round) / total);
+//            progressBuilder.append("%");
+//                
+//            progress = progressBuilder.toString();
+//        }
+//    }
     
     public void setInformation(String information)
     {
@@ -307,33 +321,58 @@ public class Task
     
     public String getInformation() throws IOException
     {   
-        String error = getError();
-        if (error != null)
-        {
-            return error;
-        }
+//        String error = getError();
+//        if (error != null)
+//        {
+//            return error;
+//        }
         
-        readOutput();
+//        readOutput();
+        
+        if (errorMessage != null)
+        {
+            return errorMessage;
+        }
         
         return outputInformation;
     }
     
-    public String getOutputResidue()
-    {
-        return outputResidue;
-    }
+//    public String getOutputResidue()
+//    {
+//        return outputResidue;
+//    }
+//    
+//    public void setOutputResidue(String value)
+//    {
+//        outputResidue = value;
+//    }
     
-    public void setOutputResidue(String value)
+//    public void cancel()
+//    {
+//        if (!getFinished())
+//        {
+//            process.destroy();
+//        }
+//    }
+
+    public String getModelName()
     {
-        outputResidue = value;
+        return modelName;
     }
-    
-    public void cancel()
+
+    public void setModelName(String modelName)
     {
-        if (!getFinished())
-        {
-            process.destroy();
-        }
+        this.modelName = modelName;
+    }
+
+    public String getPropertyName()
+    {
+        return propertyName;
+    }
+
+    public void setPropertyName(String propertyName)
+    {
+        this.propertyName = propertyName;
     }
     
     public static Task newTask(Long owner, Long model, Long property, Long result, String type)
@@ -346,6 +385,7 @@ public class Task
         task.setResult(result);
         task.setType(type);
         task.setActive(true);
+        task.setFinished(false);
         
         return task;
     }

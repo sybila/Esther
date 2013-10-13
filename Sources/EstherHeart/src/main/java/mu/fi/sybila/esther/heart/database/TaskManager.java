@@ -29,7 +29,7 @@ public class TaskManager
     private DataSource dataSource;
     private static final Logger logger = Logger.getLogger(FileSystemManager.class.getName());
     
-    private static final Map<Long, Process> tasks = new HashMap<>();
+    //private static final Map<Long, Process> tasks = new HashMap<>();
     
     /**
      * Method for setting up the manager.
@@ -49,6 +49,207 @@ public class TaskManager
     public void setLogger(FileOutputStream fs)
     {
         logger.addHandler(new StreamHandler(fs, new SimpleFormatter()));
+    }
+    
+    private void startTask(Long id, String[] cmdArgs) throws IOException
+    {
+        Process process = new ProcessBuilder(cmdArgs).start();
+        
+        class TaskOutputReader implements Runnable
+        {
+            Process process;
+            Long id;
+            
+            TaskOutputReader(Long id, Process process)
+            {
+                this.id= id;
+                this.process = process;
+            }
+
+            @Override
+            public void run()
+            {
+                String outputResidue = null;
+                Boolean finished = false;
+
+                try
+                {    
+                    while (!finished)
+                    {
+                        String error = null;
+                        String outputInformation = null;
+                        String progress = null;
+                        
+                        int errorLength = process.getErrorStream().available();
+                        int outputLength = process.getInputStream().available();
+                        
+                        if (errorLength != 0)
+                        {
+                            byte[] buffer = new byte[errorLength];
+                            process.getErrorStream().read(buffer, 0, errorLength);
+
+                            error = new String(buffer).substring(1).trim();
+                        }
+                        
+                        if (outputLength != 0)
+                        {
+                            byte[] buffer = new byte [outputLength];
+                            process.getInputStream().read(buffer, 0, outputLength);
+
+                            String output = "";
+
+                            if (outputResidue != null)
+                            {
+                                output = outputResidue;
+                                outputResidue = null;
+                            }
+
+                            output = output.concat(new String(buffer));
+
+                            String[] lines = output.split("[\n\r]");
+
+                            String lastProgressLine = null;
+
+                            for (String line : lines)
+                            {
+                                if (line.trim().isEmpty())
+                                {
+                                    continue;
+                                }
+
+                                if (!line.trim().endsWith("."))
+                                {
+                                    outputResidue = line;
+                                    break;
+                                }
+
+                                String trimmedLine = line.trim().substring(2).trim();
+
+                                if (line.trim().startsWith("*"))
+                                {
+                                    if (outputInformation == null)
+                                    {
+                                        outputInformation = trimmedLine;
+                                    }
+                                    else
+                                    {
+                                        outputInformation += ("</BR>" + trimmedLine);
+                                    }
+                                }
+                                else if (line.trim().startsWith("#"))
+                                {
+                                    lastProgressLine = trimmedLine;
+                                }
+                            }
+
+                            if (lastProgressLine != null)
+                            {
+                                String[] parts = lastProgressLine.split(":");
+
+                                String operation = parts[0].trim();
+
+                                StringBuilder progressBuilder = new StringBuilder();
+
+                                for (int i = 0; i < 5; i++)
+                                {
+                                    if (Task.PARSYBONE_OPERATIONS[i].equals(operation))
+                                    {
+                                        progressBuilder.append("[");
+                                        progressBuilder.append(i + 1);
+                                        progressBuilder.append("/5] ");
+
+                                        progressBuilder.append(operation);
+                                        progressBuilder.append(": ");
+
+                                        break;
+                                    }
+                                }
+
+                                String[] nums = parts[1].trim().split("/");
+
+                                int round = Integer.parseInt(nums[0]);
+                                int total = Integer.parseInt(nums[1].substring(0, (nums[1].length() - 1)));
+
+                                progressBuilder.append((100 * round) / total);
+                                progressBuilder.append("%");
+
+                                progress = progressBuilder.toString();
+                            }
+                        }
+                        
+                        try
+                        {
+                            process.exitValue();
+                            
+                            finished = true;
+                        }
+                        catch (IllegalThreadStateException e)
+                        {
+                            finished = false;
+                        }
+
+                        Task task = getTask(id);
+                        
+                        String errorMsg = task.getError();
+                        
+                        if (errorMsg != null)
+                        {
+                            if (error == null)
+                            {
+                                error = errorMsg;
+                            }
+                            else
+                            {
+                                error = (errorMsg + error);
+                            }
+                        }
+                            
+                        task.setError(error);
+                        
+                        task.setFinished(finished);
+                        
+                        if (outputInformation != null)
+                        {
+                            String info = task.getInformation();
+                            if (info != null)
+                            {
+                                outputInformation = (info + "</BR>" + outputInformation);
+                            }
+
+                            task.setInformation(outputInformation);
+                        }
+                        
+                        if (progress != null)
+                        {
+                            task.setProgress(progress);
+                        }
+                        
+                        updateTask(task);
+                        
+                        //Thread.sleep(256);
+                    }
+                }
+                catch (/*InterruptedException |*/ IOException e)
+                {
+                    logger.log(Level.SEVERE, ("Error reading process output for Task ID: " + id), e);
+                    
+                    Task task = getTask(id);
+                    
+                    task.setFinished(true);
+                    
+                    task.setError("Ooops! We're terribily sorry to announce that something went wrong with the execution of this task. Please retry and if the problem persists contact one of the system administrators. Thank you and sorry for the inconvenience caused.");
+                    task.setInformation(null);
+                    
+                    updateTask(task);
+                }
+                finally
+                {
+                    process.destroy();
+                }
+            }
+        }
+        
+        new Thread(new TaskOutputReader(id, process)).start();
     }
     
     /**
@@ -84,7 +285,7 @@ public class TaskManager
         {
             connection = dataSource.getConnection();
             statement = connection
-                .prepareStatement("INSERT INTO TASKS (model, property, owner, result, type, active, progress, error, information, output_residue) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                .prepareStatement("INSERT INTO TASKS (model, property, owner, result, type, finished, active, progress, error, information) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     Statement.RETURN_GENERATED_KEYS);
             
             statement.setLong(1, task.getModel());
@@ -92,9 +293,9 @@ public class TaskManager
             statement.setLong(3, task.getOwner());
             statement.setLong(4, task.getResult());
             statement.setString(5, task.getType());
-            statement.setBoolean(6, task.getActive());
-            statement.setString(7, "0%");
-            statement.setString(8, null);
+            statement.setBoolean(6, task.getFinished());
+            statement.setBoolean(7, task.getActive());
+            statement.setString(8, "0%");
             statement.setString(9, null);
             statement.setString(10, null);
             
@@ -103,11 +304,13 @@ public class TaskManager
             Long id = DatabaseUtils.getID(statement.getGeneratedKeys());
             task.setId(id);
             
-            Process process = new ProcessBuilder(cmdArgs).start();
+//            Process process = new ProcessBuilder(cmdArgs).start();
             
-            tasks.put(id, process);
+//            tasks.put(id, process);
             
             logger.log(Level.INFO, "Successfully created {0}", task);
+            
+            startTask(id, cmdArgs);
             
             return id;
         }
@@ -153,7 +356,7 @@ public class TaskManager
             
             statement.executeUpdate();
             
-            tasks.remove(task.getId());
+            //tasks.remove(task.getId());
             
             logger.log(Level.INFO, ("Succesfully deleted: " + task));
         }
@@ -197,18 +400,18 @@ public class TaskManager
         {
             connection = dataSource.getConnection();
             statement = connection
-                .prepareStatement("UPDATE TASKS SET model=?, property=?, owner=?, result=?, type=?, active=?, progress=?, error=?, information=?, output_residue=? WHERE id=?");
+                .prepareStatement("UPDATE TASKS SET model=?, property=?, owner=?, result=?, type=?, finished=?, active=?, progress=?, error=?, information=? WHERE id=?");
             
             statement.setLong(1, task.getModel());
             statement.setLong(2, task.getProperty());
             statement.setLong(3, task.getOwner());
             statement.setLong(4, task.getResult());
             statement.setString(5, task.getType());
-            statement.setBoolean(6, task.getActive());
-            statement.setString(7, task.getProgress());
-            statement.setString(8, task.getError());
-            statement.setString(9, task.getInformation());
-            statement.setString(10, task.getOutputResidue());
+            statement.setBoolean(6, task.getFinished());
+            statement.setBoolean(7, task.getActive());
+            statement.setString(8, task.getProgress());
+            statement.setString(9, task.getError());
+            statement.setString(10, task.getInformation());
             statement.setLong(11, task.getId());
             
             statement.executeUpdate();
@@ -341,14 +544,14 @@ public class TaskManager
         task.setModel(resultSet.getLong("model"));
         task.setProperty(resultSet.getLong("property"));
         task.setType(resultSet.getString("type"));
+        task.setFinished(resultSet.getBoolean("finished"));
         task.setActive(resultSet.getBoolean("active"));
         task.setResult(resultSet.getLong("result"));
         task.setProgress(resultSet.getString("progress"));
         task.setError(resultSet.getString("error"));
         task.setInformation(resultSet.getString("information"));
-        task.setOutputResidue(resultSet.getString("output_residue"));
         
-        task.setProcess(tasks.get(task.getId()));
+        //task.setProcess(tasks.get(task.getId()));
         
         return task;
     }

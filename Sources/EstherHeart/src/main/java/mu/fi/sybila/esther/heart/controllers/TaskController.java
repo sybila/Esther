@@ -106,20 +106,29 @@ public class TaskController
             
             tasks = taskManager.getTasksRunBy(user);
             
-            for (int i = 0; i < tasks.size(); i++)
+            for (Task task : tasks)
             {
-                try
-                {
-                    tasks.get(i).getInformation();
-                    tasks.get(i).getError();
-
-                    taskManager.updateTask(tasks.get(i));
-                }
-                catch (IOException e)
-                {
-                    logger.log(Level.SEVERE, ("Error refreshing Task information."), e);
-                }
+                EstherFile model = fileSystemManager.getFileById(task.getModel());
+                EstherFile property = fileSystemManager.getFileById(task.getProperty());
+                
+                task.setModelName(model.getName() + "." + model.getType());
+                task.setPropertyName(property.getName() + "." + property.getType());
             }
+            
+//            for (int i = 0; i < tasks.size(); i++)
+//            {
+//                try
+//                {
+//                    tasks.get(i).getInformation();
+//                    tasks.get(i).getError();
+//
+//                    taskManager.updateTask(tasks.get(i));
+//                }
+//                catch (IOException e)
+//                {
+//                    logger.log(Level.SEVERE, ("Error refreshing Task information."), e);
+//                }
+//            }
         }
         
         map.addAttribute("tasks", tasks);
@@ -154,7 +163,7 @@ public class TaskController
         {
             if (task.getActive() || (task.getError() != null))
             {
-                task.cancel();
+                //task.cancel();
                 
                 fileSystemManager.deleteFile(result);
             }

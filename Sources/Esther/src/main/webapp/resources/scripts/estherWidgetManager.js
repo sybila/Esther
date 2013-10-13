@@ -43,14 +43,14 @@ if(jQuery) (function($)
                         task.find('IMG').unbind('click');
                         task.find('IMG').click(function()
                             {
-                                if (task.attr('status') == 'ready')
+                                if (task.attr('status').trim() == 'ready')
                                 {
                                     if (!confirm('Are you sure you want to cancel this task? You will be unable to access the result once cancelled.'))
                                     {
                                         return;
                                     }
                                 }
-                                else if (task.attr('status') == 'running')
+                                else if (task.attr('status').trim() == 'running')
                                 {
                                     if (!confirm('This task is still running. Are you sure you want to cancel it?'))
                                     {
@@ -85,15 +85,15 @@ if(jQuery) (function($)
                                     });
                             });
 
-                        task.find('TH').unbind('click');
-                        task.find('TH').click(function()
+                        $(task).unbind('click');
+                        $(task).click(function()
                             {
                                 if (task.hasClass('expanded'))
                                 {
                                     task.animate({ height: 42 }, 640, function()
                                         {
                                             task.removeClass('expanded');
-                                        });
+                                        }); 
                                     task.find('P').hide();
                                 }
                                 else

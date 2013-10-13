@@ -190,6 +190,7 @@ div.task
     padding: 4px 16px 4px 16px;
     margin: 8px;
     overflow: hidden;
+    cursor: pointer;
 }
 
 div.task.expanded

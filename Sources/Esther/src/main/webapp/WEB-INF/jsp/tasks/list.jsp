@@ -8,10 +8,16 @@
 
 <div class="viewpoint">
 <c:forEach items="${tasks}" var="task">
-    <div class="task" status="<c:choose><c:when test="${!empty task.error}">errored</c:when><c:when test="${task.finished && !task.active}">completed</c:when><c:when test="${task.finished && task.active}">ready</c:when><c:when test="${!task.finished && task.active}">running</c:when></c:choose>" task_id="${task.id}" model_id="${task.model}" property_id="${task.property}" result_id="${task.result}">
+    <div class="task" status="<c:choose>
+             <c:when test="${not empty task.error}">errored</c:when>
+             <c:when test="${task.finished && not task.active}">completed</c:when>
+             <c:when test="${task.finished && task.active}">ready</c:when>
+             <c:when test="${not task.finished && task.active}">running</c:when>
+         </c:choose>" task_id="${task.id}" model_id="${task.model}" property_id="${task.property}"
+         result_id="${task.result}">
         <table>
             <tr>
-                <th>${task.type} : ${task.progress}</th>
+                <th>${task.type} on ${task.modelName} with ${task.propertyName} : ${task.progress}</th>
                 <td style="width: 64px;"><input class="button" style="<c:if test="${not task.finished || not task.successful || not task.active}">display: none;</c:if>" type="Submit" value="Save Result" name="save"/></td>               
                 <td style="width: 16px;"><img height="12px" style="padding: 2px;" src="<c:url value="/resources/images/x_button.png" />" /></td>
             </tr>

@@ -44,6 +44,14 @@ function bindFiles(f)
 {
     var links = $(f).find('LI A');
 
+    links.each(function()
+        {
+            if ($(this).parent().hasClass('public'))
+            {
+                $(this).css('color', '#003399');
+            }
+        });
+
     links.unbind('click');
     links.unbind('contextmenu');
 
@@ -195,7 +203,7 @@ function bindFiles(f)
                                     case 'copy':
                                         {
                                             var copyname;
-                                            if (((copyname = prompt("Enter new file name: ", "")) != null) && (copyname != ''))
+                                            if (((copyname = prompt("Enter new file name: ", file_name.split('\.')[0])) != null) && (copyname != ''))
                                             {
                                                 $.post('File/Copy', { file: file_id, name: copyname }, function(data)
                                                     {
@@ -241,6 +249,12 @@ function bindFiles(f)
 
                                             break;
                                         }
+                                    case 'new_model':
+                                        {
+                                            newModel();
+                                            
+                                            break;
+                                        }
                                     case 'privatize':
                                         {
                                             $.post('File/Privatize', { file: file_id }, function()
@@ -267,7 +281,7 @@ function bindFiles(f)
                                     case 'rename':
                                         {
                                             var newname;
-                                            if (((newname = prompt("Enter new name: ", "")) != null) && (newname != ''))
+                                            if (((newname = prompt("Enter new name: ", file_name.split('\.')[0])) != null) && (newname != ''))
                                             {
                                                 $.post('File/Rename', { file: file_id, name: newname }, function()
                                                     {
@@ -281,18 +295,34 @@ function bindFiles(f)
                                             break;
                                         }
                                     case 'upload':
-                                        {
+                                        { 
                                             if ($('div.fileMenu FORM#uploadOptions TABLE').hasClass('visible'))
                                             {
                                                 $('div.fileMenu FORM#uploadOptions TABLE').removeClass('visible');
                                                 
-                                                $('div.fileMenu FORM#uploadOptions TABLE').slideUp({ duration: 360 });
+                                                $('div.fileMenu FORM#uploadOptions TABLE').hide();
+                                                
+                                                $('DIV.fileMenu A').each(function()
+                                                    {
+                                                        if ($(this).attr('func') != 'upload')
+                                                        {
+                                                            $(this).show();
+                                                        }
+                                                    });
                                             }
                                             else
                                             {
                                                 $('div.fileMenu FORM#uploadOptions TABLE').addClass('visible');
                                                 
-                                                $('div.fileMenu FORM#uploadOptions TABLE').slideDown({ duration: 360 });
+                                                $('div.fileMenu FORM#uploadOptions TABLE').show();
+                                                
+                                                $('DIV.fileMenu A').each(function()
+                                                    {
+                                                        if ($(this).attr('func') != 'upload')
+                                                        {
+                                                            $(this).hide();
+                                                        }
+                                                    });
                                             }
                                             break;
                                         }

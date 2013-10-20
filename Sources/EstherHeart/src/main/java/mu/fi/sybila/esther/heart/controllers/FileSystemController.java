@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -209,10 +209,11 @@ public class FileSystemController
     @RequestMapping(value = "/File/Menu", method = RequestMethod.GET)
     public String getFileMenu(ModelMap map, @RequestParam("file") Long id)
     {
-        Map<String, String> links = new HashMap<>();
+        Map<String, String> links = new LinkedHashMap<>();
         
         if (id == null)
         {
+            links.put("new_model", "New Model");
             links.put("upload", "Upload");
         }
         else

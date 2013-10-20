@@ -133,7 +133,7 @@ if(jQuery) (function($)
                                         {
                                             var closed = true;
 
-                                            for (var i in updatedTasks)
+                                            for (var i = 0; i < updatedTasks.length; i++)
                                             {
                                                 if ($(updatedTasks[i]).attr('task_id') == $(this).attr('task_id'))
                                                 {
@@ -246,21 +246,11 @@ function openWidget(fileID, fileName, fileType, parent)
     
     var tab = createTab(fileID, fileName);
     
-    if (fileType == null)
+    if ((fileType == null) && (fileID == 'tasklist'))
     {
-        if (fileID == 'startpage')
-        {
-            $(tab).append('<h2 class="widget">Welcome to the Esther interface</h2>' +
-                '<p>If you are new to Esther, you may want to get more knowledge from our <a href="/Esther/Guide">Guide</a>.</p>' +
-                '<p>To create a new model, either copy an example in the public file on the left or create a ' +
-                '<a href="javascript:newModel()">new empty model</a>.</p></div>');
-        }
-        else if (fileID == 'tasklist')
-        {
-            $(tab).openTaskList();
-            
-            startTaskListRefreshTimer();
-        }
+        $(tab).openTaskList();
+
+        startTaskListRefreshTimer();
         
         return;
     }

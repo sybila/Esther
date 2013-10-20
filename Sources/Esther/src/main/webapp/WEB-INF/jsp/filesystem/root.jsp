@@ -9,7 +9,4 @@
     <li id="tasklist" class="file private unexpandable tasklist">
         <a href="#">My Tasks</a>
     </li>
-    <li id="startpage" class="file private unexpandable startpage">
-        <a href="#">Start Page</a>
-    </li>
 </ul>

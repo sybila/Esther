@@ -23,7 +23,6 @@
             $(document).ready( function() {
                 $('#filesystembrowser').loadFileSystem();
                 $('#widget').setupTabs();
-                openWidget('startpage', 'Start Page', null, null);
             });
         </script>
         

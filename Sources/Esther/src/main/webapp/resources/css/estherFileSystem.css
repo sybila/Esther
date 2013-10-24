@@ -28,6 +28,11 @@ ul.estherFileSystem li
     white-space: nowrap;
 }
 
+ul.estherFileSystem li.unexpandable
+{
+    cursor: default;
+}
+
 ul.estherFileSystem a
 {
     color: #000033;
@@ -39,6 +44,58 @@ ul.estherFileSystem a
 ul.estherFileSystem a:hover
 {
     background: #EEEEEE;
+}
+
+ul.estherFileSystem li.private a.public
+{
+    color: #003399;
+}
+
+ul.estherFileSystem a.locked
+{
+    color: #999999;
+}
+
+ul.estherFileSystem li.selected
+{
+    background: #C0E0FF;
+}
+
+ul.estherFileSystem li.selected a
+{
+    font-weight: bold;
+}
+
+ul.estherFileSystem li.selected a:hover
+{
+    background: #DDDDDD;
+}
+
+ul.estherFileSystem div.icon_container
+{
+    width: 20px;
+    height: 20px;
+    float: left;
+    margin: 0px;
+    margin-left: -20px;
+    padding: 0px;
+    cursor: pointer;
+}
+
+ul.estherFileSystem #icon
+{
+    width: 8px;
+    height: 8px;
+    margin: 0px;
+    padding: 0px;
+    background: url(../images/expand_button.png) left top no-repeat;
+    background-size: cover;
+}
+
+ul.estherFileSystem li.expanded > div.icon_container > #icon
+{
+    background: url(../images/shrink_button.png) left top no-repeat;
+    background-size: cover;
 }
 
 /* FILE MENU */

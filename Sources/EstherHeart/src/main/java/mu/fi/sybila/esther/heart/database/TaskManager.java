@@ -2,15 +2,14 @@ package mu.fi.sybila.esther.heart.database;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
@@ -167,8 +166,8 @@ public class TaskManager
 
                                 String[] nums = parts[1].trim().split("/");
 
-                                int round = Integer.parseInt(nums[0]);
-                                int total = Integer.parseInt(nums[1].substring(0, (nums[1].length() - 1)));
+                                long round = Long.parseLong(nums[0]);
+                                long total = Long.parseLong(nums[1].substring(0, (nums[1].length() - 1)));
 
                                 progressBuilder.append((100 * round) / total);
                                 progressBuilder.append("%");

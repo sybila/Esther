@@ -77,8 +77,8 @@ if(jQuery) (function($)
                                         }
                                         else
                                         {
-                                            appendFileEntries(task.attr('property_id'), task.attr('result_id'),
-                                                data, ('file private ' + data.split('.')[1]), $(document));
+                                            appendFileEntries($('UL.estherFileSystem LI#privateFolder'), task.attr('property_id'),
+                                                task.attr('result_id'), data, extractExtension(data), 'private', false, false);
 
                                             context.find('INPUT[name=refresh]').trigger('click');
                                         }
@@ -204,7 +204,8 @@ function newModel()
                 }
                 else
                 {
-                    appendFileEntries(null, data, (name + '.pmf'), ('file private pmf'), $('UL.estherFileSystem LI#privateFolder'));
+                    appendFileEntries($('UL.estherFileSystem LI#privateFolder'), null, data, (name + '.pmf'), 'pmf',
+                    'private', false, false);
                 }
             });
     }
@@ -268,35 +269,6 @@ function openWidget(fileID, fileName, fileType, parent)
                 $(tab)[widget_starter.attr('init_function')]();
             }
         });
-}
-
-function openWidgetFromRef(fileRef)
-{   
-    if (fileRef == 'startpage')
-    {
-        openWidget(fileRef, "Start Page", null, null);
-    }
-    else if (fileRef == 'tasklist')
-    {
-        openWidget(fileRef, "Task List", null, null);
-    }
-    else
-    {
-        var clss = fileRef.parent().attr('class').split(/\s+/);
-        var cls = null;
-        
-        for (var i = 0; i < clss.length; i++)
-        {
-            if ((clss[i] == 'public') || (clss[i] == 'private') || (clss[i] == 'expanded') || (clss[i] == 'file'))
-            {
-                continue;
-            }
-            
-            cls = clss[i];
-        }
-        
-        openWidget(fileRef.attr('file_id'), fileRef.html(), cls, fileRef.parent().parent().parent().find('A').attr('file_id'));
-    }
 }
 
 function createTab(id, name)

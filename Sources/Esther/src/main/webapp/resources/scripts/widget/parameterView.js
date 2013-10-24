@@ -196,7 +196,7 @@ if(jQuery) (function($)
                         if (((name = prompt('Save as:')) != null) && (name != ''))
                         {
                             $.post('File/Create', { name: name, type: 'filter',
-                                    parents: [ context.find('#filter_controls').attr('source') ] },
+                                    parent: context.find('#filter_controls').attr('source') },
                                 function(data)
                                 {
                                     if (data.split('=')[0] == 'ERROR')

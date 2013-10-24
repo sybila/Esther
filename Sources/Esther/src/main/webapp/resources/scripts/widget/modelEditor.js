@@ -25,7 +25,7 @@ if(jQuery) (function($)
                     
                     if (((name = prompt('Enter property name: ', '')) != null) && (name != ''))
                     {
-                        $.post('File/Create', { name: name, type: 'ppf', parents: [ parent_id ] }, function(data)
+                        $.post('File/Create', { name: name, type: 'ppf', parent: parent_id }, function(data)
                             {
                                 if (data.split('=')[0] == 'ERROR')
                                 {
@@ -33,7 +33,8 @@ if(jQuery) (function($)
                                 }
                                 else
                                 {
-                                    appendFileEntries(parent_id, data, (name + '.ppf'), ('file private ppf'), $('UL.estherFileSystem LI#privateFolder'));
+                                    appendFileEntries($('UL.estherFileSystem LI#privateFolder'), parent_id, data,
+                                        (name + '.ppf'), 'ppf', 'private', false, false);
                                     
                                     openWidget(data, (name + '.ppf'), 'ppf', parent_id);
                                 }

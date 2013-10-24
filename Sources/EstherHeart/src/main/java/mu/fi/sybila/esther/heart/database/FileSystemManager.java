@@ -128,7 +128,7 @@ public class FileSystemManager
     }
     
     /**
-     * Deleted the file from both the database and the file system.
+     * Deletes the file from both the database and the file system.
      * 
      * @param file The file to be deleted.
      */
@@ -281,7 +281,7 @@ public class FileSystemManager
     }
     
     /**
-     * Retrieve all the files in the database.
+     * Retrieve all files in the database.
      * 
      * @return List of all file entries in the database.
      */
@@ -294,6 +294,36 @@ public class FileSystemManager
         {
             connection = dataSource.getConnection();
             statement = connection.prepareStatement("SELECT * FROM FILES");
+            ResultSet resultSet = statement.executeQuery();
+            
+            return getFilesFromResultSet(resultSet);
+        }
+        catch (SQLException e)
+        {
+            logger.log(Level.SEVERE, "Error selecting multiple files from the database.", e);
+        }
+        finally
+        {
+            DatabaseUtils.closeQuietly(connection, statement);
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Retrieve all public files in the database.
+     * 
+     * @return List of all file entries with public mark set to true in the database.
+     */
+    public List<EstherFile> getAllPublicFiles()
+    {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        
+        try
+        {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement("SELECT * FROM FILES WHERE public = TRUE");
             ResultSet resultSet = statement.executeQuery();
             
             return getFilesFromResultSet(resultSet);
@@ -331,44 +361,68 @@ public class FileSystemManager
             throw new IllegalArgumentException("User information cannot have NULL ID.");
         }
         
-        Connection connection = null;
-        PreparedStatement statement = null;
+        List<EstherFile> publicFiles = getAllPublicFiles();
+        List<EstherFile> publicFileRoots = new ArrayList<>();
         
-        try
+        for (EstherFile file : publicFiles)
         {
-            StringBuilder queryBuilder = new StringBuilder();
-            
-            queryBuilder.append("SELECT f.* FROM FILES f LEFT OUTER JOIN ");
-            queryBuilder.append("SPECIFICATIONS s JOIN FILES g ON g.id = s.parent AND g.public = TRUE AND g.blocked = FALSE ");
-            queryBuilder.append("ON f.id = s.child WHERE s.child IS NULL AND f.public = TRUE AND f.blocked = FALSE");
-            
-            if (user.getHidePublicOwned())
+            if (user.getHidePublicOwned() && (file.getOwner() == user.getId()))
             {
-                queryBuilder.append(" AND f.owner != ?");
+                continue;
             }
             
-            connection = dataSource.getConnection();
-            statement = connection.prepareStatement(queryBuilder.toString());
+            EstherFile root = file;
+            EstherFile parent;
             
-            if (user.getHidePublicOwned())
+            while ((parent = getParent(root)) != null)
             {
-                statement.setLong(1, user.getId());
+                root = parent;
             }
             
-            ResultSet resultSet = statement.executeQuery();
-            
-            return getFilesFromResultSet(resultSet);
-        }
-        catch (SQLException e)
-        {
-            logger.log(Level.SEVERE, "Error selecting multiple files from the database.", e);
-        }
-        finally
-        {
-            DatabaseUtils.closeQuietly(connection, statement);
+            if (!publicFileRoots.contains(root))
+            {
+                publicFileRoots.add(root);
+            }
         }
         
-        return null;
+//        Connection connection = null;
+//        PreparedStatement statement = null;
+//        
+//        try
+//        {
+//            StringBuilder queryBuilder = new StringBuilder();
+//            
+//            queryBuilder.append("SELECT f.* FROM FILES f LEFT OUTER JOIN ");
+//            queryBuilder.append("SPECIFICATIONS s JOIN FILES g ON g.id = s.parent AND g.public = TRUE AND g.blocked = FALSE ");
+//            queryBuilder.append("ON f.id = s.child WHERE s.child IS NULL AND f.public = TRUE AND f.blocked = FALSE");
+//            
+//            if (user.getHidePublicOwned())
+//            {
+//                queryBuilder.append(" AND f.owner != ?");
+//            }
+//            
+//            connection = dataSource.getConnection();
+//            statement = connection.prepareStatement(queryBuilder.toString());
+//            
+//            if (user.getHidePublicOwned())
+//            {
+//                statement.setLong(1, user.getId());
+//            }
+//            
+//            ResultSet resultSet = statement.executeQuery();
+//            
+//            return getFilesFromResultSet(resultSet);
+//        }
+//        catch (SQLException e)
+//        {
+//            logger.log(Level.SEVERE, "Error selecting multiple files from the database.", e);
+//        }
+//        finally
+//        {
+//            DatabaseUtils.closeQuietly(connection, statement);
+//        }
+        
+        return publicFileRoots;
     }
     
     /**
@@ -451,7 +505,7 @@ public class FileSystemManager
         }
         catch (SQLException e)
         {
-            logger.log(Level.SEVERE, "Error selecting multiple files from the database.", e);
+            logger.log(Level.SEVERE, ("Error selecting subfiles of file: " + parent), e);
         }
         finally
         {
@@ -493,44 +547,58 @@ public class FileSystemManager
             throw new IllegalArgumentException("User information cannot have NULL ID.");
         }
         
-        Connection connection = null;
-        PreparedStatement statement = null;
+        List<EstherFile> subfiles = getAllSubfiles(parent);
+        List<EstherFile> publicSubfileRoots = new ArrayList<>();
         
-        try
+        for (EstherFile file : subfiles)
         {
-            StringBuilder queryBuilder = new StringBuilder();
-            
-            queryBuilder.append("SELECT f.* FROM FILES f JOIN SPECIFICATIONS s ON f.id = s.child WHERE s.parent = ? AND f.public = TRUE AND f.blocked = FALSE");
-            
-            if (user.getHidePublicOwned())
+            if (file.getPublished() && user.getHidePublicOwned() && (file.getOwner() == user.getId()))
             {
-                queryBuilder.append(" AND f.owner != ?");
+                continue;
             }
             
-            connection = dataSource.getConnection();
-            statement = connection.prepareStatement(queryBuilder.toString());
-            
-            statement.setLong(1, parent.getId());
-            
-            if (user.getHidePublicOwned())
+            if (file.getPublished() || !getPublicSubfiles(file, user).isEmpty())
             {
-                statement.setLong(2, user.getId());
-            }
-            
-            ResultSet resultSet = statement.executeQuery();
-            
-            return getFilesFromResultSet(resultSet);
-        }
-        catch (SQLException e)
-        {
-            logger.log(Level.SEVERE, "Error selecting multiple files from the database.", e);
-        }
-        finally
-        {
-            DatabaseUtils.closeQuietly(connection, statement);
+                publicSubfileRoots.add(file);
+            }            
         }
         
-        return null;
+//        Connection connection = null;
+//        PreparedStatement statement = null;
+//        
+//        try
+//        {
+//            StringBuilder queryBuilder = new StringBuilder();
+//            
+//            queryBuilder.append("SELECT f.* FROM FILES f JOIN SPECIFICATIONS s ON f.id = s.child WHERE s.parent = ? AND f.public = TRUE AND f.blocked = FALSE");
+//            
+//            if (user.getHidePublicOwned())
+//            {
+//                queryBuilder.append(" AND f.owner != ?");
+//            }
+//            
+//            connection = dataSource.getConnection();
+//            statement = connection.prepareStatement(queryBuilder.toString());
+//            
+//            statement.setLong(1, parent.getId());
+//            
+//            if (user.getHidePublicOwned())
+//            {
+//                statement.setLong(2, user.getId());
+//            }
+//            
+//            ResultSet resultSet = statement.executeQuery();
+//        }
+//        catch (SQLException e)
+//        {
+//            logger.log(Level.SEVERE, "Error selecting multiple files from the database.", e);
+//        }
+//        finally
+//        {
+//            DatabaseUtils.closeQuietly(connection, statement);
+//        }
+        
+        return publicSubfileRoots;
     }
     
     /**
@@ -588,12 +656,12 @@ public class FileSystemManager
     }
     
     /**
-     * Returns all parent files of the specified file.
+     * Returns parent file of the specified file.
      * 
      * @param file The file whose parent files are coveted.
-     * @return The list of all files that list The specified file as their child.
+     * @return The file that has the specified file set as a child.
      */
-    public List<EstherFile> getFileParents(EstherFile file)
+    public EstherFile getParent(EstherFile file)
     {
         if (file == null)
         {
@@ -605,32 +673,34 @@ public class FileSystemManager
             throw new IllegalArgumentException("Cannot access parent of file with NULL ID.");
         }
         
-        List<EstherFile> parents = new ArrayList<>();
-        
         Connection connection = null;
         PreparedStatement statement = null;
         
         try
         {
             connection = dataSource.getConnection();
-            statement = connection.prepareStatement("SELECT * FROM SPECIFICATIONS where child=?");
+            statement = connection.prepareStatement("SELECT * FROM FILES f JOIN SPECIFICATIONS s ON f.id = s.parent where s.child=?");
             
             statement.setLong(1, file.getId());
             
             ResultSet resultSet = statement.executeQuery();
             
-            while (resultSet.next())
+            if (resultSet.next())
             {
-                Long parentId = resultSet.getLong("parent");
-                EstherFile parent = getFileById(parentId);
-                parents.add(parent);
+                EstherFile result = getFileFromResultSet(resultSet);
+                
+                if (resultSet.next())
+                {
+                    logger.log(Level.SEVERE, ("Error reading parent of " + file + ". Multiple parents found."));
+                    return null;
+                }
+                
+                return result;
             }
-            
-            return parents;
         }
         catch (SQLException e)
         {
-            logger.log(Level.SEVERE, ("Error reading parents of " + file), e);
+            logger.log(Level.SEVERE, ("Error reading parent of " + file), e);
         }
         finally
         {
@@ -666,6 +736,11 @@ public class FileSystemManager
         if (parent.getId() == null)
         {
             throw new IllegalArgumentException("Cannot set file with NULL ID as parent.");
+        }
+        
+        if (getParent(file) != null)
+        {
+            throw new IllegalArgumentException("Parent already set.");
         }
         
         Connection connection = null;

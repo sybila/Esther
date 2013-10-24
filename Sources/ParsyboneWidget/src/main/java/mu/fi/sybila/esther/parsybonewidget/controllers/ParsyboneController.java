@@ -131,7 +131,7 @@ public class ParsyboneController
             }
 
             Long resultID = Long.parseLong(fileSystemController.createFile(property.getName(),
-                "sqlite", new Long[] { property.getId() }, true));
+                "sqlite", property.getId(), true));
 
             File result = fileSystemManager.getSystemFileById(resultID);
 

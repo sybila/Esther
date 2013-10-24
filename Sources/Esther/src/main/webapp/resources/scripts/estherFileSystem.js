@@ -26,31 +26,88 @@ if(jQuery) (function($)
     });
 })(jQuery);
 
-function showFiles(c, f, p)
+function showFiles(context, request_data)
 {
     $(".estherFileSystem.start").remove();
-    $.get('Files/Sub', { file: f, privacy: p }, function(data)
+    $.get('Files/List', request_data, function(data)
         {
-            $(c).find('.start').html('');
-            $(c).append(data);
+            $(context).find('.start').html('');
+            $(context).append(data);
 
-            $(c).find('UL:hidden').slideDown({ duration: 420 });
+            $(context).find('UL:hidden').slideDown({ duration: 420 });
 
-            bindFiles(c);
+            bindFiles(context);
         });
 }
 
-function bindFiles(f)
+function expandSubtree(file)
 {
-    var links = $(f).find('LI A');
-
-    links.each(function()
+    if ($(file).hasClass('unexpandable'))
+    {
+        return false;
+    }
+    
+    if ($(file).hasClass('expanded'))
+    {
+        $(file).find('ul').slideUp({ duration: 420 });
+        $(file).removeClass('expanded');
+        
+        if ($(file).hasClass('open_folder'))
         {
-            if ($(this).parent().hasClass('public'))
-            {
-                $(this).css('color', '#003399');
-            }
+            $(file).removeClass('open_folder');
+            $(file).addClass('folder');
+        }
+    }
+    else
+    {
+        $(file).find('ul').remove();
+        $(file).addClass('expanded');
+        
+        var data = {};
+        
+        if ($(file).hasClass('folder'))
+        {
+            $(file).removeClass('folder');
+            $(file).addClass('open_folder');
+            
+            data.file = null;
+        }
+        else if ($(file).hasClass('file'))
+        {
+            data.file = $(file).find('a').attr('file_id');
+        }
+        
+        if ($(file).hasClass('private'))
+        {
+            data.privacy = 'private';
+        }
+        else if ($(file).hasClass('public'))
+        {
+            data.privacy = 'public';
+        }
+        
+        showFiles(file, data);
+    }
+    
+    return false;
+}
+
+function bindFiles(context)
+{
+    var icons = $(context).find('LI div.icon_container');
+    
+    icons.unbind('click');
+    
+    icons.click(function(e)
+        {
+            e.preventDefault();
+
+            expandSubtree($(this).parent());
+            
+            return false;
         });
+    
+    var links = $(context).find('LI A');
 
     links.unbind('click');
     links.unbind('contextmenu');
@@ -59,94 +116,30 @@ function bindFiles(f)
         {
             e.preventDefault();
 
-            if ($(this).parent().hasClass('unexpandable'))
+            if ($(this).hasClass('locked') || $(this).parent().hasClass('folder') || $(this).parent().hasClass('open_folder'))
             {
-                openWidgetFromRef($(this).parent().attr('id'));
+                $(this).parent().find("div.icon_container").trigger('click');
+                return false;
             }
-            else
-            {
-                if ($(this).parent().hasClass('expanded'))
-                {
-                    $(this).parent().find('UL').slideUp({ duration: 420 });
-                    $(this).parent().removeClass('expanded');
-
-                    if ($(this).parent().hasClass('open_folder'))
-                    {
-                        $(this).parent().removeClass('open_folder');
-                        $(this).parent().addClass('folder');
-                    }
-                }
-                else
-                {
-                    $(this).parent().find('UL').remove();
-                    $(this).parent().addClass('expanded');
-
-                    if ($(this).parent().hasClass('folder'))
-                    {
-                        $(this).parent().removeClass('folder');
-                        $(this).parent().addClass('open_folder');
-
-                        var context = $(this).parent();
-
-                        $(".estherFileSystem.start").remove();
-                        if ($(this).parent().hasClass('private'))
-                        {
-                            $.get('Files/My', function(data)
-                                {
-                                    context.find('.start').html('');
-                                    context.append(data);
-
-                                    context.find('UL:hidden').slideDown({ duration: 420 });
-
-                                    bindFiles(context);
-                                });
-                        }
-                        else if ($(this).parent().hasClass('public'))
-                        {
-                            $.get('Files/Public', function(data)
-                                {
-                                    context.find('.start').html('');
-                                    context.append(data);
-
-                                    context.find('UL:hidden').slideDown({ duration: 420 });
-
-                                    bindFiles(context);
-                                });
-                        }
-                    }
-                    else if ($(this).parent().hasClass('file'))
-                    {
-                        if ($(this).parent().hasClass('private'))
-                        {
-                            showFiles($(this).parent(), $(this).attr('file_id'), 'private');
-                        }
-                        else if ($(this).parent().hasClass('public'))
-                        {
-                            showFiles($(this).parent(), $(this).attr('file_id'), 'public');
-                        }
-                    }
-                }
-
-                if ($(this).parent().hasClass('file'))
-                {
-                    openWidgetFromRef($(this));
-                }
-            }
+            
+            openWidget($(this).attr('file_id'), $(this).html(), $(this).attr('file_type'), $(this).attr('parent_id'));
+            
             return false;
         });
     links.bind('contextmenu', function(e)
         {
             e.preventDefault();
-            if (($(this).parent().hasClass('file') && !$(this).parent().hasClass('unexpandable'))
+            if (($(this).parent().hasClass('file') && !$(this).parent().hasClass('unexpandable') && !$(this).hasClass('locked'))
                     || ($(this).parent().hasClass('private') && ($(this).parent().hasClass('folder')
                         || $(this).parent().hasClass('open_folder'))))
             {
                 $(document).find('BODY').append('<div class="fileMenu" style=" top: ' +
                     e.pageY + 'px; left: ' + e.pageX + 'px">');
 
+                var file_ref = $(this).parent();
                 var file_id = $(this).attr('file_id');
                 var file_name = $(this).text();
-                var parent = $(this).parent().parent().parent().find('> A').attr('file_id');
+                var parent = $(this).attr('parent_id');
                 
                 if (!$(this).parent().hasClass('file'))
                 {
@@ -182,9 +175,9 @@ function bindFiles(f)
                                         else
                                         {
                                             var filePath = $('DIV.fileMenu FORM#uploadOptions TR TD INPUT[type=file]').val().split('[\\/]');
-                                            appendFileEntries(file_id, data, filePath[filePath.length - 1],
-                                                ('file private ' + fileExt[fileExt.length - 1]),
-                                                $('UL.estherFileSystem LI#privateFolder'));
+                                            
+                                            appendFileEntries($('UL.estherFileSystem LI#privateFolder'), file_id, data,
+                                                filePath[filePath.length - 1], fileExt[fileExt.length - 1], 'private', false, false);
                                         }
 
                                         $('DIV.fileMenu').remove();
@@ -218,10 +211,9 @@ function bindFiles(f)
                                                         }
                                                         else
                                                         {
-                                                            appendFileEntries(parent, data,
-                                                                (copyname + '.' + extractExtension(file_name)),
-                                                                ('file private ' + extractExtension(file_name)),
-                                                                $('UL.estherFileSystem LI#privateFolder'));
+                                                            appendFileEntries($('UL.estherFileSystem LI#privateFolder'), parent,
+                                                                data, (copyname + '.' + extractExtension(file_name)), extractExtension(file_name),
+                                                                'private', false, false);
                                                         }
                                                     });
                                             }
@@ -232,8 +224,15 @@ function bindFiles(f)
                                         }
                                     case 'delete':
                                         {
-                                            if (confirm('The file cannot be restored after deleting. Are you sure you want to proceed?'))
+                                            if (confirm('The file will be deleted with all of it\'s subfiles. Are you sure you want to proceed?'))
                                             {
+                                                var subfiles = $(file_ref).parent().find('ul a');
+                                            
+                                                subfiles.each(function()
+                                                    {
+                                                        closeWidget($(this).attr('file_id'));
+                                                    });
+                                                
                                                 deleteFile(file_id);
                                             }
                                             
@@ -252,6 +251,8 @@ function bindFiles(f)
                                     case 'new_model':
                                         {
                                             newModel();
+
+                                            $('DIV.fileMenu').remove();
                                             
                                             break;
                                         }
@@ -259,7 +260,9 @@ function bindFiles(f)
                                         {
                                             $.post('File/Privatize', { file: file_id }, function()
                                                 {
-                                                    removeFileEntries(file_id, $('LI#publicFolder'));
+                                                    $('ul.estherFileSystem a[file_id=' + file_id + ']').removeClass('public');
+                                                    
+                                                    removeFromPublic(file_id, parent);
                                                 });
 
                                             $('DIV.fileMenu').remove();
@@ -270,8 +273,9 @@ function bindFiles(f)
                                         {
                                             $.post('File/Publish', { file: file_id }, function()
                                                 {
-                                                    appendFileEntries(parent, file_id, file_name,
-                                                        ('file public ' + extractExtension(file_name)), $('UL.estherFileSystem LI#publicFolder'));
+                                                    $('ul.estherFileSystem a[file_id=' + file_id + ']').addClass('public');
+                                                    
+                                                    addToPublic(file_id, parent, file_name, true, false);
                                                 });
 
                                             $('DIV.fileMenu').remove();
@@ -351,7 +355,7 @@ function renameFileEntries(id, name, context)
     context.find('UL.estherFileSystem LI A[file_id="' + id + '"]').text(name);
 }
 
-function appendFileEntries(parent_id, id, name, cls, context)
+function appendFileEntries(context, parent_id, id, name, type, tree, published, locked)
 {
     var parents = context.find('UL.estherFileSystem LI A[file_id="' + parent_id + '"]');
 
@@ -364,8 +368,10 @@ function appendFileEntries(parent_id, id, name, cls, context)
         {
             if ($(this).hasClass('expanded'))
             {
-                $(this).find('> UL.estherFileSystem').append('<li class="' + cls + '"><a file_id="' + id +
-                    '" href="#">' + name + '</a></li>');
+                $(this).find('> UL.estherFileSystem').append('<li class="file ' + tree + ' ' + type +
+                    '"><div class="icon_container"><div id="icon"></div></div><a class="' +
+                    (published ? 'public ' : ' ') + (locked ? 'locked' : '') + '" file_id="' + id +
+                    '" file_type="' + type + '" parent_id="' + parent_id + '" href="#">' + name + '</a></li>');
                 bindFiles(this);
             }
         })
@@ -407,4 +413,40 @@ function rescueFile(file, limit)
     {
         deleteFile(file);
     }
+}
+
+function removeFromPublic(file, parent_id)
+{
+    removeFileEntries(file, $('LI#publicFolder'));
+    
+    if ((parent_id != null) && (parent_id != ''))
+    {
+        var parent = $('LI#publicFolder a[file_id=' + parent_id + ']');
+       
+        if (parent.hasClass('locked') && ($(parent).parent().find('ul.estherFileSystem li').length == 0))
+        {
+            removeFromPublic($(parent).attr('file_id'), $(parent).attr('parent_id'));
+        }
+    }
+}
+
+function addToPublic(file, parent_id, file_name, published, locked)
+{
+    if ((parent_id != null) && (parent_id != ''))
+    {
+        if ($('#publicFolder').find('a[file_id=' + parent_id + ']').length == 0)
+        {
+            var parent = $('LI#privateFolder  a[file_id=' + parent_id + ']');
+            
+            addToPublic(parent_id, $(parent).attr('parent_id'), $(parent).text(),
+                $(parent).hasClass('public'), !$(parent).hasClass('public'));
+                
+            var publicParent = $('#publicFolder').find('a[file_id=' + parent_id + ']').parent();
+            $(publicParent).addClass('expanded');
+            $(publicParent).append('<ul class="estherFileSystem" />');
+        }
+    }
+    
+    appendFileEntries($('UL.estherFileSystem LI#publicFolder'), parent_id, file,
+        file_name, extractExtension(file_name), 'public', published, locked);
 }

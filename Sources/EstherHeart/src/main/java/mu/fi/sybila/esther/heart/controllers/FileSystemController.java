@@ -26,6 +26,7 @@ import mu.fi.sybila.esther.heart.database.UserManager;
 import mu.fi.sybila.esther.heart.database.entities.EstherFile;
 import mu.fi.sybila.esther.heart.database.entities.User;
 import mu.fi.sybila.esther.heart.database.entities.UserInformation;
+import mu.fi.sybila.esther.heart.database.forms.FileForm;
 import mu.fi.sybila.esther.heart.widget.EstherWidget;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -111,24 +112,24 @@ public class FileSystemController
      * @param map The map of UI properties.
      * @return File list page.
      */
-    @RequestMapping(value = "/Files/My", method = RequestMethod.GET)
-    public String myFiles(ModelMap map)
-    {
-        List<EstherFile> files = new ArrayList<>();
-        
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.isAuthenticated())
-        {
-            String username = authentication.getName();
-            
-            files = fileSystemManager.getRootFilesOwnedBy(getUserId(username));
-        }
-        
-        map.addAttribute("privacy", "private");
-        map.addAttribute("files", files);
-        
-        return "filesystem/list";
-    }
+//    @RequestMapping(value = "/Files/My", method = RequestMethod.GET)
+//    public String myFiles(ModelMap map)
+//    {
+//        List<EstherFile> files = new ArrayList<>();
+//        
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        if (authentication.isAuthenticated())
+//        {
+//            String username = authentication.getName();
+//            
+//            files = fileSystemManager.getRootFilesOwnedBy(getUserId(username));
+//        }
+//        
+//        map.addAttribute("privacy", "private");
+//        map.addAttribute("files", files);
+//        
+//        return "filesystem/list";
+//    }
     
     /**
      * Handler method for listing public files.
@@ -136,61 +137,88 @@ public class FileSystemController
      * @param map The map of UI properties.
      * @return File list page.
      */
-    @RequestMapping(value = "/Files/Public", method = RequestMethod.GET)
-    public String publicFiles(ModelMap map)
-    {
-        List<EstherFile> files = new ArrayList<>();
-        
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.isAuthenticated())
-        {
-            String username = authentication.getName();
-            
-            UserInformation information = userManager.getUserInformation(getUserId(username));
-
-            files = fileSystemManager.getPublicRootFiles(information);
-        }
-        
-        map.addAttribute("privacy", "public");
-        map.addAttribute("files", files);
-        
-        return "filesystem/list";
-    }
+//    @RequestMapping(value = "/Files/Public", method = RequestMethod.GET)
+//    public String publicFiles(ModelMap map)
+//    {
+//        List<EstherFile> files = new ArrayList<>();
+//        
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        if (authentication.isAuthenticated())
+//        {
+//            String username = authentication.getName();
+//            
+//            UserInformation information = userManager.getUserInformation(getUserId(username));
+//
+//            files = fileSystemManager.getPublicRootFiles(information);
+//        }
+//        
+//        map.addAttribute("privacy", "public");
+//        map.addAttribute("files", files);
+//        
+//        return "filesystem/list";
+//    }
     
     /**
      * Handler method for listing subfiles of the given file.
      * 
      * @param map The map of UI properties.
-     * @param parentId The ID of the file whose subfiles are to be listed.
+     * @param fileId The ID of the file whose subfiles are to be listed.
      * @param privacy Value indicating whether the list was opened in 'public' or 'private' subtree.
      * @return File list page.
      */
-    @RequestMapping(value = "/Files/Sub", method = RequestMethod.GET)
-    public String subfiles(ModelMap map, @RequestParam("file") Long parentId,
+    @RequestMapping(value = "/Files/List", method = RequestMethod.GET)
+    public String subfiles(ModelMap map, @RequestParam(value = "file", required = false) Long fileId,
         @RequestParam("privacy") String privacy)
     {
-        List<EstherFile> files = new ArrayList<>();
-        
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.isAuthenticated())
+        if (!authentication.isAuthenticated() || "anonymousUser".equals(authentication.getName()))
         {
-            String username = authentication.getName();
-            
-            switch (privacy)
+            return "redirect:/login";
+        }
+        
+        Long user = getUserId(authentication.getName());
+        
+        Boolean published = ("public".equals(privacy));
+        
+        List<EstherFile> rawFiles;
+        
+        if (fileId == null)
+        {
+            if (published)
             {
-                case "private":
-                    {
-                        files = fileSystemManager.getSubfilesOwnedBy(fileSystemManager.getFileById(parentId), getUserId(username));
-                        break;
-                    }
-                case "public":
-                    {
-                        UserInformation information = userManager.getUserInformation(getUserId(username));
-                        
-                        files = fileSystemManager.getPublicSubfiles(fileSystemManager.getFileById(parentId), information);
-                        break;
-                    }
+                UserInformation information = userManager.getUserInformation(user);
+
+                rawFiles = fileSystemManager.getPublicRootFiles(information);
             }
+            else
+            {
+                rawFiles = fileSystemManager.getRootFilesOwnedBy(user);
+            }
+        }
+        else
+        {
+            if (published)
+            {
+                UserInformation information = userManager.getUserInformation(user);
+
+                rawFiles = fileSystemManager.getPublicSubfiles(fileSystemManager.getFileById(fileId), information);
+            }
+            else
+            {
+                rawFiles = fileSystemManager.getSubfilesOwnedBy(fileSystemManager.getFileById(fileId), user);
+            }          
+        }
+        
+        List<FileForm> files = new ArrayList<>();
+        
+        for (EstherFile file : rawFiles)
+        {
+            FileForm form = FileForm.fromFile(file);
+            
+            form.setParentId(fileId);
+            form.setLocked(published && !file.getPublished() /*&& (user != file.getOwner())*/);
+            
+            files.add(form);
         }
         
         map.addAttribute("privacy", privacy);
@@ -198,6 +226,40 @@ public class FileSystemController
         
         return "filesystem/list";
     }
+    
+//    @RequestMapping(value = "/Files/Sub", method = RequestMethod.GET)
+//    public String subfiles(ModelMap map, @RequestParam("file") Long parentId,
+//        @RequestParam("privacy") String privacy)
+//    {
+//        List<EstherFile> files = new ArrayList<>();
+//        
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        if (authentication.isAuthenticated())
+//        {
+//            String username = authentication.getName();
+//            
+//            switch (privacy)
+//            {
+//                case "private":
+//                    {
+//                        files = fileSystemManager.getSubfilesOwnedBy(fileSystemManager.getFileById(parentId), getUserId(username));
+//                        break;
+//                    }
+//                case "public":
+//                    {
+//                        UserInformation information = userManager.getUserInformation(getUserId(username));
+//                        
+//                        files = fileSystemManager.getPublicSubfiles(fileSystemManager.getFileById(parentId), information);
+//                        break;
+//                    }
+//            }
+//        }
+//        
+//        map.addAttribute("privacy", privacy);
+//        map.addAttribute("files", files);
+//        
+//        return "filesystem/list";
+//    }
     
     /**
      * Handler method for right click file menu.
@@ -241,9 +303,13 @@ public class FileSystemController
                     }
                     
                     links.put("upload", "Upload");
+                    links.put("copy", "Copy");
+                }
+                else if (fileSystemManager.getParent(file) == null)
+                {
+                    links.put("copy", "Copy");
                 }
 
-                links.put("copy", "Copy");
                 links.put("download", "Download");
             }
         }
@@ -266,7 +332,7 @@ public class FileSystemController
     @RequestMapping(value = "/File/Create", method = RequestMethod.POST)
     @ResponseBody
     public String createFile(@RequestParam("name") String name, @RequestParam("type") String type,
-        @RequestParam(value="parents[]", required = false) Long[] parents,
+        @RequestParam(value="parent", required = false) Long parent,
         @RequestParam(value="blocked", required = false) Boolean blocked)
     {
         if ((name == null) || (type == null) || name.isEmpty() || type.isEmpty())
@@ -286,13 +352,10 @@ public class FileSystemController
         
         Long id = fileSystemManager.createFile(file);
         
-        if (parents != null)
+        if (parent != null)
         {
-            for (Long parent : parents)
-            {
-                fileSystemManager.setParent(fileSystemManager.getFileById(id),
-                    fileSystemManager.getFileById(parent));
-            }
+            fileSystemManager.setParent(fileSystemManager.getFileById(id),
+                fileSystemManager.getFileById(parent));
         }
         
         return id.toString();
@@ -314,7 +377,14 @@ public class FileSystemController
         
         EstherFile file = fileSystemManager.getFileById(id);
         
+        List<EstherFile> children = fileSystemManager.getAllSubfiles(file);
+        
         fileSystemManager.deleteFile(file);
+        
+        for (EstherFile child : children)
+        {
+            deleteFile(child.getId());
+        }
     }
     
     /**
@@ -493,13 +563,7 @@ public class FileSystemController
             return "LIMIT_REACHED=" + (maxStorageSpace / gigabyte) + "GB";
         }
         
-        Long[] parents = new Long[] { };
-        if (parent != null)
-        {
-            parents = new Long[] { parent };
-        }
-        
-        Long id = Long.parseLong(createFile(name, type, parents, true));
+        Long id = Long.parseLong(createFile(name, type, parent, true));
         
         EstherFile newFile = fileSystemManager.getFileById(id);
         File uploadedFile = fileSystemManager.getSystemFileById(id);
@@ -574,7 +638,7 @@ public class FileSystemController
         }
         
         EstherFile file = fileSystemManager.getFileById(id);
-        List<EstherFile> parents = fileSystemManager.getFileParents(file);
+        EstherFile parent = fileSystemManager.getParent(file);
         
         File sourceFile = fileSystemManager.getSystemFileById(file.getId());
         
@@ -583,13 +647,7 @@ public class FileSystemController
             return "LIMIT_REACHED=" + (maxStorageSpace / gigabyte) + "GB";
         }
         
-        Long[] parentIds = new Long[parents.size()];
-        for (int i = 0; i < parents.size(); i++)
-        {
-            parentIds[i] = parents.get(i).getId();
-        }
-        
-        String createMessage = createFile(name, file.getType(), parentIds, false);
+        String createMessage = createFile(name, file.getType(), parent.getId(), false);
         Long newId;
                 
         try
@@ -742,27 +800,29 @@ public class FileSystemController
             
         if (file.getOwner() != getUserId(username))
         {
-            List<EstherFile> parents = fileSystemManager.getFileParents(file);
-            Long[] parentIds = new Long[parents.size()];
-            for (int i = 0; i < parents.size(); i++)
-            {
-                parentIds[i] = parents.get(i).getId();
-            }
+            return "ERROR=You cannot edit files of another user.";
             
-            String createMessage = createFile(file.getName(), file.getType(), parentIds, false);
-            
-            Long newId;
-            
-            try
-            {
-                newId = Long.parseLong(createMessage);
-            }
-            catch (NumberFormatException e)
-            {
-                return createMessage;
-            }
-            
-            file = fileSystemManager.getFileById(newId);
+//            List<EstherFile> parents = fileSystemManager.getFileParents(file);
+//            Long[] parentIds = new Long[parents.size()];
+//            for (int i = 0; i < parents.size(); i++)
+//            {
+//                parentIds[i] = parents.get(i).getId();
+//            }
+//            
+//            String createMessage = createFile(file.getName(), file.getType(), parentIds, false);
+//            
+//            Long newId;
+//            
+//            try
+//            {
+//                newId = Long.parseLong(createMessage);
+//            }
+//            catch (NumberFormatException e)
+//            {
+//                return createMessage;
+//            }
+//            
+//            file = fileSystemManager.getFileById(newId);
         }
         
         File sysFile = fileSystemManager.getSystemFileById(file.getId());

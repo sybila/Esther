@@ -116,11 +116,11 @@ public class BehaviourMapController
 
                 filter = new ParameterFilter(fileSystemManager.getSystemFileById(filterFile.getId()));
 
-                targetId = Long.parseLong(fileSystemController.createFile(filterFile.getName(), "xgmml", new Long[] { filterId }, false));
+                targetId = Long.parseLong(fileSystemController.createFile(filterFile.getName(), "xgmml", filterId, false));
             }
             else
             {
-                targetId = Long.parseLong(fileSystemController.createFile(source.getName(), "xgmml", new Long[] { source.getId() }, false));
+                targetId = Long.parseLong(fileSystemController.createFile(source.getName(), "xgmml", source.getId(), false));
             }
         }
         catch (ParameterFilterException e)

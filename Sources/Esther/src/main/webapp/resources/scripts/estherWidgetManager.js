@@ -9,7 +9,7 @@ if(jQuery) (function($)
             function scrollerOnTop(t)
             {
                 t.before('<div id="scrollBar" style="overflow-x: scroll; overflow-y: hidden; width: 100%; font-size: 1px;">' +
-                    '<div style="width: ' + t[0].scrollWidth + 'px">\xA0</div></div>');
+                    '<div style="width: ' + t[0].scrollWidth + 'px">&nbsp;</div></div>');
                 
                 t.parent().find('#scrollBar').scroll(function()
                     {
@@ -19,7 +19,12 @@ if(jQuery) (function($)
             
             var context = $(this);
             
-            context.tabs();
+            context.tabs({
+                    activate: function(e, ui)
+                        {
+                            selectFile(ui.newTab.attr('file'));
+                        }
+                });
             
             scrollerOnTop(context.find('#tabs'));
             
@@ -304,6 +309,11 @@ function closeTab(tab)
     $('#widget').tabs('refresh');
 
     $('#widget').find('#scrollBar DIV').width($('#widget').find('#tabs')[0].scrollWidth);
+    
+    if ($('#widget').find('#tabs li').length == 0)
+    {
+        deselectFile();
+    }
 }
 
 function renameTab(file_id, name)

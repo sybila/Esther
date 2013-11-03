@@ -12,6 +12,7 @@ import java.util.logging.StreamHandler;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 import mu.fi.sybila.esther.heart.database.FileSystemManager;
+import mu.fi.sybila.esther.heart.database.entities.EstherFile;
 import mu.fi.sybila.esther.sqlitemanager.SQLiteException;
 import mu.fi.sybila.esther.sqlitemanager.SQLiteManager;
 import mu.fi.sybila.esther.sqlitemanager.parameterfilter.ParameterFilter;
@@ -94,6 +95,17 @@ public class ParameterFilterController
         try
         {    
             rows = sqliteManager.generateRows(file, (filter.isEmpty() ? null : new ParameterFilter(filter)), null, columnNames);
+            
+            for (int i : columnNames.keySet())
+            {
+                if (columnNames.get(i).startsWith("Robust"))
+                {
+                    String[] robustProp = columnNames.get(i).split("_");
+                    EstherFile prop = fileSystemManager.getFileById(Long.parseLong(robustProp[1]));
+                    columnNames.put(i, ("Robustness: " + prop.getName()));
+                    break;
+                }
+            }
         }
         catch (SQLiteException e)
         {

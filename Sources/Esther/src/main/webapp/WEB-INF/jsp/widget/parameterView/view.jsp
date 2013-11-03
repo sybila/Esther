@@ -34,7 +34,7 @@
     <%@ include file="/WEB-INF/jsp/widget/parameterView/list.jsp" %>
 </div>
 
-<c:if test="${not empty behaviourMapper}">
+<c:if test="${not empty behaviourMapper && not readonly}">
     <input style="float: left" id="behaviourMap" class="button" type="submit" value="Behaviour Map" name="submit" />
 </c:if>
     

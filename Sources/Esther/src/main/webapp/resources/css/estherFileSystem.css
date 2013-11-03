@@ -17,6 +17,7 @@ ul.estherFileSystem
     line-height: 18px;
     margin: 0px;
     padding: 0px;
+    overflow: hidden;
 }
 
 ul.estherFileSystem li
@@ -48,7 +49,7 @@ ul.estherFileSystem a:hover
 
 ul.estherFileSystem li.private a.public
 {
-    color: #003399;
+    font-style: italic;
 }
 
 ul.estherFileSystem a.locked
@@ -56,17 +57,13 @@ ul.estherFileSystem a.locked
     color: #999999;
 }
 
-ul.estherFileSystem li.selected
+ul.estherFileSystem li.selected > a
 {
+    font-weight: bold;
     background: #C0E0FF;
 }
 
-ul.estherFileSystem li.selected a
-{
-    font-weight: bold;
-}
-
-ul.estherFileSystem li.selected a:hover
+ul.estherFileSystem li.selected > a:hover
 {
     background: #DDDDDD;
 }

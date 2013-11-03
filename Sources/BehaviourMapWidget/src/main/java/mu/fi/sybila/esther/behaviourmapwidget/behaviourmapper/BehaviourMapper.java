@@ -23,14 +23,14 @@ public class BehaviourMapper
      * @throws ParserConfigurationException If writing the output XML fails.
      * @throws TransformerException If writing the output XML fails.
      */
-    public static void behaviourMap(ResultSet input, String outputPath) throws SQLException,
+    public static void behaviourMap(ResultSet input, String parentId, String outputPath) throws SQLException,
             ParserConfigurationException, TransformerException
     {
         Map behaviourMap = new Map();
         
         while (input.next())
         {
-            behaviourMap.mapParameter(new Parameter(input));
+            behaviourMap.mapParameter(new Parameter(input, parentId));
         }
         
         behaviourMap.finalizeGraph();

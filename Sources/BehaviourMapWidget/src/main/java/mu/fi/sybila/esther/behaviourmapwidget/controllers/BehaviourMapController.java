@@ -106,6 +106,8 @@ public class BehaviourMapController
         EstherFile source = fileSystemManager.getFileById(sourceId);
         File file = fileSystemManager.getSystemFileById(sourceId);
         
+        EstherFile parentFile = fileSystemManager.getParent(source);
+        
         Long targetId;
         
         try
@@ -143,7 +145,7 @@ public class BehaviourMapController
             
             File newFile = fileSystemManager.getSystemFileById(targetId);
             
-            BehaviourMapper.behaviourMap(resultSet, newFile.getAbsolutePath());
+            BehaviourMapper.behaviourMap(resultSet, parentFile.getId().toString(), newFile.getAbsolutePath());
             
             EstherFile bmFile = fileSystemManager.getFileById(targetId);
             bmFile.setSize(newFile.length());

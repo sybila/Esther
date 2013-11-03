@@ -12,13 +12,17 @@ import java.util.logging.StreamHandler;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 import mu.fi.sybila.esther.heart.database.FileSystemManager;
+import mu.fi.sybila.esther.heart.database.UserManager;
 import mu.fi.sybila.esther.heart.database.entities.EstherFile;
+import mu.fi.sybila.esther.heart.database.entities.User;
 import mu.fi.sybila.esther.heart.widget.EstherWidget;
 import mu.fi.sybila.esther.sqlitemanager.SQLiteException;
 import mu.fi.sybila.esther.sqlitemanager.SQLiteManager;
 import mu.fi.sybila.esther.sqlitemanager.parameterfilter.ParameterFilter;
 import mu.fi.sybila.esther.sqlitemanager.parameterfilter.ParameterFilterException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.ModelMap;
 
 /**
@@ -30,6 +34,7 @@ public class ParameterViewWidget implements EstherWidget
 {
     
     private FileSystemManager fileSystemManager = new FileSystemManager();
+    private UserManager userManager = new UserManager();
     private SQLiteManager sqliteManager = new SQLiteManager();
     public static final Logger logger = Logger.getLogger(ParameterViewWidget.class.getName());
 
@@ -68,12 +73,14 @@ public class ParameterViewWidget implements EstherWidget
     public void setDataSource(DataSource dataSource)
     {
         fileSystemManager.setDataSource(dataSource);
+        userManager.setDataSource(dataSource);
     }
     
     public void setLogger(FileOutputStream fs)
     {
         logger.addHandler(new StreamHandler(fs, new SimpleFormatter()));
         fileSystemManager.setLogger(fs);
+        userManager.setLogger(fs);
     }
     
     @Override
@@ -114,6 +121,14 @@ public class ParameterViewWidget implements EstherWidget
     @Override
     public String startWidget(ModelMap map, Long id, Long parent)
     {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!authentication.isAuthenticated() || authentication.getName().equals("anonymousUser"))
+        {
+            return "redirect:/login";
+        }
+        
+        Long user = getUserId(authentication.getName());
+            
         if (id == null)
         {
             return "widget/fileBroken";
@@ -155,6 +170,17 @@ public class ParameterViewWidget implements EstherWidget
             
             List<Map<Integer, Object>> rows = sqliteManager.generateRows(fileSystemManager.getSystemFileById(fileId), filter, contextMasks, columnNames);
             
+            for (int i : columnNames.keySet())
+            {
+                if (columnNames.get(i).startsWith("Robust"))
+                {
+                    String[] robustProp = columnNames.get(i).split("_");
+                    EstherFile prop = fileSystemManager.getFileById(Long.parseLong(robustProp[1]));
+                    columnNames.put(i, ("Robustness: " + prop.getName()));
+                    break;
+                }
+            }
+            
             if (filterId != null)
             {
                 for (int i = 1; i <= filter.getFilter().length; i++)
@@ -183,6 +209,11 @@ public class ParameterViewWidget implements EstherWidget
                 map.addAttribute("filter_properties", filterProperties);
             }
 
+            if (fileSystemManager.getFileById(fileId).getOwner() != user)
+            {
+                map.addAttribute("readonly", true);
+            }
+            
             map.addAttribute("context_masks", contextMasks);
             map.addAttribute("column_names", columnNames);
             map.addAttribute("rows", rows);
@@ -201,6 +232,23 @@ public class ParameterViewWidget implements EstherWidget
             
             return "widget/fileBroken";
         }
+    }
+    
+    /**
+     * Returns ID of the user with the specified username.
+     * 
+     * @param username The username associated with the coveted ID.
+     * @return The ID of the user. Null if no such user exists.
+     */
+    private Long getUserId(String username)
+    {
+        User user = userManager.getUserByUsername(username);
+        if ((user != null) && (user.getId() != null))
+        {
+            return user.getId();
+        }
+        
+        return null;
     }
     
 }

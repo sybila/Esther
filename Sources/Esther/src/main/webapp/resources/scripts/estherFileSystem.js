@@ -35,6 +35,8 @@ function showFiles(context, request_data)
             $(context).append(data);
 
             $(context).find('UL:hidden').slideDown({ duration: 420 });
+    
+            selectFile($('#widget #tabs').find('li.ui-tabs-active').attr('file'));
 
             bindFiles(context);
         });
@@ -449,4 +451,51 @@ function addToPublic(file, parent_id, file_name, published, locked)
     
     appendFileEntries($('UL.estherFileSystem LI#publicFolder'), parent_id, file,
         file_name, extractExtension(file_name), 'public', published, locked);
+}
+
+function deselectFile()
+{
+    $('ul.estherFileSystem').find('a').parent().removeClass('selected');
+}
+
+function selectFile(file)
+{
+    deselectFile();
+    
+    var items = $('ul.estherFileSystem').find('a[file_id=' + file + ']').parent();
+    
+    items.each(function()
+        {
+            if (!$(this).is(':visible'))
+            {
+                showTree($(this).parent());
+            }
+        });
+    
+    items.addClass('selected');
+}
+
+function showTree(tree)
+{
+    $(tree).each(function()
+        {
+            if (!$(this).is(':visible'))
+            {
+                if (!$(this).parent().parent().is(':visible'))
+                {
+                    showTree($(this).parent().parent())
+                }
+                
+                $(tree).find('li').removeClass('expanded');
+                $(tree).parent().addClass('expanded');
+                
+                if ($(tree).parent().hasClass('folder'))
+                {
+                    $(tree).parent().removeClass('folder');
+                    $(tree).parent().addClass('open_folder');
+                }
+                
+                $(tree).show();
+            }
+        });
 }

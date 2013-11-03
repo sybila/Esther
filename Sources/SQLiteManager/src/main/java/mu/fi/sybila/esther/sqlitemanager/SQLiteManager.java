@@ -8,9 +8,11 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import mu.fi.sybila.esther.sqlitemanager.parameterfilter.ParameterFilter;
 
 /**
@@ -47,15 +49,25 @@ public class SQLiteManager
 
             ResultSetMetaData tableData = resultSet.getMetaData();
 
+            Set<Integer> invalidColumns = new HashSet<>();
+            
             for (int i = 1; i <= tableData.getColumnCount(); i++)
             {
                 String columnName = tableData.getColumnName(i);
-                if (columnName.startsWith("K") && (contextMasks != null))
+                String transformedColumnName = transformColumnName(columnName, connection);
+                if (columnName.startsWith("K") && (contextMasks != null) && (transformedColumnName != null))
                 {
-                    contextMasks.put(columnName, transformColumnName(columnName, connection));
+                    contextMasks.put(columnName, transformedColumnName);
                 }
 
-                columnNames.put(i, transformColumnName(columnName, connection));
+                if (transformedColumnName != null)
+                {
+                    columnNames.put(i, transformColumnName(columnName, connection));
+                }
+                else
+                {
+                    invalidColumns.add(i);
+                }
             }
             
             while (resultSet.next())
@@ -64,6 +76,11 @@ public class SQLiteManager
 
                 for (int i = 1; i <= tableData.getColumnCount(); i++)
                 {
+                    if (invalidColumns.contains(i))
+                    {
+                        continue;
+                    }
+                    
                     cells.put(i, resultSet.getObject(i));
                 }
 
@@ -129,25 +146,30 @@ public class SQLiteManager
                 }
                 
                 String[] constraintProperties = filter.getFilter()[i].split(";");
-
-                queryBuilder.append(' ');
-                queryBuilder.append(constraintProperties[0]);
-                
-                queryBuilder.append(ParameterFilter.translateFilterType(constraintProperties[1]));
-                
-                queryBuilder.append('?');
                 
                 Integer value = Integer.parseInt(constraintProperties[2]);
+
+                queryBuilder.append(' ');
                 
                 if (constraintProperties[0].equals("robustness"))
                 {
+                    queryBuilder.append("robust");
+                    
                     constraintValues.add(new Double(value / 100.0));
                     doubleValuePositions.add(i);
                 }
                 else
                 {
+                    queryBuilder.append(constraintProperties[0]);
+                    
                     constraintValues.add(value);
                 }
+                
+                queryBuilder.append(ParameterFilter.translateFilterType(constraintProperties[1]));
+                
+                queryBuilder.append('?');
+                
+                
             }
         }
         
@@ -186,9 +208,9 @@ public class SQLiteManager
         String[] contextData = columnName.split("_");
         if (!contextData[0].equals("K"))
         {
-            if (contextData[0].equals("Witness"))
+            if (contextData[0].equals("Witness") || contextData[0].equals("Selection"))
             {
-                return "Witness Path";
+                return null;
             }
             
             return columnName;

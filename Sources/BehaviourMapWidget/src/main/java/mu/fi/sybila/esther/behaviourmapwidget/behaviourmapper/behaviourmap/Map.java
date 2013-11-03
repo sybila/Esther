@@ -138,10 +138,10 @@ public class Map
             initialNode.setMeasurement(transition.getDestinationState().getBuchiAutomatonState());
         }
         
-        if (param.isTerminal(transition))
-        {
-            destinationNode.setMeasurement(transition.getDestinationState().getBuchiAutomatonState() + 1);
-        }
+//        if (param.isTerminal(transition))
+//        {
+//            destinationNode.setMeasurement(transition.getDestinationState().getBuchiAutomatonState() + 1);
+//        }
         
         Edge edge = getEdge(initialNode, destinationNode);
         

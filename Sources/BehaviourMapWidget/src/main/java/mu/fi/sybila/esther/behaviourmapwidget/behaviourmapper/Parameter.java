@@ -25,12 +25,12 @@ public class Parameter
      * @param resultSet The result set containing the parametrization definition.
      * @throws SQLException if reading of the result set fails.
      */
-    public Parameter(ResultSet resultSet) throws SQLException
+    public Parameter(ResultSet resultSet, String parentId) throws SQLException
     {
-        cost = resultSet.getInt("cost");
-        robustness = resultSet.getDouble("robustness");
+        cost = resultSet.getInt("Cost");
+        robustness = resultSet.getDouble("Robust_" + parentId);
         
-        String witnessPath = resultSet.getString("witness_path");
+        String witnessPath = resultSet.getString("Witness_" + parentId);
         
         transitions = new HashSet<>();
         for (String t : witnessPath.subSequence(2, (witnessPath.length() - 2)).toString().split("[)],[(]"))

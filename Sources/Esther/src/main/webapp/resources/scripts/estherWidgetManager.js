@@ -68,8 +68,10 @@ if(jQuery) (function($)
                             });
 
                         task.find('INPUT').unbind('click');
-                        task.find('INPUT').click(function()
+                        task.find('INPUT').click(function(e)
                             {
+                                e.preventDefault();
+                                
                                 $.post('Task/Save', { task: task.attr('task_id')}, function(data)
                                     {
                                         if (data.split('=')[0] == 'LIMIT_REACHED')
@@ -86,8 +88,12 @@ if(jQuery) (function($)
                                                 task.attr('result_id'), data, extractExtension(data), 'private', false, false);
 
                                             context.find('INPUT[name=refresh]').trigger('click');
+                                            
+                                            openWidget(task.attr('result_id'), data, extractExtension(data), task.attr('property_id'));
                                         }
                                     });
+                                    
+                                return false;
                             });
 
                         $(task).unbind('click');
@@ -210,7 +216,9 @@ function newModel()
                 else
                 {
                     appendFileEntries($('UL.estherFileSystem LI#privateFolder'), null, data, (name + '.pmf'), 'pmf',
-                    'private', false, false);
+                        'private', false, false);
+                    
+                    openWidget(data, (name + '.pmf'), 'pmf', null);
                 }
             });
     }
@@ -302,7 +310,20 @@ function createTab(id, name)
 
 function closeTab(tab)
 {
-    $('#widget').find('#' + tab.attr('aria-controls')).remove();
+    var tab_area = $('#widget').find('#' + tab.attr('aria-controls'));
+    var widget_starter = $(tab_area).find('div#widget_starter');
+
+    if ((widget_starter != null) && (widget_starter.length > 0))
+    {
+        var terminate_function = widget_starter.attr('terminate_function')
+        
+        if ((typeof terminate_function != 'undefined') && (terminate_function != ''))
+        {
+            $(tab_area)[terminate_function]();
+        }
+    }
+    
+    $(tab_area).remove();
 
     tab.remove();
 
@@ -314,6 +335,11 @@ function closeTab(tab)
     {
         deselectFile();
     }
+}
+
+function refactorTab(file_id, new_id)
+{
+    $('#widget #tabs LI[file=' + file_id + ']').attr('file', new_id);
 }
 
 function renameTab(file_id, name)

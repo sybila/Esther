@@ -332,7 +332,7 @@ public class FileSystemController
     @RequestMapping(value = "/File/Create", method = RequestMethod.POST)
     @ResponseBody
     public String createFile(@RequestParam("name") String name, @RequestParam("type") String type,
-        @RequestParam(value="parent", required = false) Long parent,
+        @RequestParam(value="parent", required = false) Long parentId,
         @RequestParam(value="blocked", required = false) Boolean blocked)
     {
         if ((name == null) || (type == null) || name.isEmpty() || type.isEmpty())
@@ -347,15 +347,28 @@ public class FileSystemController
         }
         String username = authentication.getName();
         
-        EstherFile file = EstherFile.newFile(name, type, getUserId(username), false, new Long(0),
+        EstherFile parent = null;
+        
+        if (parentId != null)
+        {
+            parent = fileSystemManager.getFileById(parentId);
+        }
+        
+        Long userId = getUserId(username);
+        
+        if((parent != null) && (parent.getOwner() != userId))
+        {
+            return "ERROR=Cannot create file as a subfile of public file you not own. Please copy it first.";
+        }
+            
+        EstherFile file = EstherFile.newFile(name, type, userId, false, new Long(0),
             ((blocked == null) ? false : blocked));
         
         Long id = fileSystemManager.createFile(file);
         
         if (parent != null)
         {
-            fileSystemManager.setParent(fileSystemManager.getFileById(id),
-                fileSystemManager.getFileById(parent));
+            fileSystemManager.setParent(fileSystemManager.getFileById(id), parent);
         }
         
         return id.toString();

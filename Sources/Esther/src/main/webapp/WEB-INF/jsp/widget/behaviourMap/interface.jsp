@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="<c:url value="/resources/css/widget/behaviourMap.css"/>" type="text/css">
 </head>
 
-<div id="widget_starter" init_function="initBehaviourMap" file="${file}" />
+<div id="widget_starter" init_function="initBehaviourMap" terminate_function="closeBehaviourMap" file="${file}" />
 
 <h2 class="widget">Behaviour Map:</h2>
 
@@ -42,6 +42,8 @@
         </tr>
     </table>
 </div>
+
+<input id="layout_button" style="float:left;" type="button" value="Layout" />
 
 <a style="float: right; margin: 8px;" href="http://cytoscapeweb.cytoscape.org/">
     <img src="http://cytoscapeweb.cytoscape.org/img/logos/cw_s.png" alt="Cytoscape Web"/>

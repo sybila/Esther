@@ -18,12 +18,16 @@ import javax.xml.transform.TransformerException;
 import mu.fi.sybila.esther.behaviourmapwidget.behaviourmapper.BehaviourMapper;
 import mu.fi.sybila.esther.heart.controllers.FileSystemController;
 import mu.fi.sybila.esther.heart.database.FileSystemManager;
+import mu.fi.sybila.esther.heart.database.UserManager;
 import mu.fi.sybila.esther.heart.database.entities.EstherFile;
+import mu.fi.sybila.esther.heart.database.entities.User;
 import mu.fi.sybila.esther.sqlitemanager.SQLiteManager;
 import mu.fi.sybila.esther.sqlitemanager.parameterfilter.ParameterFilter;
 import mu.fi.sybila.esther.sqlitemanager.parameterfilter.ParameterFilterException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -39,6 +43,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class BehaviourMapController
 {
     private FileSystemManager fileSystemManager = new FileSystemManager();
+    private UserManager userManager = new UserManager();
     private SQLiteManager sqliteManager = new SQLiteManager();
     public static final Logger logger = Logger.getLogger(BehaviourMapController.class.getName());
     
@@ -58,6 +63,7 @@ public class BehaviourMapController
     public void setDataSource(DataSource dataSource)
     {
         fileSystemManager.setDataSource(dataSource);
+        userManager.setDataSource(dataSource);
     }
     
     /**
@@ -80,6 +86,7 @@ public class BehaviourMapController
     {
         logger.addHandler(new StreamHandler(fs, new SimpleFormatter()));
         fileSystemManager.setLogger(fs);
+        userManager.setLogger(fs);
     }
     
     /**
@@ -108,6 +115,20 @@ public class BehaviourMapController
         
         EstherFile parentFile = fileSystemManager.getParent(source);
         
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        
+        User user = userManager.getUserByUsername(authentication.getName());
+        
+        if (!authentication.isAuthenticated() || (user == null))
+        {
+            return "ERROR=You are not loggen in.";
+        }
+        
+        if (user.getId() != source.getOwner())
+        {
+            return "ERROR=Cannot create Behaviour Map from public file you do not own.";
+        }
+        
         Long targetId;
         
         try
@@ -115,6 +136,11 @@ public class BehaviourMapController
             if (filterId != null)
             {
                 EstherFile filterFile = fileSystemManager.getFileById(filterId);
+                
+                if (user.getId() != filterFile.getOwner())
+                {
+                    return "ERROR=You cannot use public filter you do not own to create Behaviour Map.";
+                }
 
                 filter = new ParameterFilter(fileSystemManager.getSystemFileById(filterFile.getId()));
 
@@ -156,7 +182,7 @@ public class BehaviourMapController
                 return ("LIMIT_REACHED=" + (maxStorageSpace / gigabyte) + "GB=" + bmFile.getId());
             }
             
-            return bmFile.getId().toString();
+            return (bmFile.getId().toString() + "=" + bmFile.getName());
         }
         catch (ClassNotFoundException | ParserConfigurationException | SQLException | TransformerException e)
         {

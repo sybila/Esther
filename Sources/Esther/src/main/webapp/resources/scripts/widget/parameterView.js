@@ -208,6 +208,13 @@ if(jQuery) (function($)
                                     {
                                         context.find('#filter_controls').attr('filter', data);
                                         writeFilter(context);
+                                        
+                                        appendFileEntries($('UL.estherFileSystem LI#privateFolder'),
+                                            context.find('#filter_controls').attr('source'), data, (name + '.filter'), 'filter',
+                                            'private', false, false);
+                                        
+                                        refactorTab(context.find('#filter_controls').attr('source'), data);
+                                        renameTab(data, (name + '.filter'));
                                     }
                                 });
                         }
@@ -256,14 +263,17 @@ if(jQuery) (function($)
 
                     var filter = context.find('#filter_controls').attr("filter");
                     var params;
+                    var parent_id;
 
                     if ((typeof filter == 'undefined') || (filter == null) || (filter == ''))
                     {
                         params = { file: context.find('#filter_controls').attr("source") };
+                        parent_id = context.find('#filter_controls').attr("source");
                     }
                     else
                     {
                         params = { file: context.find('#filter_controls').attr("source"), filter: filter };
+                        parent_id = filter;
                     }
 
                     $.post('Widget/BehaviourMap', params, function(data)
@@ -271,6 +281,16 @@ if(jQuery) (function($)
                             if (data.split('=')[0] == 'LIMIT_REACHED')
                             {
                                 rescueFile(data.split('=')[2], data.split('=')[1]);
+                            }
+                            else
+                            {
+                                var id = data.split('=')[0];
+                                var name = data.split('=')[1];
+                                
+                                appendFileEntries($('UL.estherFileSystem LI#privateFolder'), parent_id, id, (name + '.xgmml'), 'xgmml',
+                                    'private', false, false);
+
+                                openWidget(id, (name + '.xgmml'), 'xgmml', parent_id);
                             }
                         });
                 });

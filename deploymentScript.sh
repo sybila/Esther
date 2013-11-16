@@ -53,6 +53,7 @@ read captcha_private
 
 sed -i -e "s#captcha_private_key=.*#captcha_private_key=$captcha_private#" ./Sources/Esther/src/main/resources/Properties/Esther.properties
 
+mvn clean -f Sources/EstherHeart/pom.xml
 mvn package -f Sources/EstherHeart/pom.xml
 mvn deploy:deploy-file -f Sources/EstherHeart/pom.xml \
 -Durl=file://$repo_loc \
@@ -60,6 +61,7 @@ mvn deploy:deploy-file -f Sources/EstherHeart/pom.xml \
 -Dversion=1.0 -Dfile=target/esther-heart-1.0.jar \
 -Dpackaging=jar -DgeneratePom=true
 
+mvn clean -f Sources/SQLiteManager/pom.xml
 mvn package -f Sources/SQLiteManager/pom.xml
 mvn deploy:deploy-file -f Sources/SQLiteManager/pom.xml \
 -Durl=file://$repo_loc \
@@ -67,6 +69,7 @@ mvn deploy:deploy-file -f Sources/SQLiteManager/pom.xml \
 -Dversion=1.0 -Dfile=target/esther-sqlite-1.0.jar \
 -Dpackaging=jar -DgeneratePom=true
 
+mvn clean -f Sources/ModelEditorWidget/pom.xml
 mvn package -f Sources/ModelEditorWidget/pom.xml
 mvn deploy:deploy-file -f Sources/ModelEditorWidget/pom.xml \
 -Durl=file://$repo_loc \
@@ -74,6 +77,7 @@ mvn deploy:deploy-file -f Sources/ModelEditorWidget/pom.xml \
 -Dversion=1.0 -Dfile=target/esther-model_editor_widget-1.0.jar \
 -Dpackaging=jar -DgeneratePom=true
 
+mvn clean -f Sources/ParsyboneWidget/pom.xml
 mvn package -f Sources/ParsyboneWidget/pom.xml
 mvn deploy:deploy-file -f Sources/ParsyboneWidget/pom.xml \
 -Durl=file://$repo_loc \
@@ -81,6 +85,7 @@ mvn deploy:deploy-file -f Sources/ParsyboneWidget/pom.xml \
 -Dversion=1.0 -Dfile=target/esther-parsybone_widget-1.0.jar \
 -Dpackaging=jar -DgeneratePom=true
 
+mvn clean -f Sources/ParameterViewWidget/pom.xml
 mvn package -f Sources/ParameterViewWidget/pom.xml
 mvn deploy:deploy-file -f Sources/ParameterViewWidget/pom.xml \
 -Durl=file://$repo_loc \
@@ -88,6 +93,7 @@ mvn deploy:deploy-file -f Sources/ParameterViewWidget/pom.xml \
 -Dversion=1.0 -Dfile=target/esther-parameter_view_widget-1.0.jar \
 -Dpackaging=jar -DgeneratePom=true
 
+mvn clean -f Sources/BehaviourMapWidget/pom.xml
 mvn package -f Sources/BehaviourMapWidget/pom.xml
 mvn deploy:deploy-file -f Sources/BehaviourMapWidget/pom.xml \
 -Durl=file://$repo_loc \
@@ -95,4 +101,5 @@ mvn deploy:deploy-file -f Sources/BehaviourMapWidget/pom.xml \
 -Dversion=1.0 -Dfile=target/esther-behaviour_map_widget-1.0.jar \
 -Dpackaging=jar -DgeneratePom=true
 
-mvn tomcat7:deploy -f Sources/Esther/pom.xml
+mvn clean -f Sources/Esther/pom.xml
+mvn tomcat7:redeploy -f Sources/Esther/pom.xml

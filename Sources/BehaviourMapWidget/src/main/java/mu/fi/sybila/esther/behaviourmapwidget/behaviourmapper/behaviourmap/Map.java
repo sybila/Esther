@@ -1,7 +1,9 @@
 package mu.fi.sybila.esther.behaviourmapwidget.behaviourmapper.behaviourmap;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -24,6 +26,8 @@ import org.w3c.dom.Element;
  */
 public class Map
 {
+    
+    private List<Integer> horizontalPositions = new ArrayList<>();
     
     private int lastId = 0;
     
@@ -150,6 +154,17 @@ public class Map
         edge.addTransition();
     }
     
+    private void setNodeY(Node node)
+    {
+        while (horizontalPositions.size() < (node.getX() + 1))
+        {
+            horizontalPositions.add(0);
+        }
+        
+        node.setY(horizontalPositions.get(node.getX()));
+        horizontalPositions.set(node.getX(), (horizontalPositions.get(node.getX()) + 1));
+    }
+    
     /**
      * Calculates maximal transition counts for nodes and edges in the graph.
      * It is imperative for the method to be called after all of the desired parameters have been added.
@@ -160,11 +175,29 @@ public class Map
         {
             maxInboundTransitionCount = Math.max(maxInboundTransitionCount, n.getInboundTransitionCount());
             maxOutboundTransitionCount = Math.max(maxOutboundTransitionCount, n.getOutboundTransitionCount());
+            
+            if (n.getInboundTransitionCount() == 0)
+            {
+                n.setX(0);
+                setNodeY(n);
+            }
         }
         
         for (Edge e : edges)
         {
             maxTransitionCount = Math.max(maxTransitionCount, e.getTransitionCount());
+        }
+        
+        for (int i = 0; i < edges.size(); i++)
+        {
+            for (Edge e : edges)
+            {
+                if ((e.getFrom().getX() >= 0) && (e.getTo().getX() < 0))
+                {
+                    e.getTo().setX(e.getFrom().getX() + 1);
+                    setNodeY(e.getTo());
+                }
+            }
         }
     }
     

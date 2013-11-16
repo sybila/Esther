@@ -2,6 +2,7 @@ package mu.fi.sybila.esther.parameterviewwidget.controllers;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,10 +99,27 @@ public class ParameterFilterController
             
             for (int i : columnNames.keySet())
             {
-                if (columnNames.get(i).startsWith("Robust"))
+               if (columnNames.get(i).startsWith("Robust"))
                 {
                     String[] robustProp = columnNames.get(i).split("_");
-                    EstherFile prop = fileSystemManager.getFileById(Long.parseLong(robustProp[1]));
+                    Long propId;
+                    
+                    try
+                    {
+                        propId = Long.parseLong(robustProp[1]);
+                    }
+                    catch (NumberFormatException e)
+                    {
+                        propId = null;
+                    }
+                    
+                    EstherFile prop = fileSystemManager.getParent(fileSystemManager.getFileById(id));
+                    
+                    if ((propId == null) || (propId != prop.getId()))
+                    {
+                        sqliteManager.refactorTable(file, prop.getId());
+                    }
+                    
                     columnNames.put(i, ("Robustness: " + prop.getName()));
                     break;
                 }

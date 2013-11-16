@@ -34,6 +34,26 @@ ul.estherFileSystem li.unexpandable
     cursor: default;
 }
 
+li.ui-draggable-dragging
+{
+    color: #000000;
+    font-size: 12px;
+    line-height: 18px;
+    margin: 0px;
+    padding: 0px;
+}
+
+li.ui-draggable-dragging ul
+{
+    display: none;
+}
+
+li.ui-draggable-dragging a
+{
+    color: #000033;
+    text-decoration: none;
+}
+
 ul.estherFileSystem a
 {
     color: #000033;
@@ -66,6 +86,11 @@ ul.estherFileSystem li.selected > a
 ul.estherFileSystem li.selected > a:hover
 {
     background: #DDDDDD;
+}
+
+ul.estherFileSystem li a.drag_n_drop_hover 
+{
+    background: #DDFFFF;
 }
 
 ul.estherFileSystem div.icon_container

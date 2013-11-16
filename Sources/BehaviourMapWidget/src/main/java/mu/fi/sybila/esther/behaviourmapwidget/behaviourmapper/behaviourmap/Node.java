@@ -21,6 +21,9 @@ public class Node
     private int inboundTransitionCount;
     private int outboundTransitionCount;
     
+    private int x;
+    private int y;
+    
     /**
      * Constructor for behaviour map nodes.
      * 
@@ -37,6 +40,9 @@ public class Node
         
         inboundTransitionCount = 0;
         outboundTransitionCount = 0;
+        
+        x = -1;
+        y = -1;
     }
     
     public int getId()
@@ -72,6 +78,26 @@ public class Node
     public int getOutboundTransitionCount()
     {
         return outboundTransitionCount;
+    }
+
+    public int getX()
+    {
+        return x;
+    }
+
+    public void setX(int x)
+    {
+        this.x = x;
+    }
+
+    public int getY()
+    {
+        return y;
+    }
+
+    public void setY(int y)
+    {
+        this.y = y;
     }
     
     /**
@@ -140,8 +166,8 @@ public class Node
         graphics.setAttribute("type", "ELLIPSE");
         graphics.setAttribute("h", "64.0");
         graphics.setAttribute("w", "64.0");
-        graphics.setAttribute("x", Integer.toString((state.getBuchiAutomatonState() * 100)));
-        graphics.setAttribute("y", Integer.toString(0));
+        graphics.setAttribute("x", Integer.toString(x * 100));
+        graphics.setAttribute("y", Integer.toString(y * 72));
         graphics.setAttribute("fill", computeColour(timeSerieLength));
         graphics.setAttribute("width", "1");
         graphics.setAttribute("outline", "#000000");

@@ -319,6 +319,61 @@ public class FileSystemController
         return "filesystem/menu";
     }
     
+    @RequestMapping(value = "/File/DragMenu", method = RequestMethod.GET)
+    public String getDragMenu(ModelMap map, @RequestParam("file") Long id, @RequestParam("source") Long sourceId)
+    {
+        Map<String, String> links = new LinkedHashMap<>();
+        
+        if ((id != null) && (sourceId != null))
+        {
+            EstherFile file = fileSystemManager.getFileById(id);
+            EstherFile source = fileSystemManager.getFileById(sourceId);
+            
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+            if ((file != null) && (source != null) && authentication.isAuthenticated())
+            {
+                Long userId = getUserId(authentication.getName());
+
+                if (file.getOwner() == userId)
+                {
+                    boolean compatibleChild = false;
+                    
+                    for (EstherWidget widget : widgetList)
+                    {
+                        if (widget.opensFile(file.getType()))
+                        {
+                            String[] allowedChildren = widget.allowedChildren(file.getType());
+                            
+                            for (int i = 0; i < allowedChildren.length; i++)
+                            {
+                                if (allowedChildren[i].equals(source.getType()))
+                                {
+                                    compatibleChild = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    
+                    if (compatibleChild)
+                    {
+                        links.put("copy_as_child", "Copy as subfile");
+                        
+                        if (source.getOwner() == userId)
+                        {
+                            links.put("move_as_child", "Move as subfile");
+                        }
+                    }
+                }
+            }
+        }
+        
+        map.addAttribute("links", links);
+        
+        return "filesystem/menu";
+    }
+    
     /**
      * Handler method for creating files.
      * 
@@ -643,7 +698,8 @@ public class FileSystemController
      */
     @RequestMapping(value = "/File/Copy", method = RequestMethod.POST)
     @ResponseBody
-    public String copyFile(@RequestParam("file") Long id, @RequestParam("name") String name)
+    public String copyFile(@RequestParam("file") Long id, @RequestParam("name") String name,
+        @RequestParam(value = "parent", required = false) Long parentId)
     {
         if ((id == null) || (name == null) || name.isEmpty())
         {
@@ -651,7 +707,16 @@ public class FileSystemController
         }
         
         EstherFile file = fileSystemManager.getFileById(id);
-        EstherFile parent = fileSystemManager.getParent(file);
+        EstherFile parent;
+        
+        if (parentId != null)
+        {
+            parent = fileSystemManager.getFileById(parentId);
+        }
+        else
+        {
+            parent = fileSystemManager.getParent(file);
+        }
         
         File sourceFile = fileSystemManager.getSystemFileById(file.getId());
         
@@ -660,7 +725,7 @@ public class FileSystemController
             return "LIMIT_REACHED=" + (maxStorageSpace / gigabyte) + "GB";
         }
         
-        String createMessage = createFile(name, file.getType(), parent.getId(), false);
+        String createMessage = createFile(name, file.getType(), ((parent == null) ? null : parent.getId()), false);
         Long newId;
                 
         try
@@ -675,11 +740,6 @@ public class FileSystemController
         EstherFile newFile = fileSystemManager.getFileById(newId);
         newFile.setSize(file.getSize());
         fileSystemManager.updateFile(newFile);
-        
-        for (EstherFile child : fileSystemManager.getAllSubfiles(file))
-        {
-            fileSystemManager.setParent(child, newFile);
-        }
         
         File destinationFile = fileSystemManager.getSystemFileById(newFile.getId());
         
@@ -716,6 +776,24 @@ public class FileSystemController
         }
         
         return newId.toString();
+    }
+    
+    @RequestMapping(value = "/File/Move", method = RequestMethod.POST)
+    @ResponseBody
+    public String moveFile(@RequestParam("file") Long id, @RequestParam("parent") Long parentId)
+    {
+        if ((id == null) || (parentId == null))
+        {
+            return "ERROR=Invalid data specified.";
+        }
+        
+        EstherFile file = fileSystemManager.getFileById(id);
+        EstherFile parent = fileSystemManager.getFileById(parentId);
+        
+        fileSystemManager.removeParent(file);
+        fileSystemManager.setParent(file, parent);
+        
+        return null;
     }
     
     /**

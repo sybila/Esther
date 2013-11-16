@@ -264,4 +264,125 @@ public class SQLiteManager
         return nameBuilder.toString();
     }
     
+    public void refactorTable(File file, Long id) throws SQLiteException
+    {
+        Connection connection = null;
+        
+        PreparedStatement getStatement = null;
+        PreparedStatement renameStatement = null;
+        PreparedStatement createStatement = null;
+        PreparedStatement copyStatement = null;
+        PreparedStatement dropStatement = null;
+        
+        ResultSet resultSet = null;
+    
+        try
+        {
+            Class.forName("org.sqlite.JDBC");
+            connection = DriverManager.getConnection("jdbc:sqlite:" + file.getAbsolutePath());
+            getStatement = connection.prepareStatement("PRAGMA table_info(PARAMETRIZATIONS)");
+            resultSet = getStatement.executeQuery();
+            
+            renameStatement = connection.prepareStatement("ALTER TABLE PARAMETRIZATIONS RENAME TO TEMP");
+            renameStatement.execute();
+            
+            StringBuilder createQueryBuilder = new StringBuilder();
+            createQueryBuilder.append("CREATE TABLE Parametrizations ( ");
+            
+            StringBuilder copyQueryStartBuilder = new StringBuilder();
+            StringBuilder copyQueryHalfBuilder = new StringBuilder();
+            copyQueryStartBuilder.append("INSERT INTO PARAMETRIZATIONS(");
+            copyQueryHalfBuilder.append("SELECT ");
+            
+            boolean first = true;
+            while (resultSet.next())
+            {
+                if (!first)
+                {
+                    createQueryBuilder.append(", ");
+                    copyQueryStartBuilder.append(", ");
+                    copyQueryHalfBuilder.append(", ");
+                }
+                else
+                {
+                    first = false;
+                }
+                
+                String columnName = resultSet.getString("name");
+                String columnType = resultSet.getString("type");
+                
+                copyQueryHalfBuilder.append(columnName);
+                
+                if (columnName.startsWith("Robust") || columnName.startsWith("Witness"))
+                {
+                    String[] data = columnName.split("_");
+                    columnName = (data[0] + "_" + id);
+                }
+                
+                createQueryBuilder.append(columnName);
+                createQueryBuilder.append(" ");
+                createQueryBuilder.append(columnType);
+                
+                copyQueryStartBuilder.append(columnName);
+            }
+            
+            createQueryBuilder.append(")");
+            
+            copyQueryStartBuilder.append(") ");
+            copyQueryHalfBuilder.append(" FROM TEMP");
+            
+            createStatement = connection.prepareStatement(createQueryBuilder.toString());
+            createStatement.execute();
+            
+            copyQueryStartBuilder.append(copyQueryHalfBuilder.toString());
+            copyStatement = connection.prepareStatement(copyQueryStartBuilder.toString());
+            copyStatement.execute();
+            
+            dropStatement = connection.prepareStatement("DROP TABLE TEMP");
+            dropStatement.execute();
+        }
+        catch (ClassNotFoundException | SQLException e)
+        {
+            throw new SQLiteException(e);
+        }
+        finally
+        {
+            try
+            {
+                if (resultSet != null)
+                {
+                    resultSet.close();
+                }
+                if (getStatement != null)
+                {
+                    getStatement.close();
+                }
+                if (copyStatement != null)
+                {
+                    copyStatement.close();
+                }
+                if (createStatement != null)
+                {
+                    createStatement.close();
+                }
+                if (renameStatement != null)
+                {
+                    renameStatement.close();
+                }
+                if (dropStatement != null)
+                {
+                    dropStatement.close();
+                }
+                if (connection != null)
+                {
+                    connection.close();
+                }
+            }
+            catch (SQLException e)
+            {
+                throw new SQLiteException(e);
+            }
+        }
+    }
+        
 }

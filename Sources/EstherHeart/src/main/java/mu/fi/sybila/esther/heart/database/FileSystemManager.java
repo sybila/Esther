@@ -768,6 +768,42 @@ public class FileSystemManager
         }
     }
     
+    public void removeParent(EstherFile file)
+    {
+        if (file == null)
+        {
+            throw new NullPointerException("File");
+        }
+        
+        if (file.getId() == null)
+        {
+            throw new IllegalArgumentException("Cannot remove parent of file with NULL ID.");
+        }
+        
+        Connection connection = null;
+        PreparedStatement statement = null;
+        
+        try
+        {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement("DELETE FROM SPECIFICATIONS WHERE child=?");
+            
+            statement.setLong(1, file.getId());
+            
+            statement.executeUpdate();
+            
+            logger.log(Level.INFO, ("Successfully removed the parent of file ID: " + file.getId()));
+        }
+        catch (SQLException e)
+        {
+            logger.log(Level.SEVERE, ("Error removing the parent of file ID: " + file.getId()), e);
+        }
+        finally
+        {
+            DatabaseUtils.closeQuietly(connection, statement);
+        }
+    }
+    
     /**
      * Returns the size of all files owned by the specified user.
      * 

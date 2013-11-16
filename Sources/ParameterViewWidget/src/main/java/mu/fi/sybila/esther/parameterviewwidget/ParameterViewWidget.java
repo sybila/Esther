@@ -1,5 +1,6 @@
 package mu.fi.sybila.esther.parameterviewwidget;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -168,14 +169,32 @@ public class ParameterViewWidget implements EstherWidget
             
             Map<Integer, String> columnNames = new LinkedHashMap<>();
             
-            List<Map<Integer, Object>> rows = sqliteManager.generateRows(fileSystemManager.getSystemFileById(fileId), filter, contextMasks, columnNames);
+            File source = fileSystemManager.getSystemFileById(fileId);
+            List<Map<Integer, Object>> rows = sqliteManager.generateRows(source, filter, contextMasks, columnNames);
             
             for (int i : columnNames.keySet())
             {
                 if (columnNames.get(i).startsWith("Robust"))
                 {
                     String[] robustProp = columnNames.get(i).split("_");
-                    EstherFile prop = fileSystemManager.getFileById(Long.parseLong(robustProp[1]));
+                    Long propId;
+                    
+                    try
+                    {
+                        propId = Long.parseLong(robustProp[1]);
+                    }
+                    catch (NumberFormatException e)
+                    {
+                        propId = null;
+                    }
+                    
+                    EstherFile prop = fileSystemManager.getParent(fileSystemManager.getFileById(fileId));
+                    
+                    if ((propId == null) || (propId != prop.getId()))
+                    {
+                        sqliteManager.refactorTable(source, prop.getId());
+                    }
+                    
                     columnNames.put(i, ("Robustness: " + prop.getName()));
                     break;
                 }
@@ -250,5 +269,4 @@ public class ParameterViewWidget implements EstherWidget
         
         return null;
     }
-    
 }

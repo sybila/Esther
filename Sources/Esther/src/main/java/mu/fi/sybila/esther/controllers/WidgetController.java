@@ -30,8 +30,8 @@ public class WidgetController
      * @param parent The ID of the parent file of the one opened. Or null if the file is root.
      * @return Path to the proper widget UI.
      */
-    @RequestMapping(value = "Widget/Start", method = RequestMethod.GET)
-    public String startWidget(ModelMap map, @RequestParam("type") String fileType,
+    @RequestMapping(value = "Widget/Open", method = RequestMethod.GET)
+    public String openWidget(ModelMap map, @RequestParam("type") String fileType,
         @RequestParam("file") Long id, @RequestParam(value = "parent", required = false) Long parent)
     {
         map.addAttribute("type", fileType);

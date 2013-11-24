@@ -200,6 +200,8 @@ public class ParameterViewWidget implements EstherWidget
                 }
             }
             
+            Map<String, Map<Integer, String>> columnDisplayOptions = GenerateColumnDisplayOptions(columnNames);
+            
             if (filterId != null)
             {
                 for (int i = 1; i <= filter.getFilter().length; i++)
@@ -235,6 +237,7 @@ public class ParameterViewWidget implements EstherWidget
             
             map.addAttribute("context_masks", contextMasks);
             map.addAttribute("column_names", columnNames);
+            map.addAttribute("display_settings", columnDisplayOptions);
             map.addAttribute("rows", rows);
 
             return "widget/parameterView/view";
@@ -268,5 +271,29 @@ public class ParameterViewWidget implements EstherWidget
         }
         
         return null;
+    }
+    
+    private Map<String, Map<Integer, String>> GenerateColumnDisplayOptions(Map<Integer, String> columnNames)
+    {
+        Map<String, Map<Integer, String>> columnDisplayOptions = new LinkedHashMap<>();
+        
+        for (int i : columnNames.keySet())
+        {
+            String specieName = null;
+            
+            if (!columnNames.get(i).startsWith("Cost") && !columnNames.get(i).startsWith("Robustness"))
+            {
+                specieName = columnNames.get(i).split("\\{")[0];
+            }
+            
+            if (!columnDisplayOptions.containsKey(specieName))
+            {
+                columnDisplayOptions.put(specieName, new LinkedHashMap<Integer, String>());
+            }
+            
+            columnDisplayOptions.get(specieName).put(i, columnNames.get(i));
+        }
+        
+        return columnDisplayOptions;
     }
 }

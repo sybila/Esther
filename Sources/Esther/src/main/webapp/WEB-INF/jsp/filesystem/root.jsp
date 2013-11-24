@@ -14,6 +14,7 @@
         <a href="#">Public</a>
     </li>
     <li class="file private unexpandable tasklist">
+        <div class="icon_container"/>
         <a file_id="tasklist" href="#">Task List</a>
     </li>
 </ul>

@@ -135,7 +135,7 @@ public class ParsyboneController
 
             File result = fileSystemManager.getSystemFileById(resultID);
 
-            Task task = Task.newTask(user.getId(), model.getId(), property.getId(), resultID, "Parsybone");
+            Task task = Task.newTask(user.getId(), model.getId(), property.getId(), resultID, "parsybone");
 
             List<String> taskArgs = new ArrayList<>();
             

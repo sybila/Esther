@@ -102,23 +102,33 @@ if(jQuery) (function($)
                 {
                     e.preventDefault();
                     
-                    context.find('#column_options LABEL.column_checker INPUT').prop('checked', true);
+                    context.find('#column_options label.column_checker input').prop('checked', true);
                 });
                 
             context.find('#no_columns').click(function(e)
                 {
                     e.preventDefault();
                     
-                    context.find('#column_options LABEL.column_checker INPUT').prop('checked', false);
+                    context.find('#column_options label.column_checker input').prop('checked', false);
+                });
+                
+            context.find('#column_options label.column_checker input[column_num=group]').click(function()
+                {
+                    context.find('#column_options label.column_checker input[group_id=' + $(this).parent().text() + ']').prop('checked', $(this).prop('checked'));
                 });
                 
             context.find('#column_apply_button').click(function(e)
                 {
                     var checkboxes = context.find('#column_options LABEL.column_checker INPUT');
                     
-                    for (var i in checkboxes)
+                    for (var i = 0; i < checkboxes.length; i++)
                     {
                         var num = $(checkboxes[i]).attr('column_num');
+                        
+                        if ((typeof num == 'undefined') || (num == false) || (num == 'group'))
+                        {
+                            continue;
+                        }
                         
                         if (checkboxes[i].checked)
                         {
@@ -131,6 +141,8 @@ if(jQuery) (function($)
                                 num + '),TH:nth-child(' + num + ')').hide();
                         }
                     }
+                    
+                    $(document).find('#widget #column_options_button').trigger('click');
                 });
 
             context.find('#filter').click(function(e)

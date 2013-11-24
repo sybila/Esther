@@ -14,10 +14,11 @@
              <c:when test="${task.finished && task.active}">ready</c:when>
              <c:when test="${not task.finished && task.active}">running</c:when>
          </c:choose>" task_id="${task.id}" model_id="${task.model}" property_id="${task.property}"
-         result_id="${task.result}">
+         database_id="<c:forEach items="${task.databases}" var="database">${database}_</c:forEach>"
+         filter_id="<c:forEach items="${task.filters}" var="filter">${filter}_</c:forEach>" result_id="${task.result}">
         <table>
             <tr>
-                <th>${task.type} on ${task.modelName} with ${task.propertyName} : ${task.progress}</th>
+                <th>${task.text}: ${task.progress}</th>
                 <td style="width: 64px;"><input class="button" style="<c:if test="${not task.finished || not task.successful || not task.active}">display: none;</c:if>" type="Submit" value="Save Result" name="save"/></td>               
                 <td style="width: 16px;"><img height="12px" style="padding: 2px;" src="<c:url value="/resources/images/x_button.png" />" /></td>
             </tr>

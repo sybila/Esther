@@ -1,6 +1,9 @@
 package mu.fi.sybila.esther.heart.database.entities;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Database entity representing a long-term task.
@@ -21,6 +24,9 @@ public class Task
     private Long id;
     private Long model;
     private Long property;
+    private List<Long> databases;
+    private List<Long> filters;
+    
     private Long owner;
     private Long result;
     
@@ -39,6 +45,8 @@ public class Task
     
     private String modelName;
     private String propertyName;
+    private List<String> databaseNames;
+    private List<String> filterNames;
     
     /**
      * Default Task constructor.
@@ -49,10 +57,15 @@ public class Task
         errorMessage = null;
         outputInformation = null;
         
-        //outputResidue = null;
+        model = null;
+        property = null;
+        databases = new ArrayList<>();
+        filters = new ArrayList<>();
         
-        modelName = null;
-        propertyName = null;
+        modelName = "unknown model";
+        propertyName = "unknown property";
+        databaseNames = new ArrayList<>();
+        filterNames = new ArrayList<>();
     }
 
     public Long getId()
@@ -83,6 +96,36 @@ public class Task
     public void setProperty(Long file)
     {
         this.property = file;
+    }
+
+    public List<Long> getDatabases()
+    {
+        return Collections.unmodifiableList(databases);
+    }
+
+    public void addDatabase(Long database)
+    {
+        databases.add(database);
+    }
+    
+    public boolean removeDatabase(Long database)
+    {
+        return databases.remove(database);
+    }
+
+    public List<Long> getFilters()
+    {
+        return Collections.unmodifiableList(filters);
+    }
+
+    public void addFilter(Long filter)
+    {
+        filters.add(filter);
+    }
+    
+    public boolean removeFilter(Long filter)
+    {
+        return filters.remove(filter);
     }
 
     public Long getOwner()
@@ -373,6 +416,91 @@ public class Task
     public void setPropertyName(String propertyName)
     {
         this.propertyName = propertyName;
+    }
+
+    public List<String> getDatabaseNames()
+    {
+        return databaseNames;
+    }
+
+    public void setDatabaseNames(List<String> databaseNames)
+    {
+        this.databaseNames = databaseNames;
+    }
+
+    public List<String> getFilterNames()
+    {
+        return filterNames;
+    }
+
+    public void setFilterNames(List<String> filterNames)
+    {
+        this.filterNames = filterNames;
+    }
+    
+    public String getText()
+    {
+        StringBuilder textBuilder = new StringBuilder();
+        
+        switch (getType())
+        {
+            case "behaviour_mapper":
+            {
+                textBuilder.append("Behaviour Mapper on ");
+                
+                for (int i = 0; i < databases.size(); i++)
+                {
+                    if (i > 0)
+                    {
+                        if (i == (databases.size() - 1))
+                        {
+                            textBuilder.append(", ");
+                        }
+                        else   
+                        {
+                            textBuilder.append(" and ");
+                        }
+                    }
+                    
+                    textBuilder.append(getDatabaseNames().get(i));
+                }
+                
+                textBuilder.append(" (Model: ");
+                textBuilder.append(getModelName());
+                textBuilder.append(", Property: ");
+                textBuilder.append(getPropertyName());
+                textBuilder.append(")");
+                
+                break;
+            }
+            case "parsybone":
+            {
+                textBuilder.append("Parsybone on ");
+                textBuilder.append(getModelName());
+                textBuilder.append(" with ");
+                textBuilder.append(getPropertyName());
+                
+                break;
+            }
+            default: return null;
+        }
+        
+        if (filters.size() > 0)
+        {
+            textBuilder.append(" filtered by ");
+
+            for (int i = 0; i < filters.size(); i++)
+            {
+                if (i > 0)
+                {
+                    textBuilder.append(", ");
+                }
+
+                textBuilder.append(getFilterNames().get(i));
+            }
+        }
+        
+        return textBuilder.toString();
     }
     
     public static Task newTask(Long owner, Long model, Long property, Long result, String type)

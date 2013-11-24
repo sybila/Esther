@@ -2,7 +2,6 @@ package mu.fi.sybila.esther.heart.database;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -50,18 +49,22 @@ public class TaskManager
         logger.addHandler(new StreamHandler(fs, new SimpleFormatter()));
     }
     
-    private void startTask(Long id, String[] cmdArgs) throws IOException
+    private void startTask(Long id, String type, String[] cmdArgs) throws IOException
     {
         Process process = new ProcessBuilder(cmdArgs).start();
         
         class TaskOutputReader implements Runnable
         {
-            Process process;
-            Long id;
+            private Process process;
             
-            TaskOutputReader(Long id, Process process)
+            private Long id;
+            private String type;
+            
+            TaskOutputReader(Long id, String type, Process process)
             {
                 this.id= id;
+                this.type = type;
+                
                 this.process = process;
             }
 
@@ -149,13 +152,34 @@ public class TaskManager
 
                                 StringBuilder progressBuilder = new StringBuilder();
 
-                                for (int i = 0; i < 5; i++)
+                                String[] taskOperations = null;
+                                
+                                switch (type)
                                 {
-                                    if (Task.PARSYBONE_OPERATIONS[i].equals(operation))
+                                    case "parsybone":
+                                    {
+                                        taskOperations = Task.PARSYBONE_OPERATIONS;
+                                        
+                                        break;
+                                    }
+                                    case "behaviour_mapper":
+                                    {
+                                        //taskOperations = 
+                                        
+                                        break;
+                                    }
+                                    default: break;
+                                }
+                                
+                                for (int i = 0; i < taskOperations.length; i++)
+                                {
+                                    if (taskOperations[i].equals(operation))
                                     {
                                         progressBuilder.append("[");
                                         progressBuilder.append(i + 1);
-                                        progressBuilder.append("/5] ");
+                                        progressBuilder.append("/");
+                                        progressBuilder.append(taskOperations.length);
+                                        progressBuilder.append("] ");
 
                                         progressBuilder.append(operation);
                                         progressBuilder.append(": ");
@@ -248,7 +272,7 @@ public class TaskManager
             }
         }
         
-        new Thread(new TaskOutputReader(id, process)).start();
+        new Thread(new TaskOutputReader(id, type, process)).start();
     }
     
     /**
@@ -303,13 +327,23 @@ public class TaskManager
             Long id = DatabaseUtils.getID(statement.getGeneratedKeys());
             task.setId(id);
             
+            if (task.getDatabases().size() > 0)
+            {
+                addTaskDatabases(task);
+            }
+            
+            if (task.getFilters().size() > 0)
+            {
+                addTaskFilters(task);
+            }
+            
 //            Process process = new ProcessBuilder(cmdArgs).start();
             
 //            tasks.put(id, process);
             
             logger.log(Level.INFO, "Successfully created {0}", task);
             
-            startTask(id, cmdArgs);
+            startTask(id, task.getType(), cmdArgs);
             
             return id;
         }
@@ -527,6 +561,244 @@ public class TaskManager
         return null;
     }
     
+    private void addTaskDatabases(Task task)
+    {
+        if (task == null)
+        {
+            throw new NullPointerException("Task");
+        }
+        
+        if (task.getId() == null)
+        {
+            throw new IllegalArgumentException("Cannot add databases for Task with NULL ID.");
+        }
+        
+        Connection connection = null;
+        PreparedStatement statement = null;
+        
+        try
+        {
+            connection = dataSource.getConnection();
+            
+            for (Long id : task.getDatabases())
+            {
+                statement = connection.prepareStatement("INSERT INTO TASK_DBS (task, sqlitedb) VALUES ?, ?");
+
+                statement.setLong(1, task.getId());
+                statement.setLong(2, id);
+                
+                statement.execute();
+                
+                statement.close();
+            }
+        }
+        catch (SQLException e)
+        {
+            logger.log(Level.SEVERE, ("Error adding databases for " + task), e);
+        }
+        finally
+        {
+            DatabaseUtils.closeQuietly(connection, statement);
+        }
+    }
+    
+    private void removeTaskDatabases(Task task)
+    {
+        if (task == null)
+        {
+            throw new NullPointerException("Task");
+        }
+        
+        if (task.getId() == null)
+        {
+            throw new IllegalArgumentException("Cannot remove databases for Task with NULL ID.");
+        }
+        
+        Connection connection = null;
+        PreparedStatement statement = null;
+        
+        try
+        {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement("DELETE FROM TASK_DBS WHERE task=?");
+
+            statement.setLong(1, task.getId());
+
+            statement.execute();
+        }
+        catch (SQLException e)
+        {
+            logger.log(Level.SEVERE, ("Error removing databases for " + task), e);
+        }
+        finally
+        {
+            DatabaseUtils.closeQuietly(connection, statement);
+        }
+    }
+    
+    public void updateTaskDatabases(Task task)
+    {
+        removeTaskDatabases(task);
+        
+        addTaskDatabases(task);
+    }
+    
+    private void getTaskDatabases(Task task)
+    {
+        if (task == null)
+        {
+            throw new NullPointerException("Task");
+        }
+        
+        if (task.getId() == null)
+        {
+            throw new IllegalArgumentException("Cannot get databases for Task with NULL ID.");
+        }
+        
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet;
+        
+        try
+        {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement("SELECT *  FROM TASK_DBS WHERE task=?");
+
+            statement.setLong(1, task.getId());
+            
+            resultSet = statement.executeQuery();
+            
+            getTaskDatabasesFromResultSet(task, resultSet);
+        }
+        catch (SQLException e)
+        {
+            logger.log(Level.SEVERE, ("Error retrieving databases for " + task), e);
+        }
+        finally
+        {
+            DatabaseUtils.closeQuietly(connection, statement);
+        }
+    }
+    
+    private void addTaskFilters(Task task)
+    {
+        if (task == null)
+        {
+            throw new NullPointerException("Task");
+        }
+        
+        if (task.getId() == null)
+        {
+            throw new IllegalArgumentException("Cannot add filters for Task with NULL ID.");
+        }
+        
+        Connection connection = null;
+        PreparedStatement statement = null;
+        
+        try
+        {
+            connection = dataSource.getConnection();
+            
+            for (Long id : task.getFilters())
+            {
+                statement = connection.prepareStatement("INSERT INTO TASK_FILTERS (task, filter) VALUES ?, ?");
+
+                statement.setLong(1, task.getId());
+                statement.setLong(2, id);
+                
+                statement.execute();
+                
+                statement.close();
+            }
+        }
+        catch (SQLException e)
+        {
+            logger.log(Level.SEVERE, ("Error adding filters for " + task), e);
+        }
+        finally
+        {
+            DatabaseUtils.closeQuietly(connection, statement);
+        }
+    }
+    
+    private void removeTaskFilters(Task task)
+    {
+        if (task == null)
+        {
+            throw new NullPointerException("Task");
+        }
+        
+        if (task.getId() == null)
+        {
+            throw new IllegalArgumentException("Cannot remove filters for Task with NULL ID.");
+        }
+        
+        Connection connection = null;
+        PreparedStatement statement = null;
+        
+        try
+        {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement("DELETE FROM TASK_FILTERS WHERE task=?");
+
+            statement.setLong(1, task.getId());
+
+            statement.execute();
+        }
+        catch (SQLException e)
+        {
+            logger.log(Level.SEVERE, ("Error removing filters for " + task), e);
+        }
+        finally
+        {
+            DatabaseUtils.closeQuietly(connection, statement);
+        }
+    }
+    
+    public void updateTaskFilters(Task task)
+    {
+        removeTaskFilters(task);
+        
+        addTaskFilters(task);
+    }
+    
+    private void getTaskFilters(Task task)
+    {
+        if (task == null)
+        {
+            throw new NullPointerException("Task");
+        }
+        
+        if (task.getId() == null)
+        {
+            throw new IllegalArgumentException("Cannot get filters for Task with NULL ID.");
+        }
+        
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet;
+        
+        try
+        {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement("SELECT *  FROM TASK_FILTERS WHERE task=?");
+
+            statement.setLong(1, task.getId());
+            
+            resultSet = statement.executeQuery();
+            
+            getTaskFiltersFromResultSet(task, resultSet);
+        }
+        catch (SQLException e)
+        {
+            logger.log(Level.SEVERE, ("Error retrieving filters for " + task), e);
+        }
+        finally
+        {
+            DatabaseUtils.closeQuietly(connection, statement);
+        }
+    }
+    
     /**
      * Parses the Task from the result set.
      * 
@@ -549,10 +821,29 @@ public class TaskManager
         task.setProgress(resultSet.getString("progress"));
         task.setError(resultSet.getString("error"));
         task.setInformation(resultSet.getString("information"));
+                
+        getTaskDatabases(task);
+        getTaskFilters(task);
         
         //task.setProcess(tasks.get(task.getId()));
         
         return task;
+    }
+    
+    private void getTaskDatabasesFromResultSet(Task task, ResultSet resultSet) throws SQLException
+    {
+        while (resultSet.next())
+        {
+            task.addDatabase(resultSet.getLong("sqlitedb"));
+        }
+    }
+    
+    private void getTaskFiltersFromResultSet(Task task, ResultSet resultSet) throws SQLException
+    {
+        while (resultSet.next())
+        {
+            task.addFilter(resultSet.getLong("filter"));
+        }
     }
     
     /**

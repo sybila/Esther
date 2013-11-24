@@ -113,6 +113,32 @@ public class TaskController
                 
                 task.setModelName(model.getName() + "." + model.getType());
                 task.setPropertyName(property.getName() + "." + property.getType());
+                
+                if (task.getDatabases().size() > 0)
+                {
+                    List<String> databaseNames = new ArrayList<>();
+                    for (Long id : task.getDatabases())
+                    {
+                        EstherFile db = fileSystemManager.getFileById(id);
+
+                        databaseNames.add(db.getName() + "." + db.getType());
+                    }
+
+                    task.setDatabaseNames(databaseNames);
+                }
+                
+                if (task.getFilters().size() > 0)
+                {
+                    List<String> filterNames = new ArrayList<>();
+                    for (Long id : task.getFilters())
+                    {
+                        EstherFile filter = fileSystemManager.getFileById(id);
+
+                        filterNames.add(filter.getName() + "." + filter.getType());
+                    }
+
+                    task.setFilterNames(filterNames);
+                }
             }
             
 //            for (int i = 0; i < tasks.size(); i++)

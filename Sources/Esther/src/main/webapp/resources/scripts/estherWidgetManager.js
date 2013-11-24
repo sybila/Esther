@@ -271,7 +271,7 @@ function openWidget(fileID, fileName, fileType, parent)
 
     $(tab).empty();
     
-    $.get('Widget/Start', { file: fileID, type: fileType, parent: parent }, function(data)
+    $.get('Widget/Open', { file: fileID, type: fileType, parent: parent }, function(data)
         {
             $(tab).append(data);
 

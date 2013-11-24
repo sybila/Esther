@@ -19,11 +19,19 @@
         <a id="all_columns" href="#">select all</a> / <a id="no_columns" href="#">select none</a>
     </p>
     <div style="width: 98%; margin-left: 4px;" id="column_list" class="container">
-        <c:forEach items="${column_names}" var="column">
-            <label class="column_checker">
-                <input column_num="${column.key}" type="checkbox" checked="checked" />
-                 <c:out value="${column.value}" />
-            </label></br>
+        <c:forEach items="${display_settings}" var="column_group">
+            <c:if test="${not empty column_group.key}">
+                <label class="column_checker">
+                    <input column_num="group" type="checkbox" checked="checked" />
+                    <c:out value="${column_group.key}" />
+                </label></br>
+            </c:if>
+            <c:forEach items="${column_group.value}" var="column">
+                <label class="column_checker" <c:if test="${not empty column_group.key}">style="padding-left: 16px;"</c:if>>
+                    <input column_num="${column.key}" group_id="${column_group.key}" type="checkbox" checked="checked" />
+                     <c:out value="${column.value}" />
+                </label></br>
+            </c:forEach>
         </c:forEach>
     </div>
     <input id="column_apply_button" class="button" style="float: left;" type="Submit" value="Apply" name="submit"/>

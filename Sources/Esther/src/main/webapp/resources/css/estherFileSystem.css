@@ -17,7 +17,6 @@ ul.estherFileSystem
     line-height: 18px;
     margin: 0px;
     padding: 0px;
-    overflow: hidden;
 }
 
 ul.estherFileSystem li
@@ -154,15 +153,15 @@ form#uploadOptions table tr td
 }
 
 /* FILE ICONS */
-ul.estherFileSystem li.file
+ul.estherFileSystem li.file > div.icon_container
 {
     background: url(../images/FileIcons/file.png) left top no-repeat;
 }
-ul.estherFileSystem li.folder
+ul.estherFileSystem li.folder > div.icon_container
 {
     background: url(../images/FileIcons/folder.png) left top no-repeat;
 }
-ul.estherFileSystem li.open_folder
+ul.estherFileSystem li.open_folder > div.icon_container
 {
     background: url(../images/FileIcons/folder_open.png) left top no-repeat;
 }

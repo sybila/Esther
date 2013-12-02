@@ -164,27 +164,30 @@ public class TaskManager
                                     }
                                     case "behaviour_mapper":
                                     {
-                                        //taskOperations = 
+                                        taskOperations = Task.BEHAVIOUR_MAPPER_OPEARTIONS;
                                         
                                         break;
                                     }
                                     default: break;
                                 }
                                 
-                                for (int i = 0; i < taskOperations.length; i++)
+                                if (taskOperations != null)
                                 {
-                                    if (taskOperations[i].equals(operation))
+                                    for (int i = 0; i < taskOperations.length; i++)
                                     {
-                                        progressBuilder.append("[");
-                                        progressBuilder.append(i + 1);
-                                        progressBuilder.append("/");
-                                        progressBuilder.append(taskOperations.length);
-                                        progressBuilder.append("] ");
+                                        if (taskOperations[i].equals(operation))
+                                        {
+                                            progressBuilder.append("[");
+                                            progressBuilder.append(i + 1);
+                                            progressBuilder.append("/");
+                                            progressBuilder.append(taskOperations.length);
+                                            progressBuilder.append("] ");
 
-                                        progressBuilder.append(operation);
-                                        progressBuilder.append(": ");
+                                            progressBuilder.append(operation);
+                                            progressBuilder.append(": ");
 
-                                        break;
+                                            break;
+                                        }
                                     }
                                 }
 
@@ -582,7 +585,7 @@ public class TaskManager
             
             for (Long id : task.getDatabases())
             {
-                statement = connection.prepareStatement("INSERT INTO TASK_DBS (task, sqlitedb) VALUES ?, ?");
+                statement = connection.prepareStatement("INSERT INTO TASK_DBS (task, sqlitedb) VALUES (?, ?)");
 
                 statement.setLong(1, task.getId());
                 statement.setLong(2, id);
@@ -701,7 +704,7 @@ public class TaskManager
             
             for (Long id : task.getFilters())
             {
-                statement = connection.prepareStatement("INSERT INTO TASK_FILTERS (task, filter) VALUES ?, ?");
+                statement = connection.prepareStatement("INSERT INTO TASK_FILTERS (task, filter) VALUES (?, ?)");
 
                 statement.setLong(1, task.getId());
                 statement.setLong(2, id);

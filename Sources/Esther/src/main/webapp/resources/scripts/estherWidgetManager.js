@@ -84,12 +84,15 @@ if(jQuery) (function($)
                                         }
                                         else
                                         {
-                                            appendFileEntries($('UL.estherFileSystem LI#privateFolder'), task.attr('property_id'),
-                                                task.attr('result_id'), data, extractExtension(data), 'private', false, false);
+                                            var name = data.split('=')[0];
+                                            var parent_id = data.split('=')[1];
+                                            
+                                            appendFileEntries($('UL.estherFileSystem LI#privateFolder'), parent_id,
+                                                task.attr('result_id'), name, extractExtension(name), 'private', false, false);
 
                                             context.find('INPUT[name=refresh]').trigger('click');
                                             
-                                            openWidget(task.attr('result_id'), data, extractExtension(data), task.attr('property_id'));
+                                            openWidget(task.attr('result_id'), name, extractExtension(name), parent_id);
                                         }
                                     });
                                     

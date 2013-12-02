@@ -32,7 +32,7 @@ public class SQLiteManager
      * @return List of rows in form of maps of column name and contents.
      * @throws SQLiteException If reading the database fails.
      */
-    public List<Map<Integer, Object>> generateRows(File file, ParameterFilter filter, Map<String, String> contextMasks, Map<Integer, String> columnNames) throws SQLiteException
+    public List<Map<Integer, Object>> generateRows(File file, List<ParameterFilter> filters, Map<String, String> contextMasks, Map<Integer, String> columnNames) throws SQLiteException
     {
         List<Map<Integer, Object>> rows = new ArrayList<>();
         
@@ -44,7 +44,7 @@ public class SQLiteManager
         {
             Class.forName("org.sqlite.JDBC");
             connection = DriverManager.getConnection("jdbc:sqlite:" + file.getAbsolutePath());
-            statement = constructSQLQuery(filter, connection, true);
+            statement = constructSQLQuery(filters, connection, true);
             resultSet = statement.executeQuery();
 
             ResultSetMetaData tableData = resultSet.getMetaData();
@@ -126,7 +126,7 @@ public class SQLiteManager
      * @return The Statement with the SQL query.
      * @throws SQLException If construction of the statement fails.
      */
-    public PreparedStatement constructSQLQuery(ParameterFilter filter, Connection connection, boolean limit) throws SQLException
+    public PreparedStatement constructSQLQuery(List<ParameterFilter> filters, Connection connection, boolean limit) throws SQLException
     {
         StringBuilder queryBuilder = new StringBuilder();
         List<Object> constraintValues = new ArrayList<>();
@@ -134,42 +134,50 @@ public class SQLiteManager
         
         queryBuilder.append("SELECT * FROM PARAMETRIZATIONS");
         
-        if ((filter != null) && (filter.getFilter().length > 0))
+        if ((filters != null) && (filters.size() > 0))
         {
-            queryBuilder.append(" WHERE");
-        
-            for (int i = 0; i < filter.getFilter().length; i++)
+            for (ParameterFilter filter : filters)
             {
-                if (i > 0)
+                if (filter.getFilter().length > 0)
                 {
-                    queryBuilder.append(" AND");
+                    queryBuilder.append(" WHERE");
+                    break;
                 }
-                
-                String[] constraintProperties = filter.getFilter()[i].split(";");
-                
-                Integer value = Integer.parseInt(constraintProperties[2]);
+            }
+        
+            for (ParameterFilter filter : filters)
+            {
+                for (int i = 0; i < filter.getFilter().length; i++)
+                {
+                    if (i > 0)
+                    {
+                        queryBuilder.append(" AND");
+                    }
 
-                queryBuilder.append(' ');
-                
-                if (constraintProperties[0].equals("robustness"))
-                {
-                    queryBuilder.append("robust");
-                    
-                    constraintValues.add(new Double(value / 100.0));
-                    doubleValuePositions.add(i);
+                    String[] constraintProperties = filter.getFilter()[i].split(";");
+
+                    Integer value = Integer.parseInt(constraintProperties[2]);
+
+                    queryBuilder.append(' ');
+
+                    if (constraintProperties[0].equals("robustness"))
+                    {
+                        queryBuilder.append("robust");
+
+                        constraintValues.add(new Double(value / 100.0));
+                        doubleValuePositions.add(i);
+                    }
+                    else
+                    {
+                        queryBuilder.append(constraintProperties[0]);
+
+                        constraintValues.add(value);
+                    }
+
+                    queryBuilder.append(ParameterFilter.translateFilterType(constraintProperties[1]));
+
+                    queryBuilder.append('?');
                 }
-                else
-                {
-                    queryBuilder.append(constraintProperties[0]);
-                    
-                    constraintValues.add(value);
-                }
-                
-                queryBuilder.append(ParameterFilter.translateFilterType(constraintProperties[1]));
-                
-                queryBuilder.append('?');
-                
-                
             }
         }
         

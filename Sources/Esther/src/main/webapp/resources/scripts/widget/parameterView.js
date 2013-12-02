@@ -292,17 +292,18 @@ if(jQuery) (function($)
                         {
                             if (data.split('=')[0] == 'LIMIT_REACHED')
                             {
-                                rescueFile(data.split('=')[2], data.split('=')[1]);
+                                alert('You have reached the maximum number of ' + data.split('=')[1] +
+                                    ' active tasks.\nPlease wait for the tasks in progress to finish first.');
+                            }
+                            else if (data.split('=')[0] == 'ERROR')
+                            {
+                                alert('Error: ' + data.split('=')[1]);
                             }
                             else
                             {
-                                var id = data.split('=')[0];
-                                var name = data.split('=')[1];
-                                
-                                appendFileEntries($('UL.estherFileSystem LI#privateFolder'), parent_id, id, (name + '.xgmml'), 'xgmml',
-                                    'private', false, false);
+                                openWidget('tasklist', 'Task List', null, null);
 
-                                openWidget(id, (name + '.xgmml'), 'xgmml', parent_id);
+                                $('#widget INPUT[name=refresh]').trigger('click');
                             }
                         });
                 });

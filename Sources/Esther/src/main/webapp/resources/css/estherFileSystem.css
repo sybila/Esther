@@ -8,24 +8,36 @@
     width: 15%;
     height: 640px;
     overflow: scroll;
+    margin: 0px;
+    padding: 0px;
+    outline: 0px;
+    vertical-align: baseline;
 }
 
 ul.estherFileSystem
 {
     color: #000000;
     font-size: 12px;
-    line-height: 18px;
+    line-height: 20px;
     margin: 0px;
     padding: 0px;
+    padding-left: 20px;
+    outline: 0px;
+    border: 0px;
+    list-style: none;
+    vertical-align: baseline;
 }
 
 ul.estherFileSystem li
 {
     list-style: none;
     padding: 0px;
-    padding-left: 20px;
+    /*padding-left: 20px;*/
     margin: 0px;
     white-space: nowrap;
+    outline: 0px;
+    border: 0px;
+    vertical-align: baseline;
 }
 
 ul.estherFileSystem li.unexpandable
@@ -59,6 +71,7 @@ ul.estherFileSystem a
     text-decoration: none;
     display: block;
     padding: 0px 2px;
+    vertical-align: baseline;
 }
 
 ul.estherFileSystem a:hover

@@ -2,6 +2,7 @@ package mu.fi.sybila.esther.parameterviewwidget;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -154,7 +155,7 @@ public class ParameterViewWidget implements EstherWidget
         
         Map<String, String> contextMasks = new HashMap<>();
         
-        ParameterFilter filter = null;
+        List<ParameterFilter> filters = new ArrayList<>();
         
         Map<Integer, Object[]> filterProperties = new HashMap<>();
         
@@ -162,7 +163,7 @@ public class ParameterViewWidget implements EstherWidget
         {
             if (filterId != null)
             {
-                filter = new ParameterFilter(fileSystemManager.getSystemFileById(filterId));
+                filters.add(new ParameterFilter(fileSystemManager.getSystemFileById(filterId)));
                 
                 map.addAttribute("filter", filterId);
             }
@@ -170,7 +171,7 @@ public class ParameterViewWidget implements EstherWidget
             Map<Integer, String> columnNames = new LinkedHashMap<>();
             
             File source = fileSystemManager.getSystemFileById(fileId);
-            List<Map<Integer, Object>> rows = sqliteManager.generateRows(source, filter, contextMasks, columnNames);
+            List<Map<Integer, Object>> rows = sqliteManager.generateRows(source, filters, contextMasks, columnNames);
             
             for (int i : columnNames.keySet())
             {
@@ -204,9 +205,9 @@ public class ParameterViewWidget implements EstherWidget
             
             if (filterId != null)
             {
-                for (int i = 1; i <= filter.getFilter().length; i++)
+                for (int i = 1; i <= filters.get(0).getFilter().length; i++)
                 {
-                    String[] constraintProperties = filter.getFilter()[(i - 1)].split(";");
+                    String[] constraintProperties = filters.get(0).getFilter()[(i - 1)].split(";");
                     Object[] filterProp = new Object[6];
 
                     filterProp[0] = constraintProperties[0];

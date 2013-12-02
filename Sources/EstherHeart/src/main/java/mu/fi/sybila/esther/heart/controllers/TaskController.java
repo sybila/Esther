@@ -246,7 +246,7 @@ public class TaskController
                     return "LIMIT_REACHED=" + (maxStorageSpace / gigabyte) + "GB";
                 }
                 
-                return (result.getName() + "." + result.getType());
+                return (result.getName() + "." + result.getType() + "=" + fileSystemManager.getParent(result).getId());
             }
         }
         catch (IOException e)

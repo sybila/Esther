@@ -21,6 +21,17 @@ public class Task
         "Round"
     };
     
+    public static final String[] BEHAVIOUR_MAPPER_OPEARTIONS =
+    {
+        "Reading parameters from databases",
+        "Mapping input parametrizations",
+        "Computing node sizes",
+        "Computing edge thickness",
+        "Layouting nodes",
+        "Exporting nodes",
+        "Exporting edges"
+    };
+    
     private Long id;
     private Long model;
     private Long property;

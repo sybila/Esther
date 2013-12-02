@@ -2,7 +2,7 @@ package mu.fi.sybila.esther.parameterviewwidget.controllers;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -93,9 +93,16 @@ public class ParameterFilterController
 
         Map<Integer, String> columnNames = new LinkedHashMap<>();
         
+        List<ParameterFilter> filters = new ArrayList<>();
+        if (!filter.isEmpty())
+        {
+            filters.add(new ParameterFilter(filter));
+        }
+        
         try
-        {    
-            rows = sqliteManager.generateRows(file, (filter.isEmpty() ? null : new ParameterFilter(filter)), null, columnNames);
+        {
+            
+            rows = sqliteManager.generateRows(file, filters, null, columnNames);
             
             for (int i : columnNames.keySet())
             {

@@ -2,28 +2,20 @@ package mu.fi.sybila.esther.behaviourmapwidget.controllers;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.logging.Level;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-import mu.fi.sybila.esther.behaviourmapwidget.behaviourmapper.BehaviourMapper;
 import mu.fi.sybila.esther.heart.controllers.FileSystemController;
 import mu.fi.sybila.esther.heart.database.FileSystemManager;
+import mu.fi.sybila.esther.heart.database.TaskManager;
 import mu.fi.sybila.esther.heart.database.UserManager;
 import mu.fi.sybila.esther.heart.database.entities.EstherFile;
+import mu.fi.sybila.esther.heart.database.entities.Task;
 import mu.fi.sybila.esther.heart.database.entities.User;
-import mu.fi.sybila.esther.sqlitemanager.SQLiteManager;
-import mu.fi.sybila.esther.sqlitemanager.parameterfilter.ParameterFilter;
-import mu.fi.sybila.esther.sqlitemanager.parameterfilter.ParameterFilterException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -44,12 +36,14 @@ public class BehaviourMapController
 {
     private FileSystemManager fileSystemManager = new FileSystemManager();
     private UserManager userManager = new UserManager();
-    private SQLiteManager sqliteManager = new SQLiteManager();
+    private TaskManager taskManager = new TaskManager();
     public static final Logger logger = Logger.getLogger(BehaviourMapController.class.getName());
     
-    @Value("${allowed_storage_space}")
-    private Long maxStorageSpace;
-    private static final Long gigabyte = 1073741824l;
+    @Value("${allowed_parallel_tasks}")
+    private Integer maxTasks;
+    
+    @Value("${behaviour_mapper_location}")
+    private String behaviourMapperLocation;
     
     @Autowired
     private FileSystemController fileSystemController;
@@ -63,6 +57,7 @@ public class BehaviourMapController
     public void setDataSource(DataSource dataSource)
     {
         fileSystemManager.setDataSource(dataSource);
+        taskManager.setDataSource(dataSource);
         userManager.setDataSource(dataSource);
     }
     
@@ -86,6 +81,7 @@ public class BehaviourMapController
     {
         logger.addHandler(new StreamHandler(fs, new SimpleFormatter()));
         fileSystemManager.setLogger(fs);
+        taskManager.setLogger(fs);
         userManager.setLogger(fs);
     }
     
@@ -108,12 +104,11 @@ public class BehaviourMapController
             return "ERROR=Invalid data specified.";
         }
         
-        ParameterFilter filter = null;
-        
         EstherFile source = fileSystemManager.getFileById(sourceId);
         File file = fileSystemManager.getSystemFileById(sourceId);
         
-        EstherFile parentFile = fileSystemManager.getParent(source);
+        EstherFile parentProperty = fileSystemManager.getParent(source);
+        EstherFile parentModel = fileSystemManager.getParent(parentProperty);
         
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         
@@ -124,6 +119,11 @@ public class BehaviourMapController
             return "ERROR=You are not loggen in.";
         }
         
+        if (taskManager.getActiveTaskCount(user) >= maxTasks)
+        {
+            return "LIMIT_REACHED=" + maxTasks;
+        }
+        
         if (user.getId() != source.getOwner())
         {
             return "ERROR=Cannot create Behaviour Map from public file you do not own.";
@@ -131,86 +131,55 @@ public class BehaviourMapController
         
         Long targetId;
         
-        try
+        File filterFile = null;
+        
+        if (filterId != null)
         {
-            if (filterId != null)
-            {
-                EstherFile filterFile = fileSystemManager.getFileById(filterId);
-                
-                if (user.getId() != filterFile.getOwner())
-                {
-                    return "ERROR=You cannot use public filter you do not own to create Behaviour Map.";
-                }
+            EstherFile filter = fileSystemManager.getFileById(filterId);
 
-                filter = new ParameterFilter(fileSystemManager.getSystemFileById(filterFile.getId()));
-
-                targetId = Long.parseLong(fileSystemController.createFile(filterFile.getName(), "xgmml", filterId, false));
-            }
-            else
+            if (user.getId() != filter.getOwner())
             {
-                targetId = Long.parseLong(fileSystemController.createFile(source.getName(), "xgmml", source.getId(), false));
+                return "ERROR=You cannot use public filter you do not own to create Behaviour Map.";
             }
+
+            filterFile = fileSystemManager.getSystemFileById(filter.getId());
+
+            targetId = Long.parseLong(fileSystemController.createFile(filterFile.getName(), "xgmml", filter.getId(), false));
         }
-        catch (ParameterFilterException e)
+        else
         {
-            logger.log(Level.SEVERE, ("Error reading filter ID: " + filterId), e);
-            
-            return "ERROR=Failed to read filter.";
+            targetId = Long.parseLong(fileSystemController.createFile(source.getName(), "xgmml", source.getId(), false));
         }
         
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
+        File outputFile = fileSystemManager.getSystemFileById(targetId);
         
-        try
+        Task task = Task.newTask(user.getId(), parentModel.getId(), parentProperty.getId(), targetId, "behaviour_mapper");
+        
+        task.addDatabase(source.getId());
+        
+        if (filterId != null)
         {
-            Class.forName("org.sqlite.JDBC");
-            connection = DriverManager.getConnection("jdbc:sqlite:" + file.getAbsolutePath());
-            statement = sqliteManager.constructSQLQuery(filter, connection, false);
-            resultSet = statement.executeQuery();
-            
-            File newFile = fileSystemManager.getSystemFileById(targetId);
-            
-            BehaviourMapper.behaviourMap(resultSet, parentFile.getId().toString(), newFile.getAbsolutePath());
-            
-            EstherFile bmFile = fileSystemManager.getFileById(targetId);
-            bmFile.setSize(newFile.length());
-            fileSystemManager.updateFile(bmFile);
-            
-            if (fileSystemController.exceedsAllowedSpace())
-            {
-                return ("LIMIT_REACHED=" + (maxStorageSpace / gigabyte) + "GB=" + bmFile.getId());
-            }
-            
-            return (bmFile.getId().toString() + "=" + bmFile.getName());
+            task.addFilter(filterId);
         }
-        catch (ClassNotFoundException | ParserConfigurationException | SQLException | TransformerException e)
+
+        List<String> taskArgs = new ArrayList<>();
+
+        taskArgs.add("java");
+        taskArgs.add("-jar");
+        taskArgs.add(behaviourMapperLocation);
+        taskArgs.add(file.getAbsolutePath());
+        taskArgs.add(outputFile.getAbsolutePath());
+        
+        if (filterFile != null)
         {
-            logger.log(Level.SEVERE, ("Error building behaviour map for file ID: " + sourceId), e);
-            
-            return "ERROR=Failed to create behaviour map.";
+            taskArgs.add(filterFile.getAbsolutePath());
         }
-        finally
-        {
-            try
-            {
-                if (resultSet != null)
-                {
-                    resultSet.close();
-                }
-                if (statement != null)
-                {
-                    statement.close();
-                }
-                if (connection != null)
-                {
-                    connection.close();
-                }
-            }
-            catch (SQLException e)
-            {
-                logger.log(Level.SEVERE, ("Error closing connection to parameter database ID: " + sourceId), e);
-            }
-        }
+        
+        taskArgs.add("-p");
+        taskArgs.add(parentProperty.getId().toString());
+        
+        Long taskId = taskManager.createTask(task, taskArgs.toArray(new String[] { }));
+        
+        return taskId.toString();
     }
 }

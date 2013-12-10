@@ -14,7 +14,6 @@ import java.util.Set;
 public class Parameter
 {
     
-    private int cost;
     private double robustness;
     
     private Set<Transition> transitions;
@@ -27,7 +26,6 @@ public class Parameter
      */
     public Parameter(ResultSet resultSet, String parentId) throws SQLException
     {
-        cost = resultSet.getInt("Cost");
         robustness = resultSet.getDouble("Robust_" + parentId);
         
         String witnessPath = resultSet.getString("Witness_" + parentId);
@@ -37,11 +35,6 @@ public class Parameter
         {
             transitions.add(new Transition(t));
         }
-    }
-
-    public int getCost()
-    {
-        return cost;
     }
 
     public double getRobustness()

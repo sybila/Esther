@@ -321,7 +321,7 @@ public class SQLiteManager
                 
                 copyQueryHalfBuilder.append(columnName);
                 
-                if (columnName.startsWith("Robust") || columnName.startsWith("Witness"))
+                if (columnName.startsWith("Robust") || columnName.startsWith("Witness") || columnName.startsWith("Cost"))
                 {
                     String[] data = columnName.split("_");
                     columnName = (data[0] + "_" + id);

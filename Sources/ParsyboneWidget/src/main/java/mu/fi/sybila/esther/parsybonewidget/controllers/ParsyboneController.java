@@ -98,7 +98,10 @@ public class ParsyboneController
     @ResponseBody
     public String runParsybone(@RequestParam("model") Long model_id, @RequestParam("property") Long property_id,
         @RequestParam(value="compute_robustness", required=false) Boolean robustness,
-        @RequestParam(value="compute_witnesses", required=false) Boolean witnesses)
+        @RequestParam(value="compute_witnesses", required=false) Boolean witnesses,
+        @RequestParam(value="minimise_cost", required=false) Boolean minimise,
+        @RequestParam(value="negate", required=false) Boolean negate,
+        @RequestParam(value="filters[]", required = false) Long[] filters)
     {
         if ((model_id == null) || (property_id == null))
         {
@@ -136,12 +139,22 @@ public class ParsyboneController
             File result = fileSystemManager.getSystemFileById(resultID);
 
             Task task = Task.newTask(user.getId(), model.getId(), property.getId(), resultID, "parsybone");
-
+            
             List<String> taskArgs = new ArrayList<>();
             
             taskArgs.add(parsyboneLocation);
             taskArgs.add(fileSystemManager.getSystemFileById(model.getId()).getAbsolutePath());
             taskArgs.add(fileSystemManager.getSystemFileById(property.getId()).getAbsolutePath());
+            
+            if (filters != null)
+            {
+                for (Long l : filters)
+                {
+                    task.addDatabase(l);
+                    taskArgs.add(fileSystemManager.getSystemFileById(l).getAbsolutePath());
+                }
+            }
+            
             taskArgs.add("-v");
             taskArgs.add("--data");
             taskArgs.add(result.getAbsolutePath());
@@ -154,6 +167,16 @@ public class ParsyboneController
             if ((witnesses != null) && witnesses.booleanValue())
             {
                 taskArgs.add("-W");
+            }
+            
+            if ((minimise != null) && minimise.booleanValue())
+            {
+                taskArgs.add("-m");
+            }
+            
+            if ((negate != null) && negate.booleanValue())
+            {
+                taskArgs.add("-n");
             }
             
             Long taskId = taskManager.createTask(task, taskArgs.toArray(new String[] { }));

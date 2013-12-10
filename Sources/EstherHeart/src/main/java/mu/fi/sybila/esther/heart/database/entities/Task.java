@@ -482,6 +482,21 @@ public class Task
                 textBuilder.append(getPropertyName());
                 textBuilder.append(")");
                 
+                if (filters.size() > 0)
+                {
+                    textBuilder.append(" filtered by ");
+
+                    for (int i = 0; i < filters.size(); i++)
+                    {
+                        if (i > 0)
+                        {
+                            textBuilder.append(", ");
+                        }
+
+                        textBuilder.append(getFilterNames().get(i));
+                    }
+                }
+                
                 break;
             }
             case "parsybone":
@@ -491,24 +506,24 @@ public class Task
                 textBuilder.append(" with ");
                 textBuilder.append(getPropertyName());
                 
+                if (databases.size() > 0)
+                {
+                    textBuilder.append(" filtered by ");
+
+                    for (int i = 0; i < databases.size(); i++)
+                    {
+                        if (i > 0)
+                        {
+                            textBuilder.append(", ");
+                        }
+
+                        textBuilder.append(getDatabaseNames().get(i));
+                    }
+                }
+                
                 break;
             }
             default: return null;
-        }
-        
-        if (filters.size() > 0)
-        {
-            textBuilder.append(" filtered by ");
-
-            for (int i = 0; i < filters.size(); i++)
-            {
-                if (i > 0)
-                {
-                    textBuilder.append(", ");
-                }
-
-                textBuilder.append(getFilterNames().get(i));
-            }
         }
         
         return textBuilder.toString();

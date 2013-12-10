@@ -144,7 +144,7 @@ public class BehaviourMapController
 
             filterFile = fileSystemManager.getSystemFileById(filter.getId());
 
-            targetId = Long.parseLong(fileSystemController.createFile(filterFile.getName(), "xgmml", filter.getId(), true));
+            targetId = Long.parseLong(fileSystemController.createFile(filter.getName(), "xgmml", filter.getId(), true));
         }
         else
         {

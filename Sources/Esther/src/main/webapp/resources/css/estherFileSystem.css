@@ -43,6 +43,7 @@ ul.estherFileSystem li.unexpandable
 
 li.ui-draggable-dragging
 {
+    z-index: 101;
     color: #000000;
     font-size: 12px;
     line-height: 18px;

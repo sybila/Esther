@@ -13,9 +13,9 @@
 #widget #parsybone_controls
 {
     position: absolute;
-    z-index: 1000;
+    z-index: 100;
     width: 90%;
-    height: 160px;
+    height: 224px;
     right: 3px;
     bottom: 24px;
     background: #FFFFFF;
@@ -29,5 +29,21 @@
     height: 16px;
     width: 16px;
     margin: 8px;
+    cursor: pointer;
+}
+
+#widget #parsybone_filters
+{
+    height: 64px;
+    background: #EEEEEE;
+    border: 1px solid #CCFFFF;
+    overflow: scroll;
+}
+
+#widget IMG.cancel_filter
+{
+    height: 12px;
+    margin-left: 4px;
+    margin-right: 4px;
     cursor: pointer;
 }

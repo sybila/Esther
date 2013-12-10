@@ -30,15 +30,30 @@
     <div id="parsybone_controls" style="display: none;" >
         <img id="parsybone_hide" src="<c:url value="/resources/images/hide_button.png" />" />
         <form id="parsybone_options" action="<c:url value='Widget/Parsybone' />" method="POST">
-            <p>
-                <label><input type="checkbox" name="compute_robustness" checked="checked"/> Calculate Robustness</label>
-            </p>
-            <p>
-                <label><input type="checkbox" name="compute_witnesses" checked="checked"/> Compute Witnesses</label>
-            </p>
-            <p>
-                <input class="button" type="submit" value="Parsybone" />
-            </p>
+            <table style="width: 92%; border-collapse: separate;">
+                <tr>
+                    <td valign="top" style="border: 0px; margin: 2px;">
+                        <label><input type="checkbox" name="compute_witnesses" checked="checked"/> Compute Witnesses</label>
+                    </td>
+                    <td valign="top" style="border: 0px; margin: 2px;">
+                        <label><input type="checkbox" name="minimise_cost"/> Minimise the Cost</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td valign="top" style="border: 0px; margin: 2px;">
+                        <label><input type="checkbox" name="compute_robustness" checked="checked"/> Calculate Robustness</label>
+                    </td>
+                    <td valign="top" style="border: 0px; margin: 2px;">
+                        <label><input type="checkbox" name="negate"/> Negate the Property</label>
+                    </td>
+                </tr>
+            </table>
+            
+            <div id="parsybone_filters">
+                
+            </div>
+            
+            <input class="button" type="submit" value="Parsybone" />
         </form>
     </div>
 </c:if>

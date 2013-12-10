@@ -175,7 +175,7 @@ public class ParameterViewWidget implements EstherWidget
             
             for (int i : columnNames.keySet())
             {
-                if (columnNames.get(i).startsWith("Robust"))
+                if (columnNames.get(i).startsWith("Robust") || columnNames.get(i).startsWith("Cost"))
                 {
                     String[] robustProp = columnNames.get(i).split("_");
                     Long propId;
@@ -196,8 +196,14 @@ public class ParameterViewWidget implements EstherWidget
                         sqliteManager.refactorTable(source, prop.getId());
                     }
                     
-                    columnNames.put(i, ("Robustness: " + prop.getName()));
-                    break;
+                    if (columnNames.get(i).startsWith("Robust"))
+                    {
+                        columnNames.put(i, ("Robustness: " + prop.getName()));
+                    }
+                    else
+                    {
+                        columnNames.put(i, ("Cost: " + prop.getName()));
+                    }
                 }
             }
             

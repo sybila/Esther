@@ -114,7 +114,8 @@ if(jQuery) (function($)
                 
             context.find('#column_options label.column_checker input[column_num=group]').click(function()
                 {
-                    context.find('#column_options label.column_checker input[group_id=' + $(this).parent().text() + ']').prop('checked', $(this).prop('checked'));
+                    context.find('#column_options label.column_checker input[group_id=' + $(this).parent().text() + ']')
+                        .prop('checked', $(this).prop('checked'));
                 });
                 
             context.find('#column_apply_button').click(function(e)
@@ -142,7 +143,10 @@ if(jQuery) (function($)
                         }
                     }
                     
-                    $(document).find('#widget #column_options_button').trigger('click');
+                    if ($(document).find('#widget #column_options_button').hasClass('open'))
+                    {
+                        $(document).find('#widget #column_options_button').trigger('click');
+                    }
                 });
 
             context.find('#filter').click(function(e)
@@ -176,7 +180,27 @@ if(jQuery) (function($)
                 {
                     e.preventDefault();
 
-                    var id = (context.find('#constraint_container p').length + 1);
+                    var id = 0;
+                    
+                    while (true)
+                    {
+                        var invalid = false;
+                        
+                        context.find('#constraint_container p').each(function()
+                            {
+                                if ($(this).attr('id') == id)
+                                {
+                                    invalid = true;
+                                }
+                            });
+                        
+                        if (!invalid)
+                        {
+                            break;
+                        }
+                        
+                        id++;
+                    }
 
                     context.find('#constraint_container')
                         .append('<p id="' + id + '" variable="' + context.find('#constraint_variable').val() +
@@ -275,17 +299,14 @@ if(jQuery) (function($)
 
                     var filter = context.find('#filter_controls').attr("filter");
                     var params;
-                    var parent_id;
 
                     if ((typeof filter == 'undefined') || (filter == null) || (filter == ''))
                     {
                         params = { file: context.find('#filter_controls').attr("source") };
-                        parent_id = context.find('#filter_controls').attr("source");
                     }
                     else
                     {
                         params = { file: context.find('#filter_controls').attr("source"), filter: filter };
-                        parent_id = filter;
                     }
 
                     $.post('Widget/BehaviourMap', params, function(data)

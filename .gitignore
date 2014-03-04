@@ -1,0 +1,6 @@
+/Sources/Esther/src/main/resources/Properties/Esther.properties
+/Sources/Esther/src/main/resources/properties/Database.properties
+*~
+*.swp
+*.swo
+/Sources/*/target/*

@@ -93,7 +93,7 @@ public class BehaviourMapper
             List<ParameterFilter> filters = new ArrayList<>();
             for (String filter : filterFiles)
             {
-                filters.add(new ParameterFilter(new File(filter)));
+                filters.add(new ParameterFilter(new File(filter), property));
             }
             
             Class.forName("org.sqlite.JDBC");

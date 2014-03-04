@@ -150,6 +150,8 @@ public class ParameterViewWidget implements EstherWidget
         
         Long fileId = ((file.getType().equals("sqlite")) ? file.getId() : parent);
         Long filterId = ((file.getType().equals("sqlite")) ? null : file.getId());
+                    
+        EstherFile prop = fileSystemManager.getParent(fileSystemManager.getFileById(fileId));
         
         map.addAttribute("file", fileId);
         
@@ -163,7 +165,7 @@ public class ParameterViewWidget implements EstherWidget
         {
             if (filterId != null)
             {
-                filters.add(new ParameterFilter(fileSystemManager.getSystemFileById(filterId)));
+                filters.add(new ParameterFilter(fileSystemManager.getSystemFileById(filterId), prop.getId().toString()));
                 
                 map.addAttribute("filter", filterId);
             }
@@ -188,8 +190,6 @@ public class ParameterViewWidget implements EstherWidget
                     {
                         propId = null;
                     }
-                    
-                    EstherFile prop = fileSystemManager.getParent(fileSystemManager.getFileById(fileId));
                     
                     if ((propId == null) || (propId != prop.getId()))
                     {

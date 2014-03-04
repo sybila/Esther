@@ -226,7 +226,16 @@ public class SQLiteManager
         
         StringBuilder nameBuilder = new StringBuilder();
         
-        nameBuilder.append(contextData[1]);
+        for (int i = 1; i < contextData.length; i++)
+        {
+            nameBuilder.append(contextData[1]);
+            
+            if (i < (contextData.length - 1))
+            {
+                nameBuilder.append('_');
+            }
+        }
+        
         nameBuilder.append('{');
         
         PreparedStatement statement = null;

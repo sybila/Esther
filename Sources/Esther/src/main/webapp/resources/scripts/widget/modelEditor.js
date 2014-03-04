@@ -90,7 +90,24 @@ if(jQuery) (function($)
                     if ($(this).prop('checked'))
                     {
                         context.find('#parsybone_controls form#parsybone_options input[name=negate]').prop('checked', false);
+                        context.find('#parsybone_controls form#parsybone_options input[name=bound]').prop('checked', false);
                     }
+                });
+                
+            context.find('#parsybone_controls form#parsybone_options input[name=bound]').click(function()
+                {
+                    if ($(this).prop('checked'))
+                    {
+                        context.find('#parsybone_controls form#parsybone_options input[name=negate]').prop('checked', false);
+                        context.find('#parsybone_controls form#parsybone_options input[name=minimise_cost]').prop('checked', false);
+                    }
+                });
+                
+            context.find('#parsybone_controls form#parsybone_options input[name=bound_value]').keyup(function()
+                {
+                    context.find('#parsybone_controls form#parsybone_options input[name=bound_value]')
+                        .val(context.find('#parsybone_controls form#parsybone_options input[name=bound_value]')
+                        .val().replace(/[^0-9]/g,''));
                 });
                 
             context.find('#parsybone_controls form#parsybone_options input[name=negate]').click(function()
@@ -100,6 +117,7 @@ if(jQuery) (function($)
                         context.find('#parsybone_controls form#parsybone_options input[name=compute_witnesses]').prop('checked', false);
                         context.find('#parsybone_controls form#parsybone_options input[name=compute_robustness]').prop('checked', false);
                         context.find('#parsybone_controls form#parsybone_options input[name=minimise_cost]').prop('checked', false);
+                        context.find('#parsybone_controls form#parsybone_options input[name=bound]').prop('checked', false);
                     }
                 });
                 

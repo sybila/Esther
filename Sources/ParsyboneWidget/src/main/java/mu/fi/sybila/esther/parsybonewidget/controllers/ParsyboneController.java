@@ -101,6 +101,8 @@ public class ParsyboneController
         @RequestParam(value="compute_witnesses", required=false) Boolean witnesses,
         @RequestParam(value="minimise_cost", required=false) Boolean minimise,
         @RequestParam(value="negate", required=false) Boolean negate,
+        @RequestParam(value="bound", required=false) Boolean bound,
+        @RequestParam(value="bound_value", required=false) Integer boundValue,
         @RequestParam(value="filters[]", required = false) Long[] filters)
     {
         if ((model_id == null) || (property_id == null))
@@ -132,9 +134,16 @@ public class ParsyboneController
             {
                 return "LIMIT_REACHED=" + maxTasks;
             }
+            
+            String createdID = fileSystemController.createFile(property.getName(),
+                "sqlite", property.getId(), true);
+            
+            if (createdID.startsWith("ERROR"))
+            {
+                return createdID;
+            }
 
-            Long resultID = Long.parseLong(fileSystemController.createFile(property.getName(),
-                "sqlite", property.getId(), true));
+            Long resultID = Long.parseLong(createdID);
 
             File result = fileSystemManager.getSystemFileById(resultID);
 
@@ -172,6 +181,12 @@ public class ParsyboneController
             if ((minimise != null) && minimise.booleanValue())
             {
                 taskArgs.add("-m");
+            }
+            
+            if ((bound != null) && bound.booleanValue())
+            {
+                taskArgs.add("--bound");
+                taskArgs.add(boundValue.toString());
             }
             
             if ((negate != null) && negate.booleanValue())

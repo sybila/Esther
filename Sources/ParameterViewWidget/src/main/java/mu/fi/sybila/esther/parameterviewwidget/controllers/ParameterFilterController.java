@@ -88,6 +88,8 @@ public class ParameterFilterController
         }
         
         File file = fileSystemManager.getSystemFileById(id);
+                    
+        EstherFile prop = fileSystemManager.getParent(fileSystemManager.getFileById(id));
         
         List<Map<Integer, Object>> rows;
 
@@ -96,12 +98,11 @@ public class ParameterFilterController
         List<ParameterFilter> filters = new ArrayList<>();
         if (!filter.isEmpty())
         {
-            filters.add(new ParameterFilter(filter));
+            filters.add(new ParameterFilter(filter, prop.getId().toString()));
         }
         
         try
         {
-            
             rows = sqliteManager.generateRows(file, filters, null, columnNames);
             
             for (int i : columnNames.keySet())
@@ -119,8 +120,6 @@ public class ParameterFilterController
                     {
                         propId = null;
                     }
-                    
-                    EstherFile prop = fileSystemManager.getParent(fileSystemManager.getFileById(id));
                     
                     if ((propId == null) || (propId != prop.getId()))
                     {

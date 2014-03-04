@@ -422,7 +422,7 @@ public class AccountController
                     emailer.setSignature(estherSignature);
                     
                     emailer.sendMail(newUser.getEmail(), "Esther account activation", ("<h1 class=\"section\">Welcome " +
-                        newUser.getUsername() + "!</h1><p>Click the link below to complete the registration.</p>" +
+                        newUser.getUsername() + "!</h1><p>Follow the link below to complete the registration.</p>" +
                         "<p>" + estherURL + "Activate?user=" + id + "&token=" + token + "</p>"));
                     
                     logger.log(Level.INFO, ("Succesfuly sent activation e-mail to: " + newUser.getEmail()));

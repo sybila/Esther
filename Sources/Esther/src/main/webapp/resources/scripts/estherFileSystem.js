@@ -122,7 +122,7 @@ function openFileMenu(operation, x, y, file_ref, file_id, file_name, parent_id, 
 
             $('DIV.fileMenu FORM#uploadOptions').submit(function()
                 {
-                    var fileExt = $('DIV.fileMenu FORM#uploadOptions TR TD INPUT[type=file]').val().split('.');
+                    var fileExt = $('DIV.fileMenu FORM#uploadOptions TR TD INPUT[type=file]').val().match(/\.([^\.]+)$/)[0];
 
                     var parentData = { };
 
@@ -144,12 +144,12 @@ function openFileMenu(operation, x, y, file_ref, file_id, file_name, parent_id, 
                             }
                             else
                             {
-                                var filePath = $('DIV.fileMenu FORM#uploadOptions TR TD INPUT[type=file]').val().split('[\\/]');
+                                var fileName = $('DIV.fileMenu FORM#uploadOptions TR TD INPUT[type=file]')[0].files[0].name;
 
                                 appendFileEntries($('UL.estherFileSystem LI#privateFolder'), file_id, data,
-                                    filePath[filePath.length - 1], fileExt[fileExt.length - 1], 'private', false, false);
+                                    fileName, fileExt, 'private', false, false);
                                     
-                                openWidget(data, filePath[filePath.length - 1], fileExt[fileExt.length - 1], file_id);
+                                openWidget(data, fileName, fileExt, file_id);
                             }
 
                             $('DIV.fileMenu').remove();

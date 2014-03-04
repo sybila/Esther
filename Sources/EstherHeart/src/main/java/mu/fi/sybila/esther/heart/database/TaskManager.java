@@ -2,6 +2,7 @@ package mu.fi.sybila.esther.heart.database;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -192,11 +193,39 @@ public class TaskManager
                                 }
 
                                 String[] nums = parts[1].trim().split("/");
+                                nums[1] = nums[1].substring(0, (nums[1].length() - 1)); //Remove trailing dot
 
-                                long round = Long.parseLong(nums[0]);
-                                long total = Long.parseLong(nums[1].substring(0, (nums[1].length() - 1)));
+                                BigInteger round;
+                                BigInteger total;
+                                
+                                if (nums[0].contains("^"))
+                                {
+                                    int roundPower[] = new int[] { Integer.parseInt(nums[0].split("^")[0]),
+                                        Integer.parseInt(nums[0].split("^")[1])};
+                                    
+                                    round = BigInteger.valueOf(roundPower[0]).pow(roundPower[1]);
+                                }
+                                else
+                                {
+                                    round = BigInteger.valueOf(Long.parseLong(nums[0]));
+                                }
+                                
+                                if (nums[1].contains("^"))
+                                {
+                                    int totalPower[] = new int[] { Integer.parseInt(nums[1].split("^")[0]),
+                                        Integer.parseInt(nums[1].split("^")[1])};
+                                    
+                                    total = BigInteger.valueOf(totalPower[0]).pow(totalPower[1]);
+                                }
+                                else
+                                {
+                                    total = BigInteger.valueOf(Long.parseLong(nums[1]));
+                                }
+                                
+                                //long round = Long.parseLong(nums[0]);
+                                //long total = Long.parseLong(nums[1].substring(0, (nums[1].length() - 1)));
 
-                                progressBuilder.append((100 * round) / total);
+                                progressBuilder.append(round.multiply(BigInteger.valueOf(100)).divide(total));
                                 progressBuilder.append("%");
 
                                 progress = progressBuilder.toString();

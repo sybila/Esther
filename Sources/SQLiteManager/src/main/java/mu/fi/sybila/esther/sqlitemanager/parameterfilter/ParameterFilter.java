@@ -24,11 +24,14 @@ public class ParameterFilter
      * 
      * @param filter The string with the constraint definitions.
      */
-    public ParameterFilter(String filter)
+    public ParameterFilter(String filter, String id)
     {
         this.filter = new ArrayList<>();
         
-        this.filter.addAll(Arrays.asList(filter.split("\n")));
+        for (String s : filter.split("\n"))
+        {
+            addFilter(s, id);
+        }
     }
     
     /**
@@ -38,7 +41,7 @@ public class ParameterFilter
      * @param file The filter file with the constraint definitions.
      * @throws ParameterFilterException If reading of the file fails.
      */
-    public ParameterFilter(File file) throws ParameterFilterException
+    public ParameterFilter(File file, String id) throws ParameterFilterException
     {
         filter = new ArrayList<>();
         
@@ -51,7 +54,7 @@ public class ParameterFilter
             String line;
             while ((line = br.readLine()) != null)
             {
-                filter.add(line);
+                addFilter(line, id);
             }
         }
         catch (IOException e)
@@ -72,6 +75,21 @@ public class ParameterFilter
                 }
             }
         }
+    }
+    
+    private void addFilter(String filter, String id)
+    {
+        if (filter.startsWith("cost"))
+        {
+            filter = ("cost_" + id + filter.substring(4));
+        }
+
+        if (filter.startsWith("robustness"))
+        {
+            filter = ("robustness_" + id + filter.substring(10));
+        }
+
+        this.filter.add(filter);
     }
     
     /**

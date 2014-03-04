@@ -47,6 +47,14 @@
                         <label><input type="checkbox" name="negate"/> Negate the Property</label>
                     </td>
                 </tr>
+                <tr>
+                    <td valign="top" style="border: 0px; margin: 2px;">
+                        <label><input type="checkbox" name="bound"> Enforce upper bound on the Cost: </label>
+                    </td>
+                    <td valign="top" style="border: 0px; margin: 2px;">
+                        <input type="number" name="bound_value">
+                    </td>
+                </tr>
             </table>
             
             <div id="parsybone_filters">

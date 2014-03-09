@@ -122,7 +122,7 @@ function openFileMenu(operation, x, y, file_ref, file_id, file_name, parent_id, 
 
             $('DIV.fileMenu FORM#uploadOptions').submit(function()
                 {
-                    var fileExt = $('DIV.fileMenu FORM#uploadOptions TR TD INPUT[type=file]').val().match(/\.([^\.]+)$/)[0];
+                    var fileExt = $('DIV.fileMenu FORM#uploadOptions TR TD INPUT[type=file]').val().match(/\.([^\.]+)$/)[0].substring(1);
 
                     var parentData = { };
 

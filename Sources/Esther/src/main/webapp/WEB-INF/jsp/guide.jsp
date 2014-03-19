@@ -34,6 +34,8 @@
             The interface consists of a data-tree, providing access to datafiles owned by the respective user or public to all, 
             and a widget pane, where the content of individual files may be managed and the computation may be started.
             Opening a datafile spawns a window displaying its contents in the form of an appropriate widget.
+			
+            The core of Esther is a model-checker Parsybone. The modeling language of Pasrybone is described in <a href="/resources/pdf/Manual.pdf">this PDF manual</a>.
         </p>
         <p class="par">  
             Each user is provided with 500 MB of data storage and 2 server-side processes for computation.
@@ -46,14 +48,12 @@
             A model is a multi-valued, multigraph described using our XML-based language DBM (a visual environment is currently being developed).
         </p>
         <p class="par">
-            If you are not familiar with the framework of discrete regulatory models, you can get a quick idea in our <a href="/resources/pdf/Thomas.pdf" >introductory PDF</a> to the topic. 
-            For a more thorough description we can recommend for example the article <a href="http://www.irccyn.fr/franck/bib/ps-pdf-files/bioconcur-entcs-07.pdf">Semantics of Biological Regulatory Networks</a>.
+            If you are not familiar with the framework of discrete regulatory models we can recommend for example the article <a href="http://www.irccyn.fr/franck/bib/ps-pdf-files/bioconcur-entcs-07.pdf">Semantics of Biological Regulatory Networks</a>.
         </p>
         <p class="par">  
             DBM is built over XML, so if you are familiar with XML, you should be able to get the core ideas very quickly.
             For a swift overview of how the model works, you can see the <i>example_model.dbm</i> model in the Public folder in your file tree. 
             The model is commented and provides all the necessary knowledge for understanding of how to create a model on your own. 
-            In case of deeper interest, we also provide a complete and formal description of the modeling language in <a href="/resources/pdf/Manual.pdf">this PDF manual</a>.
         </p>
 
         <p class="par">

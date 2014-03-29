@@ -244,27 +244,32 @@ public class TaskManager
                         }
 
                         Task task = getTask(id);
-                        
-                        String errorMsg = task.getError();
-                        
-                        if (errorMsg != null)
+                        boolean newInfo = false;
+                                                
+                        if (error != null)
                         {
-                            if (error == null)
-                            {
-                                error = errorMsg;
-                            }
-                            else
+                            newInfo = true;
+                            
+                            String errorMsg = task.getError();
+                            if (errorMsg != null)
                             {
                                 error = (errorMsg + error);
                             }
-                        }
                             
-                        task.setError(error);
+                            task.setError(error);
+                        }
                         
-                        task.setFinished(finished);
+                        if (task.getFinished() != finished)
+                        {
+                            newInfo = true;
+                            
+                            task.setFinished(finished);
+                        }
                         
                         if (outputInformation != null)
                         {
+                            newInfo = true;
+                            
                             String info = task.getInformation();
                             if (info != null)
                             {
@@ -276,10 +281,15 @@ public class TaskManager
                         
                         if (progress != null)
                         {
+                            newInfo = true;
+                            
                             task.setProgress(progress);
                         }
                         
-                        updateTask(task);
+                        if (newInfo)
+                        {
+                            updateTask(task);
+                        }
                         
                         //Thread.sleep(256);
                     }

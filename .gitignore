@@ -4,3 +4,4 @@
 *.swp
 *.swo
 /Sources/*/target/*
+/Sources/Esther/nb-configuration.xml

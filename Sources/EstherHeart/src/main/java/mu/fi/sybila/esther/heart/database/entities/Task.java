@@ -1,6 +1,7 @@
 package mu.fi.sybila.esther.heart.database.entities;
 
 import java.io.IOException;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -45,6 +46,9 @@ public class Task
     
     private Boolean finished;
     private Boolean active;
+    
+    private String command;
+    private Date date;
     
     //private Process process;
     
@@ -367,6 +371,25 @@ public class Task
 //            progress = progressBuilder.toString();
 //        }
 //    }
+    public String getCommand()
+    {
+        return command;
+    }
+
+    public void setCommand(String command)
+    {
+        this.command = command;
+    }
+
+    public Date getDate()
+    {
+        return date;
+    }
+
+    public void setDate(Date date)
+    {
+        this.date = date;
+    }
     
     public void setInformation(String information)
     {

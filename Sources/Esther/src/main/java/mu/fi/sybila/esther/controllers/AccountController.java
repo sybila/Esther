@@ -524,7 +524,7 @@ public class AccountController
                 logger.log(Level.INFO, ("Succesfuly sent activation e-mail to: " + user.getEmail()));
 
                 map.addAttribute("email", user.getEmail());
-                map.addAttribute("page", "resendTokenSuccess");
+                map.addAttribute("page", "security/resendTokenSuccess");
             }
             catch (MessagingException e)
             {
@@ -532,7 +532,7 @@ public class AccountController
             }
         }
         
-        map.addAttribute("page", "resendTokenFailure");
+        map.addAttribute("page", "security/resendTokenFailure");
         
         return "frontpage";
     }

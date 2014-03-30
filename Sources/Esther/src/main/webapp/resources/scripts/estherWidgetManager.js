@@ -149,7 +149,7 @@ if(jQuery) (function($)
 
                                             for (var i = 0; i < updatedTasks.length; i++)
                                             {
-                                                if ($(updatedTasks[i]).attr('task_id') == $(this).attr('task_id'))
+                                                if ($(updatedTasks[i]).attr('task_id') === $(this).attr('task_id'))
                                                 {
                                                     closed = false;
                                                     break;
@@ -168,7 +168,7 @@ if(jQuery) (function($)
 
                                             for (var i = 0; i < tasks.length; i++)
                                             {
-                                                if ($(tasks[i]).attr('task_id') == $(this).attr('task_id'))
+                                                if ($(tasks[i]).attr('task_id') === $(this).attr('task_id'))
                                                 {
                                                     $(tasks[i]).find('TH').html($(this).find('TH').html());
                                                     $(tasks[i]).find('P').html($(this).find('P').html());
@@ -182,7 +182,16 @@ if(jQuery) (function($)
 
                                             if (!exists)
                                             {
-                                                context.find('> DIV.viewpoint').append(this);
+                                                if (tasks.length > 0)
+                                                {
+                                                    var taskList = context.find('> DIV.viewpoint')[0];
+                                                    
+                                                    taskList.insertBefore(this, taskList.childNodes[0]);
+                                                }
+                                                else
+                                                {
+                                                    context.find('> DIV.viewpoint').append(this);
+                                                }
                                             }
                                         });
 

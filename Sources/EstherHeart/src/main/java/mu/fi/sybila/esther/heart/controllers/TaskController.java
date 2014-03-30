@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -157,7 +158,14 @@ public class TaskController
 //            }
         }
         
-        map.addAttribute("tasks", tasks);
+        ArrayList<Task> orderedTasks = new ArrayList<>();
+        
+        for (int i = (tasks.size() - 1); i >= 0; i--)
+        {
+            orderedTasks.add(tasks.get(i));
+        }
+        
+        map.addAttribute("tasks", orderedTasks);
         
         return "tasks/list";
     }

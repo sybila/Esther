@@ -89,7 +89,15 @@ public class ParsyboneController
     /**
      * Handler method for Parsybone execution.
      * 
-     * @param id The ID of the model file.
+     * @param model_id
+     * @param property_id
+     * @param witnesses
+     * @param filters
+     * @param robustness
+     * @param boundValue
+     * @param bound
+     * @param minimise
+     * @param negate
      * @return The ID of the started Task.
      *         Error message if starting Parsybone fails.
      *         Limit reached message if the maximal number of active tasks has been reached.

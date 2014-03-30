@@ -4,6 +4,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -350,8 +351,15 @@ public class TaskManager
         {
             connection = dataSource.getConnection();
             statement = connection
-                .prepareStatement("INSERT INTO TASKS (model, property, owner, result, type, finished, active, progress, error, information) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                .prepareStatement("INSERT INTO TASKS (model, property, owner, result, type, finished, active, command, date, progress, error, information) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     Statement.RETURN_GENERATED_KEYS);
+            
+            StringBuilder command = new StringBuilder();
+            for (String arg : cmdArgs)
+            {
+                command.append(arg);
+                command.append(' ');
+            }
             
             statement.setLong(1, task.getModel());
             statement.setLong(2, task.getProperty());
@@ -360,9 +368,11 @@ public class TaskManager
             statement.setString(5, task.getType());
             statement.setBoolean(6, task.getFinished());
             statement.setBoolean(7, task.getActive());
-            statement.setString(8, "0%");
-            statement.setString(9, null);
-            statement.setString(10, null);
+            statement.setString(8, command.toString());
+            statement.setDate(9, new Date((new java.util.Date()).getTime()));
+            statement.setString(10, "0%");
+            statement.setString(11, null);
+            statement.setString(12, null);
             
             statement.executeUpdate();
             
@@ -863,6 +873,8 @@ public class TaskManager
         task.setProgress(resultSet.getString("progress"));
         task.setError(resultSet.getString("error"));
         task.setInformation(resultSet.getString("information"));
+        task.setCommand(resultSet.getString("command"));
+        task.setDate(resultSet.getDate("date"));
                 
         getTaskDatabases(task);
         getTaskFilters(task);

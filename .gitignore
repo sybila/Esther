@@ -1,7 +1,7 @@
-/Sources/Esther/src/main/resources/Properties/Esther.properties
-/Sources/Esther/src/main/resources/properties/Database.properties
+Sources/Esther/src/main/resources/Properties/Esther.properties
+Sources/Esther/src/main/resources/properties/Database.properties
 *~
 *.swp
 *.swo
-/Sources/*/target/*
-/Sources/Esther/nb-configuration.xml
+Sources/*/target/*
+Sources/Esther/nb-configuration.xml

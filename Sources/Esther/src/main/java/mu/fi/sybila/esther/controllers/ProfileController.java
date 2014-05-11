@@ -65,14 +65,24 @@ public class ProfileController
         userManager.setLogger(fs);
     }
     
+    @RequestMapping(value = "/Profile", method = RequestMethod.GET)
+    public String viewProfile(ModelMap map, @RequestParam("user") Long id)
+    {
+        User user = userManager.getUserById(id);
+        
+        InitialiseProfile(map, user);
+        
+        return "frontpage";
+    }
+    
     /**
-     * Handler method for opening profile.
+     * Handler method for opening profile for edit.
      * 
      * @param map The map of UI properties.
      * @return Profile page.
      */
-    @RequestMapping(value = "/Profile", method = RequestMethod.GET)
-    public String openProfile(ModelMap map)
+    @RequestMapping(value = "/Profile/Edit", method = RequestMethod.GET)
+    public String editProfile(ModelMap map)
     {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!authentication.isAuthenticated())
@@ -83,6 +93,15 @@ public class ProfileController
         
         User user = userManager.getUserByUsername(username);
         
+        InitialiseProfile(map, user);
+        
+        map.addAttribute("edit", true);
+        
+        return "frontpage";
+    }
+    
+    private void InitialiseProfile(ModelMap map, User user)
+    {
         UserInformation information = userManager.getUserInformation(user.getId());
         
         UserForm userForm = UserForm.extractFromUser(user);
@@ -93,8 +112,6 @@ public class ProfileController
         map.addAttribute("information", informationForm);
         
         map.addAttribute("page", "profile/profile");
-        
-        return "frontpage";
     }
     
     /**
@@ -114,8 +131,10 @@ public class ProfileController
         String username = authentication.getName();
         
         User user = userManager.getUserByUsername(username);
+        UserInformation information = userManager.getUserInformation(user.getId());
         
         map.addAttribute("email", user.getEmail());
+        map.addAttribute("show_email", information.getShowEmail());
         map.addAttribute("page", "profile/editCore");
         
         return "frontpage";
@@ -129,7 +148,8 @@ public class ProfileController
      * @return Profile edit success page if the profile update succeeds. Core profile information edit page with the appropriate error otherwise.
      */
     @RequestMapping(value = "/Profile/Edit/Core", method = RequestMethod.POST)
-    public String submitCoreProfile(ModelMap map, @RequestParam("email") String email)
+    public String submitCoreProfile(ModelMap map, @RequestParam("email") String email,
+            @RequestParam(value = "show_email", required = false) Boolean showEmail)
     {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!authentication.isAuthenticated())
@@ -139,6 +159,7 @@ public class ProfileController
         String currentUserName = authentication.getName();
         
         User user = userManager.getUserByUsername(currentUserName);
+        UserInformation information = userManager.getUserInformation(user.getId());
         
         UserForm updatedUser = new UserForm();
         updatedUser.setEmail(email);
@@ -164,8 +185,10 @@ public class ProfileController
         else
         {
             user.setEmail(updatedUser.getEmail());
+            information.setShowEmail((showEmail != null) && showEmail);
             
             userManager.updateUser(user);
+            userManager.updateUserInformation(information);
             
             map.addAttribute("page", "profile/editSuccess");
         }

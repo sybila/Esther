@@ -23,8 +23,12 @@
                     <th><sec:authentication property="principal.username" /></th>
                 </tr>
                 <tr>
-                    <th>E-Mail:</th>
+                    <th>E-Mail: </th>
                     <td><input type="email" name="email" value="${email}"/></td>
+                </tr>
+                <tr>
+                    <th>E-mail visible to other users: </th>
+                    <td><input type="checkbox" name="show_email" <c:if test="${show_email}">checked="checked"</c:if> ></td>
                 </tr>
             </table>
             <p>

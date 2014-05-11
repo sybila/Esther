@@ -22,6 +22,7 @@
         <intercept-url pattern="/Recover/*" access="permitAll" />
         <intercept-url pattern="/Guide" access="permitAll" />
         <intercept-url pattern="/Profile" access="isAuthenticated()" />
+        <intercept-url pattern="/Profile/Edit" access="isAuthenticated()" />
         <intercept-url pattern="/Profile/Edit/*" access="isAuthenticated()" />
         <intercept-url pattern="/Analysis" access="isAuthenticated()" />
         <intercept-url pattern="/Files/*" access="isAuthenticated()" />
@@ -29,6 +30,7 @@
         <intercept-url pattern="/Tasks" access="isAuthenticated()" />
         <intercept-url pattern="/Task/*" access="isAuthenticated()" />
         <intercept-url pattern="/Widget/**" access="isAuthenticated()" />
+        <intercept-url pattern="/News/*" access="hasRole('administrator')" />
         <intercept-url pattern="/" access="permitAll" />
         <intercept-url pattern="/**" access="denyAll" />
         <form-login default-target-url="/Home" login-page="/Login" authentication-failure-url="/LoginFailure" />

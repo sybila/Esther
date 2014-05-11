@@ -13,7 +13,7 @@
             Your profile has been successfully updated!
         </p>
         <p>
-            You may return to your <a href="/Profile">profile page</a> 
+            You may return to your <a href="/Profile/Edit">profile page</a> 
             or start from our <a href="/Home">home</a> page.
         </p>
     </body>

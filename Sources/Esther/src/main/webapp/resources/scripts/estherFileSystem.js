@@ -201,12 +201,12 @@ function openFileMenu(operation, x, y, file_ref, file_id, file_name, parent_id, 
                             {
                                 $.post('File/Copy', { file: source_id, name: source_name.split('.')[0], parent: file_id }, function(data)
                                     {
-                                        if (data.split('=')[0] == "LIMIT_REACHED")
+                                        if (data.split('=')[0] === "LIMIT_REACHED")
                                         {
                                             alert('You do not have enough space available to save a copy of this file! Your '
                                                 + data.split('=')[1] + ' limit has been reached.');
                                         }
-                                        else if (data.split('=')[0] == "ERROR")
+                                        else if (data.split('=')[0] === "ERROR")
                                         {
                                             alert('Error: ' + data.split('=')[1]);
                                         }

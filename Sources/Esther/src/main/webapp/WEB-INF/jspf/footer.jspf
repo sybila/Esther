@@ -7,5 +7,7 @@
     <a class="logo" href="http://sybila.fi.muni.cz">
         <img height="42" src="<c:url value="/resources/images/sybila_logo.png"/>"/>
     </a>
-
+    <p>
+        If you happen to experience any issues with the Esther tool please don't hesitate to contact an administrator: <a href="mailto:esther@fi.muni.cz">esther@fi.muni.cz</a>.
+    </p>
 </footer>

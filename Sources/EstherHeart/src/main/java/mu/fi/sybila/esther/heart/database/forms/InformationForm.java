@@ -14,6 +14,8 @@ public class InformationForm
     private String country;
     private String organization;
     
+    private Boolean showEmail;
+    
     private Boolean hidePublicOwned;
     
     /**
@@ -28,6 +30,10 @@ public class InformationForm
         
         String country = request.getParameter("country"); 
         String organization = request.getParameter("organization");
+        
+        String showEmail = request.getParameter("show_email");
+        
+        form.setShowEmail(showEmail != null);
         
         form.setCountry((country.equals("NULL") ? null : country));
         form.setOrganization((organization.isEmpty() ? null : organization));
@@ -47,6 +53,7 @@ public class InformationForm
         
         form.setCountry(information.getCountry());
         form.setOrganization(information.getOrganization());
+        form.setShowEmail(information.getShowEmail());
         form.setHidePublicOwned(information.getHidePublicOwned());
         
         return form;
@@ -62,6 +69,7 @@ public class InformationForm
     {
         UserInformation info = new UserInformation();
         
+        info.setShowEmail(showEmail);
         info.setHidePublicOwned(true);
         info.setCountry(country);
         
@@ -110,6 +118,16 @@ public class InformationForm
     public void setOrganization(String organization)
     {
         this.organization = organization;
+    }
+
+    public Boolean getShowEmail()
+    {
+        return showEmail;
+    }
+
+    public void setShowEmail(Boolean showEmail)
+    {
+        this.showEmail = showEmail;
     }
 
     public Boolean getHidePublicOwned()

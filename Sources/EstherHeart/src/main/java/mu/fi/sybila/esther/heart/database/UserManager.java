@@ -535,7 +535,7 @@ public class UserManager
             throw new NullArgumentException("Information");
         }
         
-        if ((information.getId() == null) || (information.getHidePublicOwned() == null))
+        if ((information.getId() == null) || (information.getShowEmail() == null) || (information.getHidePublicOwned() == null))
         {
             throw new IllegalArgumentException("User Information misses required attributes.");
         }
@@ -546,12 +546,13 @@ public class UserManager
         try
         {
             connection = dataSource.getConnection();
-            statement = connection.prepareStatement("INSERT INTO INFORMATION (id, hide_public_owned, country, organization) VALUES (?, ?, ?, ?)");
+            statement = connection.prepareStatement("INSERT INTO INFORMATION (id, show_email, hide_public_owned, country, organization) VALUES (?, ?, ?, ?, ?)");
             
             statement.setLong(1, information.getId());
-            statement.setBoolean(2, information.getHidePublicOwned());
-            statement.setString(3, information.getCountry());
-            statement.setString(4, information.getOrganization());
+            statement.setBoolean(2, information.getShowEmail());
+            statement.setBoolean(3, information.getHidePublicOwned());
+            statement.setString(4, information.getCountry());
+            statement.setString(5, information.getOrganization());
             
             statement.executeUpdate();
             
@@ -590,12 +591,13 @@ public class UserManager
         try
         {
             connection = dataSource.getConnection();
-            statement = connection.prepareStatement("UPDATE INFORMATION SET hide_public_owned=?, country=?, organization=? WHERE id=?");
+            statement = connection.prepareStatement("UPDATE INFORMATION SET show_email=?, hide_public_owned=?, country=?, organization=? WHERE id=?");
             
-            statement.setBoolean(1, information.getHidePublicOwned());
-            statement.setString(2, information.getCountry());
-            statement.setString(3, information.getOrganization());
-            statement.setLong(4, information.getId());
+            statement.setBoolean(1, information.getShowEmail());
+            statement.setBoolean(2, information.getHidePublicOwned());
+            statement.setString(3, information.getCountry());
+            statement.setString(4, information.getOrganization());
+            statement.setLong(5, information.getId());
             
             statement.executeUpdate();
             
@@ -700,6 +702,7 @@ public class UserManager
         information.setId(resultSet.getLong("id"));
         information.setCountry(resultSet.getString("country"));
         information.setOrganization(resultSet.getString("organization"));
+        information.setShowEmail(resultSet.getBoolean("show_email"));
         information.setHidePublicOwned(resultSet.getBoolean("hide_public_owned"));
         
         return information;

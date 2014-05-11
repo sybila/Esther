@@ -13,6 +13,8 @@ public class UserInformation
     private String country;
     private String organization;
     
+    private Boolean showEmail;
+    
     private Boolean hidePublicOwned;
 
     public Long getId()
@@ -45,6 +47,16 @@ public class UserInformation
         this.organization = organization;
     }
 
+    public Boolean getShowEmail()
+    {
+        return showEmail;
+    }
+
+    public void setShowEmail(Boolean showEmail)
+    {
+        this.showEmail = showEmail;
+    }
+    
     public Boolean getHidePublicOwned()
     {
         return hidePublicOwned;

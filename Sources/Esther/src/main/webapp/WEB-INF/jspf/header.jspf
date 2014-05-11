@@ -19,7 +19,7 @@
         <a href="/Login">LOG IN</a> / <a href="/Registration">REGISTER</a>
     </sec:authorize>
     <sec:authorize access="isAuthenticated()">
-        <a href="/Profile"><sec:authentication property="principal.username" /></a> - <a href="<c:url value="/j_spring_security_logout"/>">LOG OUT</a>
+        <a href="/Profile/Edit"><sec:authentication property="principal.username" /></a> - <a href="<c:url value="/j_spring_security_logout"/>">LOG OUT</a>
     </sec:authorize>
 </div>
 

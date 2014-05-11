@@ -32,6 +32,7 @@
                 <tr>
                     <th>E-Mail:</th>
                     <td><input type="email" name="email" value="${user.email}"/></td>
+                    <td><label><input type="checkbox" name="show_email"> Make e-mail visible to other users.</label></td>
                 </tr>
                 <tr>
                     <th>Password:</th>

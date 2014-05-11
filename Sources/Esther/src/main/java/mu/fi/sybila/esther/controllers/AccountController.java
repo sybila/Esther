@@ -126,6 +126,7 @@ public class AccountController
         "Kazakhstan",
         "Kenya",
         "Kiribato",
+        "Kosovo",
         "Kuwait",
         "Kyrgyzstan",
         "Laos",
@@ -529,10 +530,14 @@ public class AccountController
             catch (MessagingException e)
             {
                 logger.log(Level.SEVERE, ("Failed sending activation e-mail to: " + user.getEmail()), e);
+                
+                map.addAttribute("page", "security/resendTokenFailure");
             }
         }
-        
-        map.addAttribute("page", "security/resendTokenFailure");
+        else
+        {
+            map.addAttribute("page", "security/resendTokenFailure");
+        }
         
         return "frontpage";
     }
